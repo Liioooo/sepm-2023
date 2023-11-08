@@ -41,7 +41,6 @@
         "quotes": ["error", "single"],
         "indent": ["error", 2],
         "no-var": [ "error" ],
-        "no-unused-vars": [ "warn", { "vars": "local" } ],
         "no-shadow": ["error", { "hoist": "functions" }],
         "no-unneeded-ternary": "error",
         "no-empty": ["error", { "allowEmptyCatch": true}],
