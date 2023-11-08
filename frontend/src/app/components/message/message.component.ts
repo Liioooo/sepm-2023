@@ -1,9 +1,9 @@
-import {ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild, ViewChildren} from '@angular/core';
-import {MessageService} from '../../services/message.service';
-import {Message} from '../../dtos/message';
-import {NgbModal, NgbPaginationConfig} from '@ng-bootstrap/ng-bootstrap';
-import {UntypedFormBuilder, NgForm} from '@angular/forms';
-import {AuthService} from '../../services/auth.service';
+import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild, ViewChildren } from '@angular/core';
+import { MessageService } from '../../services/message.service';
+import { Message } from '../../dtos/message';
+import { NgbModal, NgbPaginationConfig } from '@ng-bootstrap/ng-bootstrap';
+import { UntypedFormBuilder, NgForm } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-message',
@@ -42,14 +42,14 @@ export class MessageComponent implements OnInit {
 
   openAddModal(messageAddModal: TemplateRef<any>) {
     this.currentMessage = new Message();
-    this.modalService.open(messageAddModal, {ariaLabelledBy: 'modal-basic-title'});
+    this.modalService.open(messageAddModal, { ariaLabelledBy: 'modal-basic-title' });
   }
 
   openExistingMessageModal(id: number, messageAddModal: TemplateRef<any>) {
     this.messageService.getMessageById(id).subscribe({
       next: res => {
         this.currentMessage = res;
-        this.modalService.open(messageAddModal, {ariaLabelledBy: 'modal-basic-title'});
+        this.modalService.open(messageAddModal, { ariaLabelledBy: 'modal-basic-title' });
       },
       error: err => {
         this.defaultServiceErrorHandling(err);
@@ -90,14 +90,13 @@ export class MessageComponent implements OnInit {
    */
   private createMessage(message: Message) {
     this.messageService.createMessage(message).subscribe({
-        next: () => {
-          this.loadMessage();
-        },
-        error: error => {
-          this.defaultServiceErrorHandling(error);
-        }
+      next: () => {
+        this.loadMessage();
+      },
+      error: error => {
+        this.defaultServiceErrorHandling(error);
       }
-    );
+    });
   }
 
   /**
