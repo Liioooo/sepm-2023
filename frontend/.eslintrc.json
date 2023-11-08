@@ -32,7 +32,24 @@
         "id-blacklist": "off",
         "id-match": "off",
         "no-underscore-dangle": "off",
-        "jsdoc/newline-after-description": "off"
+        "jsdoc/newline-after-description": "off",
+        "semi": [
+          2,
+          "always"
+        ],
+        "comma-dangle": ["error", "never"],
+        "quotes": ["error", "single"],
+        "indent": ["error", 2],
+        "no-var": [ "error" ],
+        "no-unused-vars": [ "warn", { "vars": "local" } ],
+        "no-shadow": ["error", { "hoist": "functions" }],
+        "no-unneeded-ternary": "error",
+        "no-empty": ["error", { "allowEmptyCatch": true}],
+        "keyword-spacing": "error",
+        "block-spacing": "error",
+        "space-before-blocks": "error",
+        "comma-spacing": "error",
+        "object-curly-spacing": ["error", "always"]
       }
     },
     {
