@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepr.groupphase.backend.endpoint.exceptionhandler;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.ApiErrorDto;
+import at.ac.tuwien.sepr.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         logError(error);
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(value = {ConflictException.class})
+    protected ResponseEntity<Object> handleConflict(ConflictException ex) {
+        var error = new ApiErrorDto(HttpStatus.CONFLICT, ex.getMessage());
+
+        logError(error);
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(value = {BadCredentialsException.class})
