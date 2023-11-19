@@ -15,31 +15,31 @@ import java.util.Map;
 @ToString
 public class ApiErrorDto {
 
-  @JsonIgnore
-  private final HttpStatusCode httpStatusCode;
+    @JsonIgnore
+    private final HttpStatusCode httpStatusCode;
 
-  private final LocalDateTime timestamp;
-  private final String error;
+    private final LocalDateTime timestamp;
+    private final String error;
 
-  @JsonInclude(JsonInclude.Include.NON_NULL)
-  private Map<String, String> subErrors;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Map<String, String> subErrors;
 
-  public ApiErrorDto(HttpStatusCode httpStatusCode, String error) {
-    this.httpStatusCode = httpStatusCode;
-    this.error = error;
-    this.timestamp = LocalDateTime.now();
-  }
-
-  public void addSubError(String key, String value) {
-    if (subErrors == null) {
-      subErrors = new HashMap<>();
+    public ApiErrorDto(HttpStatusCode httpStatusCode, String error) {
+        this.httpStatusCode = httpStatusCode;
+        this.error = error;
+        this.timestamp = LocalDateTime.now();
     }
-    subErrors.put(key, value);
-  }
 
-  @JsonProperty("status")
-  public int getHttpsStatusAsInt() {
-    return httpStatusCode.value();
-  }
+    public void addSubError(String key, String value) {
+        if (subErrors == null) {
+            subErrors = new HashMap<>();
+        }
+        subErrors.put(key, value);
+    }
+
+    @JsonProperty("status")
+    public int getHttpsStatusAsInt() {
+        return httpStatusCode.value();
+    }
 
 }

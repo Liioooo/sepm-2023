@@ -27,40 +27,40 @@ import java.lang.invoke.MethodHandles;
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @ExceptionHandler(value = {NotFoundException.class})
-  protected ResponseEntity<Object> handleNotFound(NotFoundException ex) {
-    var error = new ApiErrorDto(HttpStatus.NOT_FOUND, ex.getMessage());
+    @ExceptionHandler(value = {NotFoundException.class})
+    protected ResponseEntity<Object> handleNotFound(NotFoundException ex) {
+        var error = new ApiErrorDto(HttpStatus.NOT_FOUND, ex.getMessage());
 
-    logError(error);
-    return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
-  }
+        logError(error);
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
 
-  @ExceptionHandler(value = {BadCredentialsException.class})
-  protected ResponseEntity<Object> handleBadCredentials(BadCredentialsException ex) {
-    var error = new ApiErrorDto(HttpStatus.FORBIDDEN, ex.getMessage());
+    @ExceptionHandler(value = {BadCredentialsException.class})
+    protected ResponseEntity<Object> handleBadCredentials(BadCredentialsException ex) {
+        var error = new ApiErrorDto(HttpStatus.FORBIDDEN, ex.getMessage());
 
-    logError(error);
-    return new ResponseEntity<>(error, error.getHttpStatusCode());
-  }
+        logError(error);
+        return new ResponseEntity<>(error, error.getHttpStatusCode());
+    }
 
-  @Override
-  protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                HttpHeaders headers,
-                                                                HttpStatusCode status, WebRequest request) {
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                  HttpHeaders headers,
+                                                                  HttpStatusCode status, WebRequest request) {
 
-    var error = new ApiErrorDto(status, ex.getBody().getDetail());
-    ex.getBindingResult().getFieldErrors().forEach(fieldError -> {
-      error.addSubError(fieldError.getField(), fieldError.getDefaultMessage());
-    });
+        var error = new ApiErrorDto(status, ex.getBody().getDetail());
+        ex.getBindingResult().getFieldErrors().forEach(fieldError -> {
+            error.addSubError(fieldError.getField(), fieldError.getDefaultMessage());
+        });
 
-    logError(error);
-    return new ResponseEntity<>(error, headers, status);
+        logError(error);
+        return new ResponseEntity<>(error, headers, status);
 
-  }
+    }
 
-  private void logError(ApiErrorDto apiErrorDto) {
-    LOGGER.warn("Terminating request processing with status {} due to: {}", apiErrorDto.getHttpStatusCode().value(), apiErrorDto.getError());
-  }
+    private void logError(ApiErrorDto apiErrorDto) {
+        LOGGER.warn("Terminating request processing with status {} due to: {}", apiErrorDto.getHttpStatusCode().value(), apiErrorDto.getError());
+    }
 }

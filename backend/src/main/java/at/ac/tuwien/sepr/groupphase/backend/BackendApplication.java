@@ -10,8 +10,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SecurityScheme(name = "Authorization", description = "Bearer Authentication Token", type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER)
 public class BackendApplication {
 
-  public static void main(String[] args) {
-    SpringApplication.run(BackendApplication.class, args);
-  }
+    public static void main(String[] args) {
+        SpringApplication.run(BackendApplication.class, args);
+    }
 
 }
