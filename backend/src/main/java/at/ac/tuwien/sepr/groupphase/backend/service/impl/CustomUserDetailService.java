@@ -7,7 +7,7 @@ import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepr.groupphase.backend.entity.UserRole;
 import at.ac.tuwien.sepr.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
-import at.ac.tuwien.sepr.groupphase.backend.repository.UserRepository;
+import at.ac.tuwien.sepr.groupphase.backend.repository.ApplicationUserRepository;
 import at.ac.tuwien.sepr.groupphase.backend.security.JwtTokenizer;
 import at.ac.tuwien.sepr.groupphase.backend.service.UserService;
 import org.slf4j.Logger;
@@ -28,14 +28,14 @@ import java.util.List;
 public class CustomUserDetailService implements UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private final UserRepository userRepository;
+    private final ApplicationUserRepository applicationUserRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenizer jwtTokenizer;
     private final UserLocationMapper userLocationMapper;
 
     @Autowired
-    public CustomUserDetailService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenizer jwtTokenizer, UserLocationMapper userLocationMapper) {
-        this.userRepository = userRepository;
+    public CustomUserDetailService(ApplicationUserRepository applicationUserRepository, PasswordEncoder passwordEncoder, JwtTokenizer jwtTokenizer, UserLocationMapper userLocationMapper) {
+        this.applicationUserRepository = applicationUserRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenizer = jwtTokenizer;
         this.userLocationMapper = userLocationMapper;
@@ -43,7 +43,7 @@ public class CustomUserDetailService implements UserService {
 
     @Override
     public ApplicationUser loadUserByUsername(String email) throws UsernameNotFoundException {
-        var user = userRepository.findUserByEmail(email);
+        var user = applicationUserRepository.findUserByEmail(email);
         return user.orElseThrow(() -> new UsernameNotFoundException("No user with email %s found".formatted(email)));
     }
 
@@ -75,7 +75,7 @@ public class CustomUserDetailService implements UserService {
             .build();
 
         try {
-            userRepository.save(user);
+            applicationUserRepository.save(user);
         } catch (DataIntegrityViolationException ex) {
             throw new ConflictException("Email is already in use", ex);
         }

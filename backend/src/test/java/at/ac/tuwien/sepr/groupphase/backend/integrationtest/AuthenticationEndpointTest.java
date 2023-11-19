@@ -1,0 +1,132 @@
+package at.ac.tuwien.sepr.groupphase.backend.integrationtest;
+
+import at.ac.tuwien.sepr.groupphase.backend.basetest.TestData;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
+import java.util.HashMap;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
+@ActiveProfiles({"test", "generateData"})
+@AutoConfigureMockMvc
+public class AuthenticationEndpointTest implements TestData {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    ObjectMapper objectMapper;
+
+    private final String AUTHENTICATION_BASE = "/api/v1/authentication";
+
+    @Test
+    public void loginTestAdmin_CorrectCredentials() throws Exception {
+        var requestBody = new HashMap<String, Object>();
+        requestBody.put("email", "admin@email.com");
+        requestBody.put("password", "password");
+
+        MvcResult mvcResult = this.mockMvc.perform(post(AUTHENTICATION_BASE + "/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(requestBody))
+            .accept(MediaType.APPLICATION_JSON)
+        ).andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertAll(() -> {
+            assertEquals(HttpStatus.OK.value(), response.getStatus());
+            assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
+            assertThat(response.getContentAsString()).startsWith("Bearer ");
+        });
+    }
+
+    @Test
+    public void loginTestAdmin_InvalidCredentials() throws Exception {
+        var requestBody = new HashMap<String, Object>();
+        requestBody.put("email", "admin@email.com");
+        requestBody.put("password", "invalid");
+
+        this.mockMvc.perform(post(AUTHENTICATION_BASE + "/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(requestBody))
+            .accept(MediaType.APPLICATION_JSON)
+        ).andExpectAll(
+            status().isForbidden(),
+            jsonPath("$.status").value("403"),
+            jsonPath("$.error").value("Username or password is incorrect")
+        );
+    }
+
+    @Test
+    public void loginTestNormalUser_CorrectCredentials() throws Exception {
+        var requestBody = new HashMap<String, Object>();
+        requestBody.put("email", "user1@email.com");
+        requestBody.put("password", "password");
+
+        MvcResult mvcResult = this.mockMvc.perform(post(AUTHENTICATION_BASE + "/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(requestBody))
+            .accept(MediaType.APPLICATION_JSON)
+        ).andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertAll(() -> {
+            assertEquals(HttpStatus.OK.value(), response.getStatus());
+            assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
+            assertThat(response.getContentAsString()).startsWith("Bearer ");
+        });
+    }
+
+    @Test
+    public void loginTestNormalUser_InvalidCredentials() throws Exception {
+        var requestBody = new HashMap<String, Object>();
+        requestBody.put("email", "user1@email.com");
+        requestBody.put("password", "invalid");
+
+        this.mockMvc.perform(post(AUTHENTICATION_BASE + "/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(requestBody))
+            .accept(MediaType.APPLICATION_JSON)
+        ).andExpectAll(
+            status().isForbidden(),
+            jsonPath("$.status").value("403"),
+            jsonPath("$.error").value("Username or password is incorrect")
+        );
+    }
+
+    @Test
+    public void loginTestNormalUser_NonExistentUser() throws Exception {
+        var requestBody = new HashMap<String, Object>();
+        requestBody.put("email", "xxxxxx@xx.com");
+        requestBody.put("password", "password");
+
+        this.mockMvc.perform(post(AUTHENTICATION_BASE + "/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(requestBody))
+            .accept(MediaType.APPLICATION_JSON)
+        ).andExpectAll(
+            status().isNotFound(),
+            jsonPath("$.status").value("404"),
+            jsonPath("$.error").value("No user with email xxxxxx@xx.com found")
+        );
+    }
+
+}
