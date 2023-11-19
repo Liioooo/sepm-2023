@@ -3,12 +3,17 @@ import { mapToCanActivate, RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
 import { AuthGuard } from './guards/auth.guard';
-import { MessageComponent } from './components/message/message.component';
+import { adminGuard } from './guards/admin.guard';
+import { NewsListComponent } from './components/news-list/news-list.component';
+import { ProfileOverviewComponent } from './components/profile-overview/profile-overview.component';
+import { ManagementComponent } from './components/management/management.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'message', canActivate: mapToCanActivate([AuthGuard]), component: MessageComponent }
+  { path: 'news', canActivate: mapToCanActivate([AuthGuard]), component: NewsListComponent },
+  { path: 'profile', canActivate: mapToCanActivate([AuthGuard]), component: ProfileOverviewComponent },
+  { path: 'management', canActivate: [adminGuard], component: ManagementComponent }
 ];
 
 @NgModule({

@@ -1,19 +1,38 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
-  <a class="navbar-brand ml-lg-5" href="">SE PR Group Phase</a>
-  <button class="navbar-toggler ml-5" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link" *ngIf="authService.isLoggedIn()" routerLink="/message" routerLinkActive="active">Message</a>
-      </li>
-    </ul>
-    <ul class="navbar-nav mr-5">
-      <a class="nav-link" *ngIf="!authService.isLoggedIn()" routerLink="/login" routerLinkActive="active">Login</a>
-      <a class="nav-link" *ngIf="authService.isLoggedIn()" routerLink="/" (click)="authService.logoutUser()">Logout</a>
-    </ul>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand ms-lg-5" routerLink="/">
+      <img ngSrc="/assets/logo.png" alt="Ticketline Logo" width="260" height="60">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01"
+            aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" *ngIf="authService.isLoggedIn()" routerLink="/news"
+             routerLinkActive="active">News</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" *ngIf="authService.getUserRole() === 'ADMIN'" routerLink="/management"
+             routerLinkActive="active">Management</a>
+        </li>
+      </ul>
+      <div class="d-flex flex-column flex-lg-row">
+        <form class="d-flex" style="width: 20em;">
+          <div class="input-group me-2">
+            <input class="form-control" type="search" placeholder="Search for artists, events, &hellip;"
+                   aria-label="Search for artists, events, and more">
+            <button class="btn btn-outline-light" type="submit">Search</button>
+          </div>
+        </form>
+        <a class="btn text-light" *ngIf="!authService.isLoggedIn()" routerLink="/login">
+          login / register
+        </a>
+        <a class="btn text-light" *ngIf="authService.isLoggedIn()" routerLink="/profile">
+          My profile
+        </a>
+      </div>
+    </div>
   </div>
 </nav>
