@@ -7,6 +7,7 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
+  public isNavbarCollapsed: boolean = true;
 
   constructor(public authService: AuthService) { }
 
