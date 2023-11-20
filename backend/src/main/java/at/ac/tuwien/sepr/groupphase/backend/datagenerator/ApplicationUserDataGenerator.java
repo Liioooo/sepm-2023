@@ -28,7 +28,7 @@ public class ApplicationUserDataGenerator {
     }
 
     @PostConstruct
-    private void generateMessage() {
+    public void generateUsers() {
         final ApplicationUser adminUser = ApplicationUser.builder()
             .email("admin@email.com")
             .firstName("Admin")
@@ -71,14 +71,51 @@ public class ApplicationUserDataGenerator {
                 .build())
             .build();
 
+        final ApplicationUser lockedUser = ApplicationUser.builder()
+            .email("locked@email.com")
+            .firstName("locked")
+            .lastName("locked")
+            .password(passwordEncoder.encode("password"))
+            .isLocked(true)
+            .role(UserRole.ROLE_USER)
+            .location(UserLocation.builder()
+                .address("Karlsplatz 13")
+                .postalCode("1040")
+                .city("Wien")
+                .country("Österreich")
+                .build())
+            .build();
+
+        final ApplicationUser lockedToManyAttemptsUser = ApplicationUser.builder()
+            .email("toManyAttempts@email.com")
+            .firstName("toManyAttempts")
+            .lastName("toManyAttempts")
+            .password(passwordEncoder.encode("password"))
+            .failedAuths(6)
+            .role(UserRole.ROLE_USER)
+            .location(UserLocation.builder()
+                .address("Karlsplatz 13")
+                .postalCode("1040")
+                .city("Wien")
+                .country("Österreich")
+                .build())
+            .build();
+
         if (!applicationUserRepository.findAll().isEmpty()) {
-            LOGGER.debug("user data already generated");
+            LOGGER.info("user data already generated");
         } else {
-            LOGGER.debug("generating users");
+            LOGGER.info("generating users");
             applicationUserRepository.save(adminUser);
             applicationUserRepository.save(normalUser1);
             applicationUserRepository.save(normalUser2);
+            applicationUserRepository.save(lockedUser);
+            applicationUserRepository.save(lockedToManyAttemptsUser);
         }
+    }
+
+    public void clearUsers() {
+        LOGGER.info("clearing users");
+        applicationUserRepository.deleteAll();
     }
 
 }

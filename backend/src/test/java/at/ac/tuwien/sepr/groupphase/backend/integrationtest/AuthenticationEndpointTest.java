@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepr.groupphase.backend.integrationtest;
 
+import at.ac.tuwien.sepr.groupphase.backend.basetest.TestBase;
 import at.ac.tuwien.sepr.groupphase.backend.basetest.TestData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ActiveProfiles({"test", "generateData"})
 @AutoConfigureMockMvc
-public class AuthenticationEndpointTest implements TestData {
+public class AuthenticationEndpointTest extends TestBase implements TestData {
 
     @Autowired
     private MockMvc mockMvc;
@@ -127,6 +128,93 @@ public class AuthenticationEndpointTest implements TestData {
             jsonPath("$.status").value("404"),
             jsonPath("$.error").value("No user with email xxxxxx@xx.com found")
         );
+    }
+
+    @Test
+    public void lockedAccountByAdminCanNotLogin() throws Exception {
+        var requestBody = new HashMap<String, Object>();
+        requestBody.put("email", "locked@email.com");
+        requestBody.put("password", "password");
+
+        this.mockMvc.perform(post(AUTHENTICATION_BASE + "/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(requestBody))
+            .accept(MediaType.APPLICATION_JSON)
+        ).andExpectAll(
+            status().isForbidden(),
+            jsonPath("$.status").value("403"),
+            jsonPath("$.error").value("Account is locked")
+        );
+    }
+
+    @Test
+    public void normalAccountLockedAfter5Attempts() throws Exception {
+        var requestBody = new HashMap<String, Object>();
+        requestBody.put("email", "user2@email.com");
+        requestBody.put("password", "invalid");
+
+        for (int i = 0; i < 5; i++) {
+            System.out.println("XXxxxxxxxxxxxxxxxxxxxxx");
+            this.mockMvc.perform(post(AUTHENTICATION_BASE + "/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestBody))
+                .accept(MediaType.APPLICATION_JSON)
+            ).andExpectAll(
+                status().isForbidden(),
+                jsonPath("$.status").value("403"),
+                jsonPath("$.error").value("Username or password is incorrect")
+            );
+        }
+
+        this.mockMvc.perform(post(AUTHENTICATION_BASE + "/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(requestBody))
+            .accept(MediaType.APPLICATION_JSON)
+        ).andExpectAll(
+            status().isForbidden(),
+            jsonPath("$.status").value("403"),
+            jsonPath("$.error").value("Account is locked")
+        );
+    }
+
+    @Test
+    public void registerNewAccount() throws Exception {
+        var requestBody = new HashMap<String, Object>();
+        requestBody.put("email", "newAccount@email.com");
+        requestBody.put("password", "password");
+        requestBody.put("confirmPassword", "password");
+        requestBody.put("firstName", "Toller");
+        requestBody.put("lastName", "Name");
+
+        MvcResult mvcResult = this.mockMvc.perform(post(AUTHENTICATION_BASE + "/register")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(requestBody))
+            .accept(MediaType.APPLICATION_JSON)
+        ).andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        assertAll(() -> {
+            assertEquals(HttpStatus.OK.value(), response.getStatus());
+            assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
+            assertThat(response.getContentAsString()).startsWith("Bearer ");
+        });
+
+        var loginRequestBody = new HashMap<String, Object>();
+        loginRequestBody.put("email", "newAccount@email.com");
+        loginRequestBody.put("password", "password");
+
+        MvcResult loginMvcResult = this.mockMvc.perform(post(AUTHENTICATION_BASE + "/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(loginRequestBody))
+            .accept(MediaType.APPLICATION_JSON)
+        ).andReturn();
+        MockHttpServletResponse loginResponse = loginMvcResult.getResponse();
+
+        assertAll(() -> {
+            assertEquals(HttpStatus.OK.value(), loginResponse.getStatus());
+            assertEquals(MediaType.APPLICATION_JSON_VALUE, loginResponse.getContentType());
+            assertThat(loginResponse.getContentAsString()).startsWith("Bearer ");
+        });
     }
 
 }
