@@ -2,9 +2,12 @@ package at.ac.tuwien.sepr.groupphase.backend.service;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserLoginDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserRegisterDto;
+import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import java.util.Optional;
 
 public interface UserService extends UserDetailsService {
 
@@ -38,4 +41,25 @@ public interface UserService extends UserDetailsService {
      * @return the JWT, if successful
      */
     String register(UserRegisterDto userLoginDto);
+
+    /**
+     * Unlock a user account.
+     *
+     * @param userId id of the user to unlock
+     */
+    void unlockUser(long userId);
+
+    /**
+     * Check if a user is authenticated.
+     *
+     * @return if the user executing the current request is authenticated
+     */
+    boolean getIsAuthenticated();
+
+    /**
+     * Get the currently authenticated user.
+     *
+     * @return the currently authenticated user
+     */
+    Optional<ApplicationUser> getCurrentlyAuthenticatedUser();
 }

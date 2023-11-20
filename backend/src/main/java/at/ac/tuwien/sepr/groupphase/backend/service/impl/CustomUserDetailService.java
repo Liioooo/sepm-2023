@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CustomUserDetailService implements UserService {
@@ -50,10 +52,18 @@ public class CustomUserDetailService implements UserService {
     @Override
     public String login(UserLoginDto userLoginDto) {
         try {
-            UserDetails userDetails = loadUserByUsername(userLoginDto.getEmail());
-            if (userDetails.isAccountNonExpired() && userDetails.isAccountNonLocked() && userDetails.isCredentialsNonExpired()) {
-                if (passwordEncoder.matches(userLoginDto.getPassword(), userDetails.getPassword())) {
-                    return generateTokenForUser(userDetails);
+            ApplicationUser applicationUser = loadUserByUsername(userLoginDto.getEmail());
+            if (applicationUser.isAccountNonExpired() && applicationUser.isAccountNonLocked() && applicationUser.isCredentialsNonExpired()) {
+                boolean authenticationSuccess = false;
+                if (passwordEncoder.matches(userLoginDto.getPassword(), applicationUser.getPassword())) {
+                    applicationUser.setFailedAuths(0);
+                    authenticationSuccess = true;
+                } else {
+                    applicationUser.setFailedAuths(applicationUser.getFailedAuths() + 1);
+                }
+                applicationUserRepository.save(applicationUser);
+                if (authenticationSuccess) {
+                    return generateTokenForUser(applicationUser);
                 }
                 throw new BadCredentialsException("Username or password is incorrect");
             }
@@ -88,5 +98,27 @@ public class CustomUserDetailService implements UserService {
             .map(GrantedAuthority::getAuthority)
             .toList();
         return jwtTokenizer.getAuthToken(userDetails.getUsername(), roles);
+    }
+
+    @Override
+    public void unlockUser(long userId) {
+        ApplicationUser user = applicationUserRepository.findById(userId).orElseThrow(() -> new NotFoundException("No user with id %s found".formatted(userId)));
+        user.setLocked(false);
+        user.setFailedAuths(0);
+        applicationUserRepository.save(user);
+    }
+
+    @Override
+    public boolean getIsAuthenticated() {
+        return SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
+    }
+
+    @Override
+    public Optional<ApplicationUser> getCurrentlyAuthenticatedUser() {
+        if (!getIsAuthenticated()) {
+            return Optional.empty();
+        }
+        var username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return applicationUserRepository.findUserByEmail(username);
     }
 }
