@@ -14,6 +14,9 @@ import { NgOptimizedImage } from '@angular/common';
 import { NewsListComponent } from './components/news-list/news-list.component';
 import { ProfileOverviewComponent } from './components/profile-overview/profile-overview.component';
 import { ManagementComponent } from './components/management/management.component';
+import { ManagementEventsComponent } from './components/management/management-events/management-events.component';
+import { ManagementNewsComponent } from './components/management/management-news/management-news.component';
+import { ManagementUsersComponent } from './components/management/management-users/management-users.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +27,10 @@ import { ManagementComponent } from './components/management/management.componen
     LoginComponent,
     NewsListComponent,
     ProfileOverviewComponent,
-    ManagementComponent
+    ManagementComponent,
+    ManagementEventsComponent,
+    ManagementNewsComponent,
+    ManagementUsersComponent
   ],
   imports: [
     BrowserModule,
