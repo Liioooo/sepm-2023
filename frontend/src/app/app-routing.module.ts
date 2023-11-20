@@ -10,6 +10,7 @@ import { ManagementComponent } from './components/management/management.componen
 import { ManagementEventsComponent } from './components/management/management-events/management-events.component';
 import { ManagementNewsComponent } from './components/management/management-news/management-news.component';
 import { ManagementUsersComponent } from './components/management/management-users/management-users.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -19,7 +20,8 @@ const routes: Routes = [
   { path: 'management', canActivate: [adminGuard], component: ManagementComponent },
   { path: 'management/events', canActivate: [adminGuard], component: ManagementEventsComponent },
   { path: 'management/news', canActivate: [adminGuard], component: ManagementNewsComponent },
-  { path: 'management/users', canActivate: [adminGuard], component: ManagementUsersComponent }
+  { path: 'management/users', canActivate: [adminGuard], component: ManagementUsersComponent },
+  { path: '**', component: NotFoundComponent }
 ];
 
 @NgModule({

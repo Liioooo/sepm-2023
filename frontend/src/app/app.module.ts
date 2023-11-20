@@ -17,6 +17,7 @@ import { ManagementComponent } from './components/management/management.componen
 import { ManagementEventsComponent } from './components/management/management-events/management-events.component';
 import { ManagementNewsComponent } from './components/management/management-news/management-news.component';
 import { ManagementUsersComponent } from './components/management/management-users/management-users.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { ManagementUsersComponent } from './components/management/management-use
     ManagementComponent,
     ManagementEventsComponent,
     ManagementNewsComponent,
-    ManagementUsersComponent
+    ManagementUsersComponent,
+    NotFoundComponent
   ],
   imports: [
     BrowserModule,
