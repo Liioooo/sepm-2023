@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepr.groupphase.backend.service;
 
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UpdateUserDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserLoginDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserRegisterDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
@@ -62,4 +63,12 @@ public interface UserService extends UserDetailsService {
      * @return the currently authenticated user
      */
     Optional<ApplicationUser> getCurrentlyAuthenticatedUser();
+
+    /**
+     * Update the currently authenticated user.
+     *
+     * @param updateUserDetailDto the new use data
+     * @return the updated user details
+     */
+    ApplicationUser updateAuthenticatedUser(UpdateUserDetailDto updateUserDetailDto);
 }

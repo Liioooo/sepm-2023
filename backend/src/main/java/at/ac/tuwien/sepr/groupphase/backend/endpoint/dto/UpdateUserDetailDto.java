@@ -5,16 +5,20 @@ import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Getter
 @Setter
 @EqualsAndHashCode
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString
-public class UserRegisterDto {
+public class UpdateUserDetailDto {
 
     @NotBlank(message = "Email must be set")
     @Email
@@ -29,11 +33,9 @@ public class UserRegisterDto {
     @Size(max = 255)
     private String lastName;
 
-    @NotBlank(message = "Password must be set")
     @Size(min = 8, max = 255, message = "Password must be at least 8 characters")
     private String password;
 
-    @NotBlank(message = "Confirm Password must be set")
     @Size(min = 8, max = 255)
     private String confirmPassword;
 
@@ -42,6 +44,6 @@ public class UserRegisterDto {
 
     @AssertTrue(message = "Password must match confirm password")
     private boolean getPasswordsMatch() {
-        return password.equals(confirmPassword);
+        return (password == null && confirmPassword == null) || password.equals(confirmPassword);
     }
 }

@@ -1,9 +1,11 @@
 package at.ac.tuwien.sepr.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UpdateUserDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserLoginDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserRegisterDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.UserLocationMapper;
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepr.groupphase.backend.entity.UserLocation;
 import at.ac.tuwien.sepr.groupphase.backend.enums.UserRole;
 import at.ac.tuwien.sepr.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
@@ -120,5 +122,30 @@ public class CustomUserDetailService implements UserService {
         }
         var username = SecurityContextHolder.getContext().getAuthentication().getName();
         return applicationUserRepository.findUserByEmail(username);
+    }
+
+    @Override
+    public ApplicationUser updateAuthenticatedUser(UpdateUserDetailDto updateUserDetailDto) {
+        var applicationUser = getCurrentlyAuthenticatedUser().orElseThrow(() -> new NotFoundException("No user currently logged in"));
+
+        applicationUser.setEmail(updateUserDetailDto.getEmail());
+        applicationUser.setFirstName(updateUserDetailDto.getFirstName());
+        applicationUser.setLastName(updateUserDetailDto.getLastName());
+
+        if (updateUserDetailDto.getPassword() != null) {
+            applicationUser.setPassword(passwordEncoder.encode(updateUserDetailDto.getPassword()));
+        }
+
+        UserLocation location = userLocationMapper.userLocationDtoToUserLocation(updateUserDetailDto.getLocation());
+        if (location == null) {
+            applicationUser.setLocation(null);
+        } else {
+            if (applicationUser.getLocation() != null) {
+                location.setId(applicationUser.getLocation().getId());
+            }
+            applicationUser.setLocation(location);
+        }
+
+        return applicationUserRepository.save(applicationUser);
     }
 }
