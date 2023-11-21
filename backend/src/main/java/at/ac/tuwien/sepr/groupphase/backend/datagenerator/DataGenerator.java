@@ -25,6 +25,8 @@ public abstract class DataGenerator<T> {
         }
     }
 
+    protected abstract List<T> generate();
+
     protected List<T> getTestData() {
         if (!isGenerated) {
             testData = generate();
@@ -33,6 +35,4 @@ public abstract class DataGenerator<T> {
 
         return testData;
     }
-
-    abstract protected List<T> generate();
 }
