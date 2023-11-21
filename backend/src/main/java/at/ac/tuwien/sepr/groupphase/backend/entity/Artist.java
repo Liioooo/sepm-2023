@@ -1,16 +1,20 @@
 package at.ac.tuwien.sepr.groupphase.backend.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -19,21 +23,22 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class UserLocation {
+public class Artist {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 255, nullable = false)
-    private String address;
+    @Column()
+    private String firstname;
 
-    @Column(length = 255, nullable = false)
-    private String postalCode;
+    @Column()
+    private String lastname;
 
-    @Column(length = 255, nullable = false)
-    private String city;
+    @Column()
+    private String fictionalName;
 
-    @Column(length = 255, nullable = false)
-    private String country;
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "artist")
+    private List<Event> events;
+
 }

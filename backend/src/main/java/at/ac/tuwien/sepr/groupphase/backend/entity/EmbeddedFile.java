@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,21 +21,18 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class UserLocation {
-
+public class EmbeddedFile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 255, nullable = false)
-    private String address;
+    @ManyToOne()
+    private ApplicationUser allowedViewer;
 
-    @Column(length = 255, nullable = false)
-    private String postalCode;
+    @Column(nullable = false)
+    private String mimeType;
 
-    @Column(length = 255, nullable = false)
-    private String city;
-
-    @Column(length = 255, nullable = false)
-    private String country;
+    @Column(nullable = false)
+    @Lob
+    private byte[] data;
 }

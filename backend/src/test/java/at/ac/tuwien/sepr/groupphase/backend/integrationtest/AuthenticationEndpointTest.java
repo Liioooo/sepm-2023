@@ -1,7 +1,5 @@
 package at.ac.tuwien.sepr.groupphase.backend.integrationtest;
 
-import at.ac.tuwien.sepr.groupphase.backend.basetest.TestBase;
-import at.ac.tuwien.sepr.groupphase.backend.basetest.TestData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ActiveProfiles({"test", "generateData"})
 @AutoConfigureMockMvc
-public class AuthenticationEndpointTest extends TestBase implements TestData {
+public class AuthenticationEndpointTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -148,6 +147,7 @@ public class AuthenticationEndpointTest extends TestBase implements TestData {
     }
 
     @Test
+    @DirtiesContext
     public void normalAccountLockedAfter5Attempts() throws Exception {
         var requestBody = new HashMap<String, Object>();
         requestBody.put("email", "user2@email.com");
@@ -178,6 +178,7 @@ public class AuthenticationEndpointTest extends TestBase implements TestData {
     }
 
     @Test
+    @DirtiesContext
     public void registerNewAccount() throws Exception {
         var requestBody = new HashMap<String, Object>();
         requestBody.put("email", "newAccount@email.com");

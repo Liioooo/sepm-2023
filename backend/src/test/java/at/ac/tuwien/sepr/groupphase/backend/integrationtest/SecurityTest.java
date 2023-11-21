@@ -1,7 +1,5 @@
 package at.ac.tuwien.sepr.groupphase.backend.integrationtest;
 
-import at.ac.tuwien.sepr.groupphase.backend.basetest.TestBase;
-import at.ac.tuwien.sepr.groupphase.backend.basetest.TestData;
 import jakarta.annotation.security.DeclareRoles;
 import jakarta.annotation.security.DenyAll;
 import jakarta.annotation.security.PermitAll;
@@ -32,7 +30,7 @@ import java.util.List;
 @SpringBootTest
 @ActiveProfiles({"test", "generateData"})
 @AutoConfigureMockMvc
-public class SecurityTest extends TestBase implements TestData {
+public class SecurityTest {
 
     private static final List<Class<?>> mappingAnnotations = Lists.list(
         RequestMapping.class,
