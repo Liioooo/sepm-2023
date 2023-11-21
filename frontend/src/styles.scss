@@ -2,14 +2,24 @@
 @import "bootstrap/scss/mixins";
 @import "bootstrap/scss/variables";
 
+$primary: #011568;
+$secondary: #e94d52;
+
 $theme-colors: map-merge($theme-colors, (
-  "primary": #011568,
-  "secondary": #e94d52,
+  "primary": $primary,
+  "secondary": $secondary,
   "danger": #e94d52,
   "gray": $gray-500,
   "description": $gray-600,
   "light": $gray-200
 ));
+
+$link-color: $primary;
+$link-hover-color: lighten($link-color, 20%);
+$link-decoration: none;
+
+$form-label-color: $gray-600;
+$input-placeholder-color: $gray-600;
 
 @import "bootstrap/scss/bootstrap";
 @import "bootstrap-icons/font/bootstrap-icons";

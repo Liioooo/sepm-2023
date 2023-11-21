@@ -1,54 +1,59 @@
-<div *ngIf="error" class="alert alert-warning alert-dismissible fade show" role="alert">
-  <strong>Authentication problems!</strong> {{ errorMessage }}
-  <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-
 <div class="pt-5">
   <div class="row">
-    <div class="col-md-6 mx-auto">
-      <span class="anchor" id="formLogin"></span>
-
-      <div class="card rounded-0">
-        <div class="card-header">
-          <h3 class="mb-0">Login</h3>
+    <div class="col-md-8 mx-auto">
+      <form class="rounded-4 border-1 border-gray border" [formGroup]="loginForm" (ngSubmit)="loginUser()">
+        <div class="border-bottom border-1 border-gray p-2">
+          <h4 class="mb-0">Login</h4>
         </div>
 
-        <div class="card-body">
-          <form class="form" [formGroup]="loginForm" (ngSubmit)="loginUser()">
-
-            <div class="form-group">
-              <label for="inputUsername">Username</label>
-              <input type="text" name="username" formControlName="username" class="form-control" id="inputUsername"
-                     aria-describedby="usernameHelp" placeholder="Enter username">
-              <div *ngIf="submitted && loginForm.controls.username.errors" class="error">
-                <small class="form-text text-warning" *ngIf="loginForm.controls.username.errors.required">Your username is
-                  required!
-                </small>
-              </div>
+        <div class="p-2">
+          <div class="mb-3">
+            <label for="inputEmail" class="form-label">Email</label>
+            <input type="text" name="username" formControlName="email" class="form-control"
+                   [class.is-invalid]="loginForm.controls.email.touched && loginForm.controls.email.errors"
+                   id="inputEmail"
+                   placeholder="Email">
+            <div class="invalid-feedback" *ngIf="loginForm.controls.email.errors?.required">
+              Your email is required!
             </div>
-
-            <div class="form-group">
-              <label for="password">Password</label>
-              <input type="password" name="password" formControlName="password" class="form-control" id="password"
-                     placeholder="Password">
-              <div *ngIf="submitted && loginForm.controls.password.errors" class="error">
-                <small class="form-text text-warning" *ngIf="loginForm.controls.password.errors.required">Your password
-                  is
-                  required!
-                </small>
-                <small class="form-text text-warning" *ngIf="loginForm.controls.password.errors.minlength">Your password
-                  must be at least 8 characters long!
-                </small>
-              </div>
+            <div class="invalid-feedback" *ngIf="loginForm.controls.email.errors?.email">
+              Your email must be a valid email!
             </div>
+          </div>
 
-            <button type="button" (click)="loginUser()" class="btn btn-success float-right">Login</button>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" name="password" formControlName="password" class="form-control"
+                   [class.is-invalid]="loginForm.controls.password.touched && loginForm.controls.password.errors"
+                   id="password"
+                   placeholder="Password">
+            <div class="invalid-feedback" *ngIf="loginForm.controls.password.errors?.required">
+              Your password is required!
+            </div>
+            <div class="invalid-feedback" *ngIf="loginForm.controls.password.errors?.minlength">
+              Your password must be at least 8 characters long!
+            </div>
+            <div class="mt-2 d-flex gap-1">
+              <p class="m-0">Forgot your password?</p>
+              <button type="button" class="btn btn-link p-0 border-0" (click)="resetPassword()">Click here to reset
+              </button>
+            </div>
+          </div>
 
-          </form>
+          <p *ngIf="error" class="text-danger">{{error}}</p>
+
         </div>
 
+        <div class="d-flex align-items-center justify-content-end p-2 gap-2 border-1 border-top border-gray">
+          <button type="button" class="btn btn-gray">Close</button>
+          <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+
+      </form>
+
+      <div class="text-center mt-3">
+        <p class="text-description mb-1">You don’t have an account yet?</p>
+        <a routerLink="/register">Register here</a>
       </div>
 
     </div>

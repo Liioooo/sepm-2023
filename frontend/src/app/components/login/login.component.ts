@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { AuthRequest } from '../../dtos/auth-request';
+import { UserLoginDto } from '../../dtos/user-login-dto';
 
 
 @Component({
@@ -10,18 +10,14 @@ import { AuthRequest } from '../../dtos/auth-request';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
 
   loginForm: UntypedFormGroup;
-  // After first submission attempt, form validation will start
-  submitted = false;
-  // Error flag
-  error = false;
-  errorMessage = '';
+  error: string;
 
   constructor(private formBuilder: UntypedFormBuilder, private authService: AuthService, private router: Router) {
     this.loginForm = this.formBuilder.group({
-      username: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]]
     });
   }
@@ -30,48 +26,37 @@ export class LoginComponent implements OnInit {
    * Form validation will start after the method is called, additionally an AuthRequest will be sent
    */
   loginUser() {
-    this.submitted = true;
+    this.loginForm.markAllAsTouched();
     if (this.loginForm.valid) {
-      const authRequest: AuthRequest = new AuthRequest(this.loginForm.controls.username.value, this.loginForm.controls.password.value);
-      this.authenticateUser(authRequest);
-    } else {
-      console.log('Invalid input');
+      const loginDto: UserLoginDto = {
+        email: this.loginForm.controls.email.value,
+        password: this.loginForm.controls.password.value
+      };
+      this.authenticateUser(loginDto);
     }
   }
 
   /**
    * Send authentication data to the authService. If the authentication was successfully, the user will be forwarded to the message page
    *
-   * @param authRequest authentication data from the user login form
+   * @param loginDto authentication data from the user login form
    */
-  authenticateUser(authRequest: AuthRequest) {
-    console.log('Try to authenticate user: ' + authRequest.email);
-    this.authService.loginUser(authRequest).subscribe({
+  authenticateUser(loginDto: UserLoginDto) {
+    console.log('Try to authenticate user: ' + loginDto.email);
+    this.authService.loginUser(loginDto).subscribe({
       next: () => {
-        console.log('Successfully logged in user: ' + authRequest.email);
-        this.router.navigate(['/message']);
+        console.log('Successfully logged in user: ' + loginDto.email);
+        this.router.navigate(['/']);
       },
       error: error => {
-        console.log('Could not log in due to:');
-        console.log(error);
-        this.error = true;
-        if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
-        } else {
-          this.errorMessage = error.error;
-        }
+        const parsed = JSON.parse(error.error);
+        this.error = parsed.error;
       }
     });
   }
 
-  /**
-   * Error flag will be deactivated, which clears the error message
-   */
-  vanishError() {
-    this.error = false;
-  }
-
-  ngOnInit() {
+  resetPassword() {
+    // TODO
   }
 
 }

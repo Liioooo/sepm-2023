@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { AuthRequest } from '../dtos/auth-request';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
 import { jwtDecode } from 'jwt-decode';
 import { Globals } from '../global/globals';
+import { UserLoginDto } from '../dtos/user-login-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -19,10 +19,10 @@ export class AuthService {
   /**
    * Login in the user. If it was successful, a valid JWT token will be stored
    *
-   * @param authRequest User data
+   * @param loginDto User data
    */
-  loginUser(authRequest: AuthRequest): Observable<string> {
-    return this.httpClient.post(`${this.authBaseUri}/login`, authRequest, { responseType: 'text' })
+  loginUser(loginDto: UserLoginDto): Observable<string> {
+    return this.httpClient.post(`${this.authBaseUri}/login`, loginDto, { responseType: 'text' })
       .pipe(
         tap((authResponse: string) => this.setToken(authResponse))
       );
