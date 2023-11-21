@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile-overview',
@@ -6,5 +8,20 @@ import { Component } from '@angular/core';
   styleUrls: ['./profile-overview.component.scss']
 })
 export class ProfileOverviewComponent {
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {
+  }
 
+  get username() {
+    return 'TODO: current user name';
+  }
+
+  logoutUser() {
+    if (this.authService.isLoggedIn()) {
+      this.authService.logoutUser();
+      this.router.navigate(['/']);
+    }
+  }
 }
