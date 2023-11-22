@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
 import { jwtDecode } from 'jwt-decode';
 import { Globals } from '../global/globals';
 import { UserLoginDto } from '../dtos/user-login-dto';
+import { UserDetailDto } from '../dtos/user-detail-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,14 @@ export class AuthService {
 
   private authBaseUri: string = this.globals.backendUri + '/authentication';
 
+  private myUserBaseUri: string = this.globals.backendUri + '/my-user';
+
+  private userDataSubject$: BehaviorSubject<UserDetailDto> = new BehaviorSubject<UserDetailDto>(null);
+
   constructor(private httpClient: HttpClient, private globals: Globals) {
+    this.initUserData();
   }
+
 
   /**
    * Login in the user. If it was successful, a valid JWT token will be stored
@@ -24,7 +31,8 @@ export class AuthService {
   loginUser(loginDto: UserLoginDto): Observable<string> {
     return this.httpClient.post(`${this.authBaseUri}/login`, loginDto, { responseType: 'text' })
       .pipe(
-        tap((authResponse: string) => this.setToken(authResponse))
+        tap((authResponse: string) => this.setToken(authResponse)),
+        tap(() => this.fetchUserDetails())
       );
   }
 
@@ -33,24 +41,28 @@ export class AuthService {
    * Check if a valid JWT token is saved in the localStorage
    */
   isLoggedIn() {
-    return !!this.getToken() && (this.getTokenExpirationDate(this.getToken()).valueOf() > new Date().valueOf());
+    return !!this.token && (this.getTokenExpirationDate(this.token).valueOf() > new Date().valueOf());
   }
 
   logoutUser() {
-    console.log('Logout');
     localStorage.removeItem('authToken');
+    this.userDataSubject$.next(null);
   }
 
-  getToken() {
+  get token() {
     return localStorage.getItem('authToken');
+  }
+
+  get userDetails$(): Observable<UserDetailDto> {
+    return this.userDataSubject$.asObservable();
   }
 
   /**
    * Returns the user role based on the current token
    */
   getUserRole() {
-    if (this.getToken() != null) {
-      const decoded: any = jwtDecode(this.getToken());
+    if (this.token != null) {
+      const decoded: any = jwtDecode(this.token);
       const authInfo: string[] = decoded.rol;
       if (authInfo.includes('ROLE_ADMIN')) {
         return 'ADMIN';
@@ -75,6 +87,18 @@ export class AuthService {
     const date = new Date(0);
     date.setUTCSeconds(decoded.exp);
     return date;
+  }
+
+  private initUserData() {
+    if (this.isLoggedIn()) {
+      setTimeout(() => this.fetchUserDetails(), 0);
+    }
+  }
+
+  private fetchUserDetails() {
+    this.httpClient.get<UserDetailDto>(this.myUserBaseUri, { responseType: 'json' }).subscribe(data => {
+      this.userDataSubject$.next(data);
+    });
   }
 
 }

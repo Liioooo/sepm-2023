@@ -14,8 +14,8 @@ export class ProfileOverviewComponent {
   ) {
   }
 
-  get username() {
-    return 'TODO: current user name';
+  get userDetails$() {
+    return this.authService.userDetails$;
   }
 
   logoutUser() {
