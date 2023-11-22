@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../services/user.service';
 import { UserLoginDto } from '../../dtos/user-login-dto';
 
 
@@ -15,7 +15,7 @@ export class LoginComponent {
   loginForm: UntypedFormGroup;
   error: string;
 
-  constructor(private formBuilder: UntypedFormBuilder, private authService: AuthService, private router: Router) {
+  constructor(private formBuilder: UntypedFormBuilder, private userService: UserService, private router: Router) {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]]
@@ -37,13 +37,13 @@ export class LoginComponent {
   }
 
   /**
-   * Send authentication data to the authService. If the authentication was successfully, the user will be forwarded to the message page
+   * Send authentication data to the userService. If the authentication was successfully, the user will be forwarded to the message page
    *
    * @param loginDto authentication data from the user login form
    */
   authenticateUser(loginDto: UserLoginDto) {
     console.log('Try to authenticate user: ' + loginDto.email);
-    this.authService.loginUser(loginDto).subscribe({
+    this.userService.loginUser(loginDto).subscribe({
       next: () => {
         console.log('Successfully logged in user: ' + loginDto.email);
         this.router.navigate(['/']);

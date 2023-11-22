@@ -6,11 +6,12 @@ import { jwtDecode } from 'jwt-decode';
 import { Globals } from '../global/globals';
 import { UserLoginDto } from '../dtos/user-login-dto';
 import { UserDetailDto } from '../dtos/user-detail-dto';
+import { UpdateUserDetailDto } from '../dtos/update-user-detail-dto';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class UserService {
 
   private authBaseUri: string = this.globals.backendUri + '/authentication';
 
@@ -99,6 +100,11 @@ export class AuthService {
     this.httpClient.get<UserDetailDto>(this.myUserBaseUri, { responseType: 'json' }).subscribe(data => {
       this.userDataSubject$.next(data);
     });
+  }
+
+  updateMyUser(user: UpdateUserDetailDto): Observable<UserDetailDto> {
+    return this.httpClient.put<UserDetailDto>(this.myUserBaseUri, user, { responseType: 'json' })
+      .pipe(tap(_user => this.userDataSubject$.next(_user)));
   }
 
 }

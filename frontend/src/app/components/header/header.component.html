@@ -9,13 +9,14 @@
     </button>
     <div [ngbCollapse]="isNavbarCollapsed" class="collapse navbar-collapse" id="mainNavigation">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item me-1 mt-2 mt-lg-0" *ngIf="authService.isLoggedIn()">
+        <li class="nav-item me-1 mt-2 mt-lg-0" *ngIf="userService.isLoggedIn()">
           <a class="btn text-light" routerLink="/news" routerLinkActive="active">News</a>
         </li>
-        <li class="nav-item me-1 mt-2 mt-lg-0" *ngIf="authService.getUserRole() === 'ADMIN'">
+        <li class="nav-item me-1 mt-2 mt-lg-0" *ngIf="userService.getUserRole() === 'ADMIN'">
           <div class="btn-group">
             <a class="btn text-light" routerLink="/management" routerLinkActive="active">Management</a>
-            <div class="btn-group" ngbDropdown role="group" aria-label="Button group with nested dropdown" display="dynamic" placement="bottom-end">
+            <div class="btn-group" ngbDropdown role="group" aria-label="Button group with nested dropdown"
+                 display="dynamic" placement="bottom-end">
               <button type="button" class="btn text-light dropdown-toggle-split" ngbDropdownToggle></button>
               <div class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
                 <a routerLink="/management/events" ngbDropdownItem>Events</a>
@@ -34,10 +35,12 @@
             <button class="btn btn-gray" type="submit">Search</button>
           </div>
         </form>
-        <a class="btn text-light mt-2 mt-lg-0" *ngIf="!authService.isLoggedIn()" routerLink="/login" routerLinkActive="active">
+        <a class="btn text-light mt-2 mt-lg-0" *ngIf="!userService.isLoggedIn()" routerLink="/login"
+           routerLinkActive="active">
           login / register
         </a>
-        <a class="btn text-light mt-2 mt-lg-0" *ngIf="authService.isLoggedIn()" routerLink="/profile" routerLinkActive="active">
+        <a class="btn text-light mt-2 mt-lg-0" *ngIf="userService.isLoggedIn()" routerLink="/profile"
+           routerLinkActive="active">
           <i class="bi bi-person-circle"></i>
           My profile
         </a>

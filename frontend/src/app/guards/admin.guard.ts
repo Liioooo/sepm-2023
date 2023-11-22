@@ -1,16 +1,16 @@
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
+import { UserService } from '../services/user.service';
 import { inject } from '@angular/core';
 
 export const adminGuard: CanActivateFn = () => {
-  const authService = inject(AuthService);
+  const userService = inject(UserService);
   const router = inject(Router);
 
-  if (authService.isLoggedIn() && authService.getUserRole() === 'ADMIN') {
+  if (userService.isLoggedIn() && userService.getUserRole() === 'ADMIN') {
     return true;
   }
 
-  if (!authService.isLoggedIn()) {
+  if (!userService.isLoggedIn()) {
     return router.parseUrl('/login');
   }
 
