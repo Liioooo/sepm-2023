@@ -71,4 +71,6 @@ public interface UserService extends UserDetailsService {
      * @return the updated user details
      */
     ApplicationUser updateAuthenticatedUser(UpdateUserDetailDto updateUserDetailDto);
+
+    void deleteAuthenticatedUser();
 }
