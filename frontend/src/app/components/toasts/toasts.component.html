@@ -1,4 +1,6 @@
 <ngb-toast *ngFor="let toast of toastService.toasts"
            [header]="toast.header" [autohide]="true" [delay]="toast.delay || 5000"
            (hidden)="toastService.remove(toast)" [class]="toast.classname"
->{{ toast.body }}</ngb-toast>
+>
+  <span [innerHTML]="asHtml(toast.body)"></span>
+</ngb-toast>

@@ -22,7 +22,7 @@ export class ToastService {
   }
 
   showSuccess(header: string, body: string, delay: number = 5000) {
-    this._toasts.push({ header, body, delay, classname: 'bg-success' });
+    this._toasts.push({ header, body, delay, classname: 'bg-success text-white' });
   }
 
   showWarning(header: string, body: string, delay: number = 5000) {

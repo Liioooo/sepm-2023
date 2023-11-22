@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ToastService } from '../../services/toast.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-toasts',
@@ -7,6 +8,10 @@ import { ToastService } from '../../services/toast.service';
   styleUrls: ['./toasts.component.scss']
 })
 export class ToastsComponent {
-  constructor(public toastService: ToastService) {
+  constructor(public toastService: ToastService, private domSanitizer: DomSanitizer) {
+  }
+
+  asHtml(content: string) {
+    return this.domSanitizer.bypassSecurityTrustHtml(content);
   }
 }
