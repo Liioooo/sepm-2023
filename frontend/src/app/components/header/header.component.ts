@@ -17,4 +17,8 @@ export class HeaderComponent {
     return this.router.url === '/login' || this.router.url === '/register';
   }
 
+  get userDetails$() {
+    return this.userService.userDetails$;
+  }
+
 }
