@@ -18,6 +18,7 @@ import { ManagementEventsComponent } from './components/management/management-ev
 import { ManagementNewsComponent } from './components/management/management-news/management-news.component';
 import { ManagementUsersComponent } from './components/management/management-users/management-users.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
+import { ProfileSettingsComponent } from './components/profile-settings/profile-settings.component';
 import { ToastsComponent } from './components/toasts/toasts.component';
 
 @NgModule({
@@ -33,8 +34,8 @@ import { ToastsComponent } from './components/toasts/toasts.component';
     ManagementEventsComponent,
     ManagementNewsComponent,
     ManagementUsersComponent,
-    NotFoundComponent
     NotFoundComponent,
+    ProfileSettingsComponent,
     ToastsComponent
   ],
   imports: [

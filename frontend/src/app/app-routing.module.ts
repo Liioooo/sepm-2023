@@ -11,12 +11,14 @@ import { ManagementEventsComponent } from './components/management/management-ev
 import { ManagementNewsComponent } from './components/management/management-news/management-news.component';
 import { ManagementUsersComponent } from './components/management/management-users/management-users.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
+import { ProfileSettingsComponent } from './components/profile-settings/profile-settings.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'news', canActivate: [authGuard], component: NewsListComponent },
   { path: 'profile', canActivate: [authGuard], component: ProfileOverviewComponent },
+  { path: 'profile/settings', canActivate: [authGuard], component: ProfileSettingsComponent },
   { path: 'management', canActivate: [adminGuard], component: ManagementComponent },
   { path: 'management/events', canActivate: [adminGuard], component: ManagementEventsComponent },
   { path: 'management/news', canActivate: [adminGuard], component: ManagementNewsComponent },
