@@ -36,7 +36,7 @@
           </div>
         </form>
         <a class="btn text-light mt-2 mt-lg-0" *ngIf="!userService.isLoggedIn()" routerLink="/login"
-           routerLinkActive="active">
+           [class.active]="isLoginRegister">
           login / register
         </a>
         <a class="btn text-light mt-2 mt-lg-0" *ngIf="userService.isLoggedIn()" routerLink="/profile"
