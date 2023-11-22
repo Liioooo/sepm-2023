@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -9,18 +9,18 @@ import { Router } from '@angular/router';
 })
 export class ProfileOverviewComponent {
   constructor(
-    private authService: AuthService,
+    private userService: UserService,
     private router: Router
   ) {
   }
 
   get userDetails$() {
-    return this.authService.userDetails$;
+    return this.userService.userDetails$;
   }
 
   logoutUser() {
-    if (this.authService.isLoggedIn()) {
-      this.authService.logoutUser();
+    if (this.userService.isLoggedIn()) {
+      this.userService.logoutUser();
       this.router.navigate(['/']);
     }
   }

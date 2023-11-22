@@ -10,7 +10,7 @@ import { UserDetailDto } from '../dtos/user-detail-dto';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class UserService {
 
   private authBaseUri: string = this.globals.backendUri + '/authentication';
 

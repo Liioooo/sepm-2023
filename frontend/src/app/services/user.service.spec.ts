@@ -1,17 +1,17 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AuthService } from './auth.service';
+import { UserService } from './user.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 
-describe('AuthService', () => {
+describe('UserService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [HttpClientTestingModule, RouterTestingModule, ReactiveFormsModule]
   }));
 
   it('should be created', () => {
-    const service: AuthService = TestBed.inject(AuthService);
+    const service: UserService = TestBed.inject(UserService);
     expect(service).toBeTruthy();
   });
 });
