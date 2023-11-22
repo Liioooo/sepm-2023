@@ -1,0 +1,11 @@
+<div class="modal-header">
+  <h4 class="modal-title">Delete Profile</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="dismissModal()"></button>
+</div>
+<div class="modal-body">
+  <p>Are you sure that you want to delete your Profile?</p>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-dark" (click)="dismissModal()">Cancel</button>
+  <button type="button" class="btn btn-danger" (click)="closeModal(true)">Yes</button>
+</div>

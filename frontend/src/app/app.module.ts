@@ -20,6 +20,7 @@ import { ManagementUsersComponent } from './components/management/management-use
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { ProfileSettingsComponent } from './components/profile-settings/profile-settings.component';
 import { ToastsComponent } from './components/toasts/toasts.component';
+import { ConfirmDeleteProfileModalComponent } from './components/modal/confirm-delete-profile-modal/confirm-delete-profile-modal.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { ToastsComponent } from './components/toasts/toasts.component';
     ManagementUsersComponent,
     NotFoundComponent,
     ProfileSettingsComponent,
-    ToastsComponent
+    ToastsComponent,
+    ConfirmDeleteProfileModalComponent
   ],
   imports: [
     BrowserModule,

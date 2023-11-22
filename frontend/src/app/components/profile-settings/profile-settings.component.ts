@@ -10,6 +10,10 @@ import { ErrorFormatterService } from '../../services/error-formatter.service';
 import { ErrorResponseDto } from '../../dtos/error-response-dto';
 import { matchValidator } from '../../validators/match-validator';
 import { Router } from '@angular/router';
+import { MODAL_DISMISSED, ModalService } from '../../services/modal.service';
+import {
+  ConfirmDeleteProfileModalComponent
+} from '../modal/confirm-delete-profile-modal/confirm-delete-profile-modal.component';
 
 @Component({
   selector: 'app-profile-settings',
@@ -24,7 +28,8 @@ export class ProfileSettingsComponent {
     private userService: UserService,
     private toastService: ToastService,
     private errorFormatterService: ErrorFormatterService,
-    private router: Router
+    private router: Router,
+    private modalService: ModalService
   ) {
     this.editAccountForm = this.formBuilder.group<ControlsOf<UpdateUserDetailDto>>({
       firstName: this.formBuilder.control('', [Validators.required]),
@@ -59,8 +64,13 @@ export class ProfileSettingsComponent {
     }
   }
 
-  deleteProfile() {
-    // TODO: Create modal for confirmation
+  async deleteProfile() {
+    const shouldDelete = await this.modalService.showModal(ConfirmDeleteProfileModalComponent, undefined);
+
+    if (shouldDelete === false || shouldDelete === MODAL_DISMISSED) {
+      return;
+    }
+
     this.userService.deleteMyUser().subscribe({
       next: value => {
         this.toastService.showSuccess('Success', 'Delete profile');
