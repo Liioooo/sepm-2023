@@ -9,6 +9,7 @@ import { ToastService } from '../../services/toast.service';
 import { ErrorFormatterService } from '../../services/error-formatter.service';
 import { ErrorResponseDto } from '../../dtos/error-response-dto';
 import { matchValidator } from '../../validators/match-validator';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile-settings',
@@ -22,7 +23,8 @@ export class ProfileSettingsComponent {
     private formBuilder: FormBuilder,
     private userService: UserService,
     private toastService: ToastService,
-    private errorFormatterService: ErrorFormatterService
+    private errorFormatterService: ErrorFormatterService,
+    private router: Router
   ) {
     this.editAccountForm = this.formBuilder.group<ControlsOf<UpdateUserDetailDto>>({
       firstName: this.formBuilder.control('', [Validators.required]),
@@ -55,6 +57,17 @@ export class ProfileSettingsComponent {
           error: err => this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto))
         });
     }
+  }
+
+  deleteProfile() {
+    // TODO: Create modal for confirmation
+    this.userService.deleteMyUser().subscribe({
+      next: value => {
+        this.toastService.showSuccess('Success', 'Delete profile');
+        this.router.navigate(['/']);
+      },
+      error: err => this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto))
+    });
   }
 
   private getUpdateUserDetailDto(): UpdateUserDetailDto {

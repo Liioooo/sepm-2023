@@ -107,4 +107,11 @@ export class UserService {
       .pipe(tap(_user => this.userDataSubject$.next(_user)));
   }
 
+  deleteMyUser(): Observable<void> {
+    return this.httpClient.delete<void>(this.myUserBaseUri, { responseType: 'json' })
+      .pipe(
+        tap(() => this.logoutUser())
+      );
+  }
+
 }
