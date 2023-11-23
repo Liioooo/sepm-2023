@@ -73,7 +73,7 @@ export class ProfileSettingsComponent {
 
     this.userService.deleteMyUser().subscribe({
       next: value => {
-        this.toastService.showSuccess('Success', 'Delete profile');
+        this.toastService.showSuccess('Success', 'Deleted profile');
         this.router.navigate(['/']);
       },
       error: err => this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto))
