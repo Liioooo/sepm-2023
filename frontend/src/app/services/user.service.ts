@@ -37,6 +37,14 @@ export class UserService {
       );
   }
 
+  registerUser(user: UpdateUserDetailDto): Observable<string> {
+    return this.httpClient.post(`${this.authBaseUri}/register`, user, { responseType: 'text' })
+      .pipe(
+        tap((authResponse: string) => this.setToken(authResponse)),
+        tap(() => this.fetchUserDetails())
+      );
+  }
+
 
   /**
    * Check if a valid JWT token is saved in the localStorage

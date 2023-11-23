@@ -36,13 +36,13 @@
           </div>
         </form>
         <a class="btn text-light mt-2 mt-lg-0" *ngIf="!userService.isLoggedIn()" routerLink="/login"
-           routerLinkActive="active">
+           [class.active]="isLoginRegister">
           login / register
         </a>
         <a class="btn text-light mt-2 mt-lg-0" *ngIf="userService.isLoggedIn()" routerLink="/profile"
            routerLinkActive="active">
           <i class="bi bi-person-circle"></i>
-          My profile
+          <span *ngIf="userDetails$ | async as user" class="ms-1">{{ user.firstName }} {{ user.lastName }}</span>
         </a>
       </div>
     </div>
