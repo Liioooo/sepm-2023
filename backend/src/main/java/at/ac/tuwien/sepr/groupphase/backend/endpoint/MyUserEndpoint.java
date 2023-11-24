@@ -7,11 +7,14 @@ import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepr.groupphase.backend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -41,5 +44,13 @@ public class MyUserEndpoint {
     @Operation(summary = "Update details for the currently logged in user")
     public UserDetailDto updateUserDetails(@Valid @RequestBody UpdateUserDetailDto updateUserDetailDto) {
         return applicationUserMapper.applicationUserToUserDetailDto(userService.updateAuthenticatedUser(updateUserDetailDto));
+    }
+
+    @Secured("ROLE_USER")
+    @DeleteMapping()
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete the currently logged in user")
+    public void deleteUser() {
+        userService.deleteAuthenticatedUser();
     }
 }

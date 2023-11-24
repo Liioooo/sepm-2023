@@ -24,6 +24,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { EventsComponent } from './components/events/events.component';
 import { EventItemComponent } from './components/events/event-item/event-item.component';
 import { EventSearchFieldsComponent } from './components/events/event-search-fields/event-search-fields.component';
+import { ConfirmDeleteProfileModalComponent } from './components/modal/confirm-delete-profile-modal/confirm-delete-profile-modal.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { EventSearchFieldsComponent } from './components/events/event-search-fie
     NotFoundComponent,
     ProfileSettingsComponent,
     ToastsComponent,
-    RegisterComponent
+    RegisterComponent,
+    ConfirmDeleteProfileModalComponent
   ],
   imports: [
     BrowserModule,

@@ -148,4 +148,10 @@ public class CustomUserDetailService implements UserService {
 
         return applicationUserRepository.save(applicationUser);
     }
+
+    @Override
+    public void deleteAuthenticatedUser() {
+        var applicationUser = getCurrentlyAuthenticatedUser().orElseThrow(() -> new NotFoundException("No user currently logged in"));
+        applicationUserRepository.delete(applicationUser);
+    }
 }
