@@ -9,7 +9,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
-import java.sql.Timestamp;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 @Profile("generateData")
@@ -42,7 +43,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
         final var events = List.of(
             Event.builder()
                 .title("Guns N' Roses")
-                .date(Timestamp.valueOf("2021-06-09 20:00:00"))
+                .date(OffsetDateTime.of(2021, 6, 9, 20, 0, 0, 0, ZoneOffset.UTC))
                 .seatPrice(99.99f)
                 .standingPrice(69.99f)
                 .eventType(EventType.UNKNOWN)
@@ -51,7 +52,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .build(),
             Event.builder()
                 .title("AC/DC")
-                .date(Timestamp.valueOf("2021-08-10 20:00:00"))
+                .date(OffsetDateTime.of(2021, 8, 10, 20, 0, 0, 0, ZoneOffset.UTC))
                 .seatPrice(79.99f)
                 .standingPrice(59.99f)
                 .eventType(EventType.UNKNOWN)
@@ -60,7 +61,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .build(),
             Event.builder()
                 .title("Rammstein")
-                .date(Timestamp.valueOf("2021-09-11 20:00:00"))
+                .date(OffsetDateTime.of(2021, 9, 11, 20, 0, 0, 0, ZoneOffset.UTC))
                 .seatPrice(180.00f)
                 .standingPrice(150.00f)
                 .eventType(EventType.UNKNOWN)
@@ -69,7 +70,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .build(),
             Event.builder()
                 .title("Lindsey Stirling")
-                .date(Timestamp.valueOf("2021-10-12 20:00:00"))
+                .date(OffsetDateTime.of(2021, 10, 12, 20, 0, 0, 0, ZoneOffset.UTC))
                 .seatPrice(200.00f)
                 .standingPrice(130.00f)
                 .eventType(EventType.UNKNOWN)
@@ -78,7 +79,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .build(),
             Event.builder()
                 .title("Überdosis G'fühl")
-                .date(Timestamp.valueOf("2021-11-13 20:00:00"))
+                .date(OffsetDateTime.of(2021, 11, 13, 20, 0, 0, 0, ZoneOffset.UTC))
                 .seatPrice(30.00f)
                 .standingPrice(20.00f)
                 .eventType(EventType.UNKNOWN)

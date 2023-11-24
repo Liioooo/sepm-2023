@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -30,9 +30,9 @@ public class EventSearchDto {
     @Size(max = 255)
     String location;
 
-    LocalDateTime timeStart;
+    OffsetDateTime timeStart;
 
-    LocalDateTime timeEnd;
+    OffsetDateTime timeEnd;
 
     @PositiveOrZero
     Float priceMax;

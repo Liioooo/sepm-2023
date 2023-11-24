@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 
 @Entity
 @Getter
@@ -36,7 +36,7 @@ public class Event {
     private String title;
 
     @Column(nullable = false)
-    private Timestamp date;
+    private OffsetDateTime date;
 
     @Column(nullable = false, precision = 2)
     private Float seatPrice;

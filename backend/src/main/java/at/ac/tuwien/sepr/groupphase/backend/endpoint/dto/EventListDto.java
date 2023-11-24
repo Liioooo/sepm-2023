@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -19,7 +19,11 @@ public class EventListDto {
 
     private String title;
 
-    private Timestamp date;
+    private OffsetDateTime date;
+
+    private Float seatPrice;
+
+    private Float standingPrice;
 
     private ArtistDetailDto artist;
 
