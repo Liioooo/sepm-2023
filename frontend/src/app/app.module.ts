@@ -21,6 +21,9 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
 import { ProfileSettingsComponent } from './components/profile-settings/profile-settings.component';
 import { ToastsComponent } from './components/toasts/toasts.component';
 import { RegisterComponent } from './components/register/register.component';
+import { EventsComponent } from './components/events/events.component';
+import { EventItemComponent } from './components/events/event-item/event-item.component';
+import { EventSearchFieldsComponent } from './components/events/event-search-fields/event-search-fields.component';
 import { ConfirmDeleteProfileModalComponent } from './components/modal/confirm-delete-profile-modal/confirm-delete-profile-modal.component';
 
 @NgModule({
@@ -32,6 +35,9 @@ import { ConfirmDeleteProfileModalComponent } from './components/modal/confirm-d
     LoginComponent,
     NewsListComponent,
     ProfileOverviewComponent,
+    EventsComponent,
+    EventItemComponent,
+    EventSearchFieldsComponent,
     ManagementComponent,
     ManagementEventsComponent,
     ManagementNewsComponent,

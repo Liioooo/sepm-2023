@@ -1,15 +1,12 @@
 package at.ac.tuwien.sepr.groupphase.backend.entity;
 
-import at.ac.tuwien.sepr.groupphase.backend.enums.EventType;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.OffsetDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -26,7 +23,7 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Event {
+public class Location {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,22 +33,18 @@ public class Event {
     private String title;
 
     @Column(nullable = false)
-    private OffsetDateTime date;
-
-    @Column(nullable = false, precision = 2)
-    private Float seatPrice;
-
-    @Column(nullable = false, precision = 2)
-    private Float standingPrice;
+    private String address;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private EventType eventType;
+    private String postalCode;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Artist artist;
+    @Column(nullable = false)
+    private String city;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Hall hall;
+    @Column(nullable = false)
+    private String country;
+
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "location")
+    private List<Hall> halls;
 
 }
