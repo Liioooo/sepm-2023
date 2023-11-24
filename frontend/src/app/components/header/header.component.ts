@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../services/user.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup } from '@angular/forms';
+import { map, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -17,9 +18,17 @@ export class HeaderComponent {
 
   constructor(
     public userService: UserService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
   }
+
+  get searchTerm$(): Observable<string> {
+    return this.route.queryParams.pipe(
+      map(params => params.search ?? '')
+    );
+  }
+
 
   get isLoginRegister(): boolean {
     return this.router.url === '/login' || this.router.url === '/register';

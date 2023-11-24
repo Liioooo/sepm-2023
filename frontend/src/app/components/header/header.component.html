@@ -32,7 +32,8 @@
         <form class="d-flex search-form" [formGroup]="searchForm" (submit)="search()">
           <div class="input-group me-2">
             <input class="form-control" type="search" placeholder="Search for artists, events, &hellip;"
-                   aria-label="Search for artists, events, and more" formControlName="search">
+                   aria-label="Search for artists, events, and more" formControlName="search"
+                   [value]="searchTerm$ | async">
             <button class="btn btn-gray" type="submit">Search</button>
           </div>
         </form>

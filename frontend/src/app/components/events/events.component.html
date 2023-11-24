@@ -1,15 +1,15 @@
 <div>
-  <div class="col p-5">
+  <div class="col py-4">
     <h2 class="fs-1 fw-bold">Events</h2>
   </div>
   <app-event-search-fields
     class="d-block mb-5"
     (searchChange)="searchAttributes$.next($event)"
   ></app-event-search-fields>
-  <h3 class="fs-4 fw-bold mb-5">Results for NaN</h3>
+  <h3 class="fs-4 fw-bold mb-5" *ngIf="searchTerm$ | async as searchTerm">Results for {{ searchTerm }}</h3>
   <div class="events d-flex flex-column gap-3">
     <app-event-item
-      *ngFor="let event of events"
+      *ngFor="let event of events$ | async"
       [event]="event"
     ></app-event-item>
   </div>
