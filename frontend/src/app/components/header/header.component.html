@@ -11,6 +11,7 @@
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item me-1 mt-2 mt-lg-0" *ngIf="userService.isLoggedIn()">
           <a class="btn text-light" routerLink="/news" routerLinkActive="active">News</a>
+          <a class="btn text-light" routerLink="/events" routerLinkActive="active">Events</a>
         </li>
         <li class="nav-item me-1 mt-2 mt-lg-0" *ngIf="userService.getUserRole() === 'ADMIN'">
           <div class="btn-group">
@@ -28,10 +29,10 @@
         </li>
       </ul>
       <div class="d-flex flex-column flex-lg-row align-items-start">
-        <form class="d-flex search-form">
+        <form class="d-flex search-form" [formGroup]="searchForm" (submit)="search()">
           <div class="input-group me-2">
             <input class="form-control" type="search" placeholder="Search for artists, events, &hellip;"
-                   aria-label="Search for artists, events, and more">
+                   aria-label="Search for artists, events, and more" formControlName="search">
             <button class="btn btn-gray" type="submit">Search</button>
           </div>
         </form>

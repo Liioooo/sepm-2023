@@ -13,6 +13,7 @@ import { ManagementUsersComponent } from './components/management/management-use
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { ProfileSettingsComponent } from './components/profile-settings/profile-settings.component';
 import { RegisterComponent } from './components/register/register.component';
+import { EventsComponent } from './components/events/events.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -21,6 +22,7 @@ const routes: Routes = [
   { path: 'news', canActivate: [authGuard], component: NewsListComponent },
   { path: 'profile', canActivate: [authGuard], component: ProfileOverviewComponent },
   { path: 'profile/settings', canActivate: [authGuard], component: ProfileSettingsComponent },
+  { path: 'events', canActivate: [authGuard], component: EventsComponent },
   { path: 'management', canActivate: [adminGuard], component: ManagementComponent },
   { path: 'management/events', canActivate: [adminGuard], component: ManagementEventsComponent },
   { path: 'management/news', canActivate: [adminGuard], component: ManagementNewsComponent },
