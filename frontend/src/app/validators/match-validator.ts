@@ -5,7 +5,6 @@ export function matchValidator(field1: string, field2: string): ValidatorFn {
     const _field1: string = control.get(field1).value;
     const _field2: string = control.get(field2).value;
 
-    console.log(_field1, _field2);
     if (!_field1 && !_field2) {
       if (control.get(field1).errors) {
         delete control.get(field1).errors['mismatch'];
@@ -16,7 +15,6 @@ export function matchValidator(field1: string, field2: string): ValidatorFn {
       return null;
     }
 
-    console.warn(_field1, _field2);
     if (_field1 !== _field2) {
       control.get(field1).setErrors({ mismatch: true });
     }
