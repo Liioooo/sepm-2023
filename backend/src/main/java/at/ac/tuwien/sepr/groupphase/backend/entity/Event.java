@@ -39,10 +39,10 @@ public class Event {
     private Timestamp date;
 
     @Column(nullable = false, precision = 2)
-    private float seatPrice;
+    private Float seatPrice;
 
     @Column(nullable = false, precision = 2)
-    private float standingPrice;
+    private Float standingPrice;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
