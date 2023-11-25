@@ -34,8 +34,7 @@ public class ArtistDataGenerator extends DataGenerator<Artist> {
                 .lastname("Morris")
                 .build(),
             Artist.builder()
-                .firstname("Thomas")
-                .lastname("Rhett")
+                .fictionalName("Rammstein")
                 .build(),
             Artist.builder()
                 .fictionalName("The Weeknd")
