@@ -17,4 +17,12 @@ export class EventItemComponent implements OnInit {
 
   }
 
+  get price() {
+    return Math.min(this.event.seatPrice, this.event.standingPrice);
+  }
+
+  get artist() {
+    return this.event.artist.fictionalName || (`${this.event.artist.firstname} ${this.event.artist.lastname}`);
+  }
+
 }

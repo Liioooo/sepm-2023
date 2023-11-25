@@ -11,6 +11,8 @@
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item me-1 mt-2 mt-lg-0" *ngIf="userService.isLoggedIn()">
           <a class="btn text-light" routerLink="/news" routerLinkActive="active">News</a>
+        </li>
+        <li class="nav-item me-1 mt-2 mt-lg-0" *ngIf="userService.isLoggedIn()">
           <a class="btn text-light" routerLink="/events" routerLinkActive="active">Events</a>
         </li>
         <li class="nav-item me-1 mt-2 mt-lg-0" *ngIf="userService.getUserRole() === 'ADMIN'">

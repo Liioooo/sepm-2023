@@ -4,40 +4,40 @@
   class="search-form row row-gap-3 row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xxl-4"
 >
   <div class="col">
-    <label for="artist-name" class="form-label"></label>
+    <label for="artist-name" class="form-label">Artist</label>
     <input
       id="artist-name"
       class="form-control"
       type="text"
       formControlName="artist"
-      placeholder="Artist Name"
+      placeholder="Guns N' Roses"
     >
   </div>
 
   <div class="col">
-    <label for="event-title" class="form-label"></label>
+    <label for="event-title" class="form-label">Event title</label>
     <input
       id="event-title"
       class="form-control"
       type="text"
       formControlName="title"
-      placeholder="Event Name"
+      placeholder="AC/DC Tour 2023"
     >
   </div>
 
   <div class="col">
-    <label for="event-location" class="form-label"></label>
+    <label for="event-location" class="form-label">Location</label>
     <input
       id="event-location"
       class="form-control"
       type="text"
       formControlName="location"
-      placeholder="Location"
+      placeholder="Vienna"
     >
   </div>
 
   <div class="col">
-    <label for="artist-time-start" class="form-label"></label>
+    <label for="artist-time-start" class="form-label">Start date</label>
     <input
       id="artist-time-start"
       class="form-control"
@@ -48,7 +48,7 @@
   </div>
 
   <div class="col">
-    <label for="artist-time-end" class="form-label"></label>
+    <label for="artist-time-end" class="form-label">End date</label>
     <input
       id="artist-time-end"
       class="form-control"
@@ -59,14 +59,14 @@
   </div>
 
   <div class="col">
-    <label for="event-price" class="form-label"></label>
+    <label for="event-price" class="form-label">Price</label>
     <input
       id="event-price"
       class="form-control"
       type="number"
       [min]="0"
       formControlName="priceMax"
-      placeholder="Price"
+      placeholder="10"
     >
   </div>
 </form>
