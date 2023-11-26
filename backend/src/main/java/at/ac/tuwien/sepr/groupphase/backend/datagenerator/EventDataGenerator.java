@@ -43,7 +43,8 @@ public class EventDataGenerator extends DataGenerator<Event> {
         final var events = List.of(
             Event.builder()
                 .title("The Eras Tour")
-                .date(OffsetDateTime.of(2023, 12, 9, 20, 0, 0, 0, ZoneOffset.UTC))
+                .startDate(OffsetDateTime.of(2023, 12, 9, 20, 0, 0, 0, ZoneOffset.UTC))
+                .endDate(OffsetDateTime.of(2023, 12, 9, 23, 0, 0, 0, ZoneOffset.UTC))
                 .seatPrice(99.99f)
                 .standingPrice(69.99f)
                 .eventType(EventType.UNKNOWN)
@@ -52,7 +53,8 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .build(),
             Event.builder()
                 .title("Troubadour")
-                .date(OffsetDateTime.of(2023, 12, 10, 20, 0, 0, 0, ZoneOffset.UTC))
+                .startDate(OffsetDateTime.of(2023, 12, 10, 20, 0, 0, 0, ZoneOffset.UTC))
+                .endDate(OffsetDateTime.of(2023, 12, 10, 22, 0, 0, 0, ZoneOffset.UTC))
                 .seatPrice(79.99f)
                 .standingPrice(59.99f)
                 .eventType(EventType.UNKNOWN)
@@ -61,7 +63,8 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .build(),
             Event.builder()
                 .title("Deutschland")
-                .date(OffsetDateTime.of(2024, 2, 11, 20, 0, 0, 0, ZoneOffset.UTC))
+                .startDate(OffsetDateTime.of(2024, 2, 11, 20, 0, 0, 0, ZoneOffset.UTC))
+                .endDate(OffsetDateTime.of(2024, 2, 11, 22, 30, 0, 0, ZoneOffset.UTC))
                 .seatPrice(180.00f)
                 .standingPrice(150.00f)
                 .eventType(EventType.UNKNOWN)
@@ -70,7 +73,8 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .build(),
             Event.builder()
                 .title("Blinding lights")
-                .date(OffsetDateTime.of(2024, 10, 12, 20, 0, 0, 0, ZoneOffset.UTC))
+                .startDate(OffsetDateTime.of(2024, 10, 12, 20, 0, 0, 0, ZoneOffset.UTC))
+                .endDate(OffsetDateTime.of(2024, 10, 12, 23, 30, 0, 0, ZoneOffset.UTC))
                 .seatPrice(200.00f)
                 .standingPrice(130.00f)
                 .eventType(EventType.UNKNOWN)
@@ -79,7 +83,8 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .build(),
             Event.builder()
                 .title("파이팅!!!!!!")
-                .date(OffsetDateTime.of(2024, 11, 13, 20, 0, 0, 0, ZoneOffset.UTC))
+                .startDate(OffsetDateTime.of(2024, 11, 13, 18, 0, 0, 0, ZoneOffset.UTC))
+                .endDate(OffsetDateTime.of(2024, 11, 13, 21, 0, 0, 0, ZoneOffset.UTC))
                 .seatPrice(30.00f)
                 .standingPrice(20.00f)
                 .eventType(EventType.UNKNOWN)

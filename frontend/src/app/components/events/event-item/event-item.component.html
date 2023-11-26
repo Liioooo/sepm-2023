@@ -15,7 +15,8 @@
             {{ event.hall.location.city }},
             {{ event.hall.location.country }}
           </p>
-          <p class="m-0">{{event.date.toLocaleDateString([], { hour: 'numeric', minute: 'numeric' })}}</p>
+          <p class="m-0">{{event.startDate.toLocaleDateString([], { hour: 'numeric', minute: 'numeric' })}}
+            - {{event.endDate.toLocaleDateString([], { hour: 'numeric', minute: 'numeric' })}}</p>
         </div>
       </div>
     </div>
