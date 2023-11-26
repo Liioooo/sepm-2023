@@ -8,7 +8,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateAdapter, NgbDateNativeAdapter, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { httpInterceptorProviders } from './interceptors';
 import { NgOptimizedImage } from '@angular/common';
 import { NewsListComponent } from './components/news-list/news-list.component';
@@ -24,7 +24,9 @@ import { RegisterComponent } from './components/register/register.component';
 import { EventsComponent } from './components/events/events.component';
 import { EventItemComponent } from './components/events/event-item/event-item.component';
 import { EventSearchFieldsComponent } from './components/events/event-search-fields/event-search-fields.component';
-import { ConfirmDeleteProfileModalComponent } from './components/modal/confirm-delete-profile-modal/confirm-delete-profile-modal.component';
+import {
+  ConfirmDeleteProfileModalComponent
+} from './components/modal/confirm-delete-profile-modal/confirm-delete-profile-modal.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +59,10 @@ import { ConfirmDeleteProfileModalComponent } from './components/modal/confirm-d
     FormsModule,
     NgOptimizedImage
   ],
-  providers: [httpInterceptorProviders],
+  providers: [
+    httpInterceptorProviders,
+    { provide: NgbDateAdapter, useClass: NgbDateNativeAdapter }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

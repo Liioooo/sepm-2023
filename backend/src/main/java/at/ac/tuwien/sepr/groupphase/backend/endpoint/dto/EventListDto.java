@@ -19,7 +19,9 @@ public class EventListDto {
 
     private String title;
 
-    private OffsetDateTime date;
+    private OffsetDateTime startDate;
+
+    private OffsetDateTime endDate;
 
     private Float seatPrice;
 

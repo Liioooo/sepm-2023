@@ -4,17 +4,6 @@
   class="search-form row row-gap-3 row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xxl-4"
 >
   <div class="col">
-    <label for="artist-name" class="form-label">Artist</label>
-    <input
-      id="artist-name"
-      class="form-control"
-      type="text"
-      formControlName="artist"
-      placeholder="Guns N' Roses"
-    >
-  </div>
-
-  <div class="col">
     <label for="event-title" class="form-label">Event title</label>
     <input
       id="event-title"
@@ -22,6 +11,17 @@
       type="text"
       formControlName="title"
       placeholder="AC/DC Tour 2023"
+    >
+  </div>
+
+  <div class="col">
+    <label for="artist-name" class="form-label">Artist</label>
+    <input
+      id="artist-name"
+      class="form-control"
+      type="text"
+      formControlName="artist"
+      placeholder="Guns N' Roses"
     >
   </div>
 
@@ -37,28 +37,6 @@
   </div>
 
   <div class="col">
-    <label for="artist-time-start" class="form-label">Start date</label>
-    <input
-      id="artist-time-start"
-      class="form-control"
-      type="date"
-      formControlName="timeStart"
-      placeholder="Date (earliest)"
-    >
-  </div>
-
-  <div class="col">
-    <label for="artist-time-end" class="form-label">End date</label>
-    <input
-      id="artist-time-end"
-      class="form-control"
-      type="date"
-      formControlName="timeEnd"
-      placeholder="Date (latest)"
-    >
-  </div>
-
-  <div class="col">
     <label for="event-price" class="form-label">Price</label>
     <input
       id="event-price"
@@ -68,5 +46,64 @@
       formControlName="priceMax"
       placeholder="10"
     >
+  </div>
+
+  <div class="col">
+    <label for="start-date" class="form-label">From Date</label>
+    <div class="dp-hidden position-absolute">
+      <div class="input-group">
+        <input
+          name="datepicker"
+          class="form-control"
+          ngbDatepicker
+          #datepicker="ngbDatepicker"
+          [autoClose]="'outside'"
+          (dateSelect)="onDateSelection($event)"
+          [displayMonths]="2"
+          [dayTemplate]="t"
+          [startDate]="fromDate!"
+          tabindex="-1"
+        />
+        <ng-template #t let-date let-focused="focused">
+					<span
+            class="custom-day"
+            [class.focused]="focused"
+            [class.range]="isRange(date)"
+            [class.faded]="isHovered(date) || isInside(date)"
+            (mouseenter)="hoveredDate = date"
+            (mouseleave)="hoveredDate = null"
+          >
+						{{ date.day }}
+					</span>
+        </ng-template>
+      </div>
+    </div>
+    <div class="input-group">
+      <input
+        #dpFromDate
+        id="start-date"
+        class="form-control"
+        placeholder="MM/DD/YYYY"
+        name="dpFromDate"
+        [value]="formatDate(fromDate)"
+        (input)="fromDate = validateInput(dpFromDate.value)"
+      />
+      <button class="btn btn-outline-description bi bi-calendar3" (click)="datepicker.toggle()" type="button"></button>
+    </div>
+  </div>
+  <div class="col">
+    <label for="end-date" class="form-label">To Date</label>
+    <div class="input-group">
+      <input
+        #dpToDate
+        id="end-date"
+        class="form-control"
+        placeholder="MM/DD/YYYY"
+        name="dpToDate"
+        [value]="formatDate(toDate)"
+        (input)="toDate = validateInput(dpToDate.value)"
+      />
+      <button class="btn btn-outline-description bi bi-calendar3" (click)="datepicker.toggle()" type="button"></button>
+    </div>
   </div>
 </form>

@@ -1,6 +1,6 @@
-@import "bootstrap/scss/functions";
-@import "bootstrap/scss/mixins";
-@import "bootstrap/scss/variables";
+@import "../../node_modules/bootstrap/scss/functions";
+@import "../../node_modules/bootstrap/scss/mixins";
+@import "../../node_modules/bootstrap/scss/variables";
 
 $primary: #011568;
 $secondary: #e94d52;
@@ -20,6 +20,3 @@ $link-decoration: none;
 
 $form-label-color: $gray-600;
 $input-placeholder-color: $gray-600;
-
-@import "bootstrap/scss/bootstrap";
-@import "bootstrap-icons/font/bootstrap-icons";

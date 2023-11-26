@@ -36,7 +36,10 @@ public class Event {
     private String title;
 
     @Column(nullable = false)
-    private OffsetDateTime date;
+    private OffsetDateTime startDate;
+
+    @Column(nullable = false)
+    private OffsetDateTime endDate;
 
     @Column(nullable = false, precision = 2)
     private Float seatPrice;
