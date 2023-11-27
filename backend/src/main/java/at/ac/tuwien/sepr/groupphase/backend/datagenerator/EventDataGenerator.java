@@ -47,7 +47,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .endDate(OffsetDateTime.of(2023, 12, 9, 23, 0, 0, 0, ZoneOffset.UTC))
                 .seatPrice(99.99f)
                 .standingPrice(69.99f)
-                .eventType(EventType.UNKNOWN)
+                .type(EventType.CONCERT)
                 .artist(artistDataGenerator.getTestData().get(0))
                 .hall(hallDataGenerator.getTestData().get(0))
                 .build(),
@@ -57,7 +57,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .endDate(OffsetDateTime.of(2023, 12, 10, 22, 0, 0, 0, ZoneOffset.UTC))
                 .seatPrice(79.99f)
                 .standingPrice(59.99f)
-                .eventType(EventType.UNKNOWN)
+                .type(EventType.CONCERT)
                 .artist(artistDataGenerator.getTestData().get(1))
                 .hall(hallDataGenerator.getTestData().get(1))
                 .build(),
@@ -67,7 +67,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .endDate(OffsetDateTime.of(2024, 2, 11, 22, 30, 0, 0, ZoneOffset.UTC))
                 .seatPrice(180.00f)
                 .standingPrice(150.00f)
-                .eventType(EventType.UNKNOWN)
+                .type(EventType.CONCERT)
                 .artist(artistDataGenerator.getTestData().get(2))
                 .hall(hallDataGenerator.getTestData().get(2))
                 .build(),
@@ -77,7 +77,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .endDate(OffsetDateTime.of(2024, 10, 12, 23, 30, 0, 0, ZoneOffset.UTC))
                 .seatPrice(200.00f)
                 .standingPrice(130.00f)
-                .eventType(EventType.UNKNOWN)
+                .type(EventType.CONCERT)
                 .artist(artistDataGenerator.getTestData().get(3))
                 .hall(hallDataGenerator.getTestData().get(3))
                 .build(),
@@ -87,7 +87,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .endDate(OffsetDateTime.of(2024, 11, 13, 21, 0, 0, 0, ZoneOffset.UTC))
                 .seatPrice(30.00f)
                 .standingPrice(20.00f)
-                .eventType(EventType.UNKNOWN)
+                .type(EventType.UNKNOWN)
                 .artist(artistDataGenerator.getTestData().get(4))
                 .hall(hallDataGenerator.getTestData().get(4))
                 .build()

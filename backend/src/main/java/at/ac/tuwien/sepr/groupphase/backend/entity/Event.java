@@ -49,7 +49,7 @@ public class Event {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private EventType eventType;
+    private EventType type;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Artist artist;

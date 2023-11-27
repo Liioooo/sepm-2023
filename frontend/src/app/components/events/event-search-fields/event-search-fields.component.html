@@ -1,6 +1,5 @@
 <form
   [formGroup]="form"
-  (input)="handleFormChange()"
   class="search-form row row-gap-3 row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xxl-4"
 >
   <div class="col">
@@ -105,5 +104,29 @@
       />
       <button class="btn btn-outline-description bi bi-calendar3" (click)="datepicker.toggle()" type="button"></button>
     </div>
+  </div>
+
+  <div class="col">
+    <label for="event-type" class="form-label">Event Type</label>
+    <select id="event-type" class="form-select" formControlName="type">
+      <option value="">All</option>
+      <option value="CONCERT">Concert</option>
+      <option value="SHOW">Show</option>
+      <option value="FESTIVAL">Festival</option>
+      <option value="SPORTS">Sports</option>
+      <option value="CULTURE">Culture</option>
+    </select>
+  </div>
+
+  <div class="col">
+    <label for="event-duration" class="form-label">Duration (Hours +/- 1h)</label>
+    <input
+      id="event-duration"
+      class="form-control"
+      type="number"
+      min="0"
+      formControlName="duration"
+      placeholder="2"
+    >
   </div>
 </form>

@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepr.groupphase.backend.endpoint.dto;
 
+import at.ac.tuwien.sepr.groupphase.backend.enums.EventType;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -30,5 +31,7 @@ public class EventListDto {
     private ArtistDetailDto artist;
 
     private HallDetailDto hall;
+
+    private EventType type;
 
 }
