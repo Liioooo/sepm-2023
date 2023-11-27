@@ -1,5 +1,10 @@
 package at.ac.tuwien.sepr.groupphase.backend.enums;
 
 public enum EventType {
-    UNKNOWN
+    UNKNOWN,
+    CONCERT,
+    SHOW,
+    FESTIVAL,
+    SPORTS,
+    CULTURE
 }

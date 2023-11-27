@@ -1,26 +1,24 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { EventSearchDto } from '../../../dtos/event-search-dto';
-import {
-  NgbCalendar,
-  NgbDate,
-  NgbDateAdapter,
-  NgbDateParserFormatter,
-  NgbDateStruct
-} from '@ng-bootstrap/ng-bootstrap';
+import { NgbCalendar, NgbDate, NgbDateAdapter, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { removeEmptyProps } from '../../../utils/removeEmptyProps';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-event-search-fields',
   templateUrl: './event-search-fields.component.html',
   styleUrls: ['./event-search-fields.component.scss']
 })
-export class EventSearchFieldsComponent implements OnInit {
+export class EventSearchFieldsComponent {
 
   public form: FormGroup = new FormGroup({
-    artist: new FormControl(),
-    title: new FormControl(),
-    location: new FormControl(),
-    priceMax: new FormControl()
+    artist: new FormControl(''),
+    title: new FormControl(''),
+    location: new FormControl(''),
+    priceMax: new FormControl(''),
+    type: new FormControl(''),
+    duration: new FormControl('')
   });
 
   hoveredDate: NgbDate | null = null;
@@ -29,10 +27,10 @@ export class EventSearchFieldsComponent implements OnInit {
 
   @Output() searchChange = new EventEmitter<EventSearchDto>();
 
-  constructor(private calendar: NgbCalendar, private dateFormatter: NgbDateParserFormatter, private dateAdapter: NgbDateAdapter<Date>) {
-  }
-
-  ngOnInit() {
+  constructor(private calendar: NgbCalendar, private dateAdapter: NgbDateAdapter<Date>) {
+    this.form.valueChanges.pipe(
+      takeUntilDestroyed()
+    ).subscribe(value => this.handleFormChange(value));
   }
 
   onDateSelection(date: NgbDate) {
@@ -45,7 +43,7 @@ export class EventSearchFieldsComponent implements OnInit {
       this.fromDate = date;
     }
 
-    this.handleFormChange();
+    this.handleFormChange(this.form.value);
   }
 
   isHovered(date: NgbDate) {
@@ -77,19 +75,19 @@ export class EventSearchFieldsComponent implements OnInit {
     return this.dateAdapter.toModel(date)?.toLocaleDateString([], {}) ?? '';
   }
 
-  handleFormChange() {
+  handleFormChange(value: any) {
     if (this.form.invalid)
       return;
 
-    this.form.value.timeStart = this.form.value.timeStart ? new Date(this.form.value.timeStart) : null;
-    this.form.value.timeEnd = this.form.value.timeEnd ? new Date(this.form.value.timeEnd) : null;
+    value.timeStart = value.timeStart ? new Date(this.form.value.timeStart) : null;
+    value.timeEnd = value.timeEnd ? new Date(this.form.value.timeEnd) : null;
 
     const data = {
-      ...this.form.value,
+      ...value,
       timeStart: this.dateAdapter.toModel(this.fromDate),
       timeEnd: this.dateAdapter.toModel(this.toDate)
     };
 
-    this.searchChange.emit(data);
+    this.searchChange.emit(removeEmptyProps(data));
   }
 }
