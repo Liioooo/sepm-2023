@@ -35,6 +35,11 @@ security:
     # 12 hours in milliseconds
     expiration-time: 43200000
 
+files:
+  public-serve-url: /public-files/**
+  public-disk-path: ./public-files/
+  embedded-serve-url: /private-files/**
+
 management:
   server:
     port: 8081
