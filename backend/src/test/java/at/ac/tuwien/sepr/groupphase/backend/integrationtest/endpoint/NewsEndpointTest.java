@@ -53,6 +53,8 @@ public class NewsEndpointTest {
 
 
     private final String API_BASE = "/api/v1/news";
+    private final String API_READ = API_BASE + "/read";
+    private final String API_UNREAD = API_BASE + "/unread";
 
     @Test
     void getSingleNews_whileLoggedInAsKnownUser_showsNewsWithId1() {
@@ -72,11 +74,11 @@ public class NewsEndpointTest {
     }
 
     @Test
-    void getAllNonReadNews_whileLoggedInAsKnownUser_showsNonReadNews() {
+    void getAllUnReadNews_whileLoggedInAsKnownUser_containsReadNews() {
         String username = "user1@email.com";
 
         assertDoesNotThrow(() -> {
-            var result = this.mockMvc.perform(get(API_BASE)
+            var result = this.mockMvc.perform(get(API_UNREAD)
                 .accept(MediaType.APPLICATION_JSON)
                 .with(user(username).roles("USER"))
             ).andExpectAll(
@@ -90,7 +92,6 @@ public class NewsEndpointTest {
 
             assertNotNull(newsIterator);
             assertThat(news).isNotNull();
-
 
             assertThat(news)
                 .extracting(
@@ -113,6 +114,64 @@ public class NewsEndpointTest {
                         "News-Title-3",
                         OffsetDateTime.of(2023, 12, 9, 20, 0, 0, 0, ZoneOffset.UTC),
                         "This is an abstract for News-Title-3"
+                    )
+                );
+        });
+    }
+
+
+    @Test
+    void getAllReadNews_whileLoggedInAsKnownUser_containsReadNews() {
+        String username = "user1@email.com";
+
+        assertDoesNotThrow(() -> {
+            // Read Test-News-1 to mark it as read
+            this.mockMvc.perform(get(API_BASE + "/1")
+                .accept(MediaType.APPLICATION_JSON)
+                .with(user(username).roles("USER"))
+            ).andExpectAll(
+                status().is(200)
+            );
+
+            // Read Test-News-2 to mark it as read
+            this.mockMvc.perform(get(API_BASE + "/2")
+                .accept(MediaType.APPLICATION_JSON)
+                .with(user(username).roles("USER"))
+            ).andExpectAll(
+                status().is(200)
+            );
+
+            // Get the actual List of read News
+            var result = this.mockMvc.perform(get(API_READ)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(user(username).roles("USER"))
+            ).andExpectAll(
+                status().is(200)
+            ).andReturn().getResponse().getContentAsByteArray();
+
+            var newsIterator = objectMapper.readerFor(NewsListDto.class).<NewsListDto>readValues(result);
+
+            List<NewsListDto> news = new ArrayList<>();
+            newsIterator.forEachRemaining(news::add);
+
+            assertNotNull(newsIterator);
+            assertThat(news).isNotNull();
+
+            assertThat(news)
+                .extracting(
+                    NewsListDto::getTitle,
+                    NewsListDto::getPublishDate,
+                    NewsListDto::getOverviewText
+                ).contains(
+                    tuple(
+                        "News-Title-1",
+                        OffsetDateTime.of(2023, 12, 9, 20, 0, 0, 0, ZoneOffset.UTC),
+                        "This is an abstract for News-Title-1"
+                    ),
+                    tuple(
+                        "News-Title-2",
+                        OffsetDateTime.of(2023, 12, 9, 20, 0, 0, 0, ZoneOffset.UTC),
+                        "This is an abstract for News-Title-2"
                     )
                 );
         });

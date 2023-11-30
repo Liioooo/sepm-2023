@@ -29,17 +29,24 @@ public class NewsEndpoint {
     }
 
     @Secured("ROLE_USER")
-    @GetMapping({"id"})
+    @GetMapping({"{id}"})
     @Operation(summary = "Get a single News")
     public NewsDetailDto getSingleNews(@PathVariable long id) {
         return newsService.getSingleNews(id);
     }
 
     @Secured("ROLE_USER")
-    @GetMapping({})
+    @GetMapping({"unread"})
     @Operation(summary = "Get a all non read News")
-    public List<NewsListDto> getAllNonReadNews() {
-        return newsService.getAllNonReadNews();
+    public List<NewsListDto> getAllUnReadNews() {
+        return newsService.getAllUnreadNews();
+    }
+
+    @Secured("ROLE_USER")
+    @GetMapping({"read"})
+    @Operation(summary = "Get a all non read News")
+    public List<NewsListDto> getAllReadNews() {
+        return newsService.getAllReadNews();
     }
 
     @Secured("ROLE_ADMIN")

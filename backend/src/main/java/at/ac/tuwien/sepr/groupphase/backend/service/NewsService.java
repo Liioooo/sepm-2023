@@ -11,5 +11,7 @@ public interface NewsService {
 
     NewsDetailDto getSingleNews(Long id);
 
-    List<NewsListDto> getAllNonReadNews();
+    List<NewsListDto> getAllUnreadNews();
+
+    List<NewsListDto> getAllReadNews();
 }

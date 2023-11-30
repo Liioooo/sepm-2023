@@ -4,6 +4,7 @@ import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.ApiErrorDto;
 import at.ac.tuwien.sepr.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.PublicFileStorageException;
+import at.ac.tuwien.sepr.groupphase.backend.exception.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -61,6 +62,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         logError(error);
         return new ResponseEntity<>(error, error.getHttpStatusCode());
+    }
+
+    @ExceptionHandler(value = {UnauthorizedException.class})
+    protected ResponseEntity<Object> handleUnauthorized(UnauthorizedException ex) {
+        var error = new ApiErrorDto(HttpStatus.UNAUTHORIZED, ex.getMessage());
+
+        logError(error);
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 
     @Override

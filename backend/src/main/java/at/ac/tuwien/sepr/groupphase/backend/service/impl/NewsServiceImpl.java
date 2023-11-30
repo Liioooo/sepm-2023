@@ -8,6 +8,7 @@ import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepr.groupphase.backend.entity.News;
 import at.ac.tuwien.sepr.groupphase.backend.entity.PublicFile;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepr.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepr.groupphase.backend.repository.NewsRepository;
 import at.ac.tuwien.sepr.groupphase.backend.service.NewsService;
 import at.ac.tuwien.sepr.groupphase.backend.service.PublicFileService;
@@ -15,7 +16,6 @@ import at.ac.tuwien.sepr.groupphase.backend.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -44,26 +44,17 @@ public class NewsServiceImpl implements NewsService {
         return newsMapper.toNewsDetailDto(selectedNews);
     }
 
-    /*
     @Override
-    public List<NewsListDto> getAllNonReadNews() {
-        ApplicationUser user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new NotFoundException("No user is currently logged in"));
+    public List<NewsListDto> getAllUnreadNews() {
+        ApplicationUser user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
         return newsRepository.findAllByReadByNotContains(user).stream().map(newsMapper::toNewsListDto).toList();
     }
-     */
+
 
     @Override
-    public List<NewsListDto> getAllNonReadNews() {
-        ApplicationUser user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new NotFoundException("No user is currently logged in"));
-        Collection<News> news = newsRepository.findAllByReadByNotContains(user);
-        List<NewsListDto> dtos = news.stream().map(newsMapper::toNewsListDto).toList();
-        return dtos;
-    }
-
-    private void markAsRead(News news) {
-        ApplicationUser user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new NotFoundException("No user is currently logged in"));
-        news.getReadBy().add(user);
-        newsRepository.save(news);
+    public List<NewsListDto> getAllReadNews() {
+        ApplicationUser user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
+        return user.getReadNews().stream().map(newsMapper::toNewsListDto).toList();
     }
 
     @Override
@@ -72,11 +63,17 @@ public class NewsServiceImpl implements NewsService {
         PublicFile file = publicFileService.storeFile(newsCreateDto.getImage());
 
         News n = News.builder()
-            .author(userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new NotFoundException("No user currently logged in")))
+            .author(userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user currently logged in")))
             .image(file)
             .build();
 
         newsRepository.save(n);
+    }
+
+    private void markAsRead(News news) {
+        ApplicationUser user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new NotFoundException("No user is currently logged in"));
+        news.getReadBy().add(user);
+        newsRepository.save(news);
     }
 
 

@@ -52,6 +52,13 @@ public class NewsDataGenerator extends DataGenerator<News> {
                 .overviewText("This is an abstract for News-Title-3")
                 .text("This is text for News-Title-3")
                 .author(userDataGenerator.getTestData().get(0))
+                .build(),
+            News.builder()
+                .title("News-Title-4")
+                .publishDate(OffsetDateTime.of(2022, 1, 1, 15, 30, 0, 0, ZoneOffset.UTC))
+                .overviewText("This is an abstract for News-Title-4")
+                .text("This is text for News-Title-4")
+                .author(userDataGenerator.getTestData().get(0))
                 .build()
         );
 
