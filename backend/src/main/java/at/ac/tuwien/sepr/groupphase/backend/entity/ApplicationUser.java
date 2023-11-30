@@ -65,7 +65,7 @@ public class ApplicationUser implements UserDetails {
     private UserLocation location;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "allowedViewer")
-    private List<File> files;
+    private List<EmbeddedFile> allowedEmbeddedFiles;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
