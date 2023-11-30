@@ -10,11 +10,14 @@ public interface PublicFileService {
      *
      * @param file the file to store
      * @return Entity of the saved file
+     * @throws at.ac.tuwien.sepr.groupphase.backend.exception.PublicFileStorageException if the file cannot be stored for any reason
      */
     PublicFile storeFile(MultipartFile file);
 
     /**
      * Deletes a file on disk.
+     * Should never be called directly!
+     * It is called automatically by the EntityListener when the PublicFile entity associated with this file is deleted.
      *
      * @param file the file to delete
      */

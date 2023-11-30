@@ -7,6 +7,7 @@ import at.ac.tuwien.sepr.groupphase.backend.repository.PublicFileRepository;
 import at.ac.tuwien.sepr.groupphase.backend.service.PublicFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,6 +31,7 @@ public class PublicFileServiceImpl implements PublicFileService {
     }
 
     @Override
+    @Transactional
     public PublicFile storeFile(MultipartFile file) {
         if (file.isEmpty()) {
             throw new PublicFileStorageException("Failed to store empty file.");
@@ -63,7 +65,7 @@ public class PublicFileServiceImpl implements PublicFileService {
         try {
             Files.delete(filePath);
         } catch (IOException e) {
-            throw new PublicFileStorageException("Failed to delete stored file.");
+            throw new PublicFileStorageException("Failed to delete stored file.", e);
         }
     }
 
