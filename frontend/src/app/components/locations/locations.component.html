@@ -1,0 +1,15 @@
+<div class="mb-4">
+  <div class="col py-4">
+    <h2 class="fs-1 fw-bold">Locations</h2>
+  </div>
+  <app-location-search-fields
+    class="d-block mb-5"
+    (searchChange)="searchAttributes$.next($event)"
+  ></app-location-search-fields>
+  <div class="events d-flex flex-column gap-3">
+    <app-location-item
+      *ngFor="let location of locations$ | async"
+      [location]="location"
+    ></app-location-item>
+  </div>
+</div>

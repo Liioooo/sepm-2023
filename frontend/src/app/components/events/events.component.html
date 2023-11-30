@@ -6,7 +6,8 @@
     class="d-block mb-5"
     (searchChange)="searchAttributes$.next($event)"
   ></app-event-search-fields>
-  <h3 class="fs-4 fw-bold mb-5" *ngIf="searchTerm$ | async as searchTerm">Results for {{ searchTerm }}</h3>
+  <h3 class="fs-4 fw-bold mb-5" *ngIf="searchTerm$ | async as searchTerm">Results for Search: {{ searchTerm }}</h3>
+  <h3 class="fs-4 fw-bold mb-5" *ngIf="location$ | async as location">Results for Location: {{ location.title }}</h3>
   <div class="events d-flex flex-column gap-3">
     <app-event-item
       *ngFor="let event of events$ | async"

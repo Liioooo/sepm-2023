@@ -1,10 +1,10 @@
 package at.ac.tuwien.sepr.groupphase.backend.service;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventCreateDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventListDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventSearchDto;
-import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface EventService {
 
@@ -14,7 +14,7 @@ public interface EventService {
      * @param search the search criteria
      * @return the collection of events
      */
-    Collection<Event> getEventsBySearch(EventSearchDto search);
+    List<EventListDto> getEventsBySearch(EventSearchDto search);
 
 
     /**

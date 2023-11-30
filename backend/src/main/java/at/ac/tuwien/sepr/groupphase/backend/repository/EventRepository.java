@@ -17,12 +17,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         + "  UPPER(e.artist.firstname) LIKE UPPER(CONCAT('%', :#{#search.artist}, '%')) OR "
         + "  UPPER(e.artist.lastname) LIKE UPPER(CONCAT('%', :#{#search.artist}, '%')))) AND "
         + "(:#{#search.title} IS NULL OR UPPER(e.title) LIKE UPPER(CONCAT('%', :#{#search.title}, '%'))) AND "
-        + "(:#{#search.location} IS NULL OR ("
-        + "  UPPER(e.hall.location.title) LIKE UPPER(CONCAT('%', :#{#search.location}, '%')) OR "
-        + "  UPPER(e.hall.location.address) LIKE UPPER(CONCAT('%', :#{#search.location}, '%')) OR "
-        + "  UPPER(e.hall.location.city) LIKE UPPER(CONCAT('%', :#{#search.location}, '%')) OR "
-        + "  UPPER(e.hall.location.postalCode) LIKE UPPER(CONCAT('%', :#{#search.location}, '%')) OR "
-        + "  UPPER(e.hall.location.country) LIKE UPPER(CONCAT('%', :#{#search.location}, '%')))) AND "
+        + "(:#{#search.locationId} IS NULL OR :#{#search.locationId} = e.hall.location.id) AND "
         + "(:#{#search.timeEnd} IS NULL OR e.startDate <= :#{#search.timeEnd}) AND "
         + "(:#{#search.timeStart} IS NULL OR e.endDate >= :#{#search.timeStart}) AND "
         + "(:#{#search.priceMax} IS NULL OR ("
@@ -36,12 +31,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         + "  UPPER(e.artist.fictionalName) LIKE UPPER(CONCAT('%', :#{#search.search}, '%')) OR "
         + "  UPPER(e.artist.firstname) LIKE UPPER(CONCAT('%', :#{#search.search}, '%')) OR "
         + "  UPPER(e.artist.lastname) LIKE UPPER(CONCAT('%', :#{#search.search}, '%')) OR "
-        + "  UPPER(e.title) LIKE UPPER(CONCAT('%', :#{#search.search}, '%')) OR "
-        + "  UPPER(e.hall.location.title) LIKE UPPER(CONCAT('%', :#{#search.search}, '%')) OR "
-        + "  UPPER(e.hall.location.address) LIKE UPPER(CONCAT('%', :#{#search.search}, '%')) OR "
-        + "  UPPER(e.hall.location.city) LIKE UPPER(CONCAT('%', :#{#search.search}, '%')) OR "
-        + "  UPPER(e.hall.location.postalCode) LIKE UPPER(CONCAT('%', :#{#search.search}, '%')) OR "
-        + "  UPPER(e.hall.location.country) LIKE UPPER(CONCAT('%', :#{#search.search}, '%'))))"
+        + "  UPPER(e.title) LIKE UPPER(CONCAT('%', :#{#search.search}, '%'))))"
     )
     Collection<Event> findBySearchCriteria(@Param("search") EventSearchDto search);
 }

@@ -34,27 +34,32 @@ public class HallDataGenerator extends DataGenerator<Hall> {
 
         final var halls = List.of(
             Hall.builder()
-                .name("Wiener Stadthalle")
+                .name("Halle D")
                 .location(locationDataGenerator.getTestData().get(0))
                 .standingCount(500L)
                 .build(),
             Hall.builder()
-                .name("Gasometer")
+                .name("Halle F")
+                .location(locationDataGenerator.getTestData().get(0))
+                .standingCount(200L)
+                .build(),
+            Hall.builder()
+                .name("Halle Gasometer")
                 .location(locationDataGenerator.getTestData().get(1))
                 .standingCount(1234L)
                 .build(),
             Hall.builder()
-                .name("Stadthalle Graz")
+                .name("Halle 1")
                 .location(locationDataGenerator.getTestData().get(2))
                 .standingCount(200L)
                 .build(),
             Hall.builder()
-                .name("Stadthalle Klagenfurt")
+                .name("Halle 1")
                 .location(locationDataGenerator.getTestData().get(3))
                 .standingCount(0L)
                 .build(),
             Hall.builder()
-                .name("Stadthalle Linz")
+                .name("Halle 1")
                 .location(locationDataGenerator.getTestData().get(4))
                 .standingCount(0L)
                 .build()
