@@ -1,6 +1,10 @@
 package at.ac.tuwien.sepr.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.NewsCreateDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.NewsDetailDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.NewsListDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.NewsMapper;
+import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepr.groupphase.backend.entity.News;
 import at.ac.tuwien.sepr.groupphase.backend.entity.PublicFile;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
@@ -11,17 +15,55 @@ import at.ac.tuwien.sepr.groupphase.backend.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.List;
+
 @Service
 public class NewsServiceImpl implements NewsService {
-
-    private final PublicFileService publicFileService;
     private final NewsRepository newsRepository;
+    private final PublicFileService publicFileService;
     private final UserService userService;
+    private final NewsMapper newsMapper;
 
-    public NewsServiceImpl(PublicFileService publicFileService, NewsRepository newsRepository, UserService userService) {
-        this.publicFileService = publicFileService;
+    public NewsServiceImpl(NewsRepository newsRepository, PublicFileService publicFileService, UserService userService,
+                           NewsMapper newsMapper) {
         this.newsRepository = newsRepository;
+        this.publicFileService = publicFileService;
         this.userService = userService;
+        this.newsMapper = newsMapper;
+    }
+
+    @Override
+    @Transactional
+    public NewsDetailDto getSingleNews(Long id) {
+        News selectedNews = newsRepository.findById(id).orElseThrow(() -> new NotFoundException("No news with id %s found".formatted(id)));
+
+        // Mark the selected news as read for the current user:
+        markAsRead(selectedNews);
+
+        return newsMapper.toNewsDetailDto(selectedNews);
+    }
+
+    /*
+    @Override
+    public List<NewsListDto> getAllNonReadNews() {
+        ApplicationUser user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new NotFoundException("No user is currently logged in"));
+        return newsRepository.findAllByReadByNotContains(user).stream().map(newsMapper::toNewsListDto).toList();
+    }
+     */
+
+    @Override
+    public List<NewsListDto> getAllNonReadNews() {
+        ApplicationUser user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new NotFoundException("No user is currently logged in"));
+        Collection<News> news = newsRepository.findAllByReadByNotContains(user);
+        List<NewsListDto> dtos = news.stream().map(newsMapper::toNewsListDto).toList();
+        return dtos;
+    }
+
+    private void markAsRead(News news) {
+        ApplicationUser user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new NotFoundException("No user is currently logged in"));
+        news.getReadBy().add(user);
+        newsRepository.save(news);
     }
 
     @Override
@@ -36,4 +78,6 @@ public class NewsServiceImpl implements NewsService {
 
         newsRepository.save(n);
     }
+
+
 }

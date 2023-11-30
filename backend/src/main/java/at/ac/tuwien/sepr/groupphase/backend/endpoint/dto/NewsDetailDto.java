@@ -20,6 +20,6 @@ public class NewsDetailDto {
     private String text;
     private String overviewText;
     private String authorName;
-    private OffsetDateTime createdDate;
+    private OffsetDateTime publishDate;
     private PublicFile image;
 }

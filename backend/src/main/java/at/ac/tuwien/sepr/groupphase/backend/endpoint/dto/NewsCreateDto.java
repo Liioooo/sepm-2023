@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepr.groupphase.backend.endpoint.dto;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,8 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 @ToString
 public class NewsCreateDto {
     private String title;
-    private String text;
     private String overviewText;
-    @NotNull
+    private String text;
     private MultipartFile image;
 }
