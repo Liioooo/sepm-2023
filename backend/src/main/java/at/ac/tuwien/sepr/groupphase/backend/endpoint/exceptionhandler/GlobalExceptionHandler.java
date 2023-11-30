@@ -3,6 +3,7 @@ package at.ac.tuwien.sepr.groupphase.backend.endpoint.exceptionhandler;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.ApiErrorDto;
 import at.ac.tuwien.sepr.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepr.groupphase.backend.exception.PublicFileStorageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -49,6 +50,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {BadCredentialsException.class})
     protected ResponseEntity<Object> handleBadCredentials(BadCredentialsException ex) {
         var error = new ApiErrorDto(HttpStatus.FORBIDDEN, ex.getMessage());
+
+        logError(error);
+        return new ResponseEntity<>(error, error.getHttpStatusCode());
+    }
+
+    @ExceptionHandler(value = {PublicFileStorageException.class})
+    protected ResponseEntity<Object> handlePublicFileStorageException(PublicFileStorageException ex) {
+        var error = new ApiErrorDto(HttpStatus.INTERNAL_SERVER_ERROR, "File Storage Error: " + ex.getMessage());
 
         logError(error);
         return new ResponseEntity<>(error, error.getHttpStatusCode());
