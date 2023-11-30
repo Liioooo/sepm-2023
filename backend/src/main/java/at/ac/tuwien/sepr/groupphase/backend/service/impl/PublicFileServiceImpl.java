@@ -28,6 +28,7 @@ public class PublicFileServiceImpl implements PublicFileService {
     PublicFileServiceImpl(FilesProperties filesProperties, PublicFileRepository publicFileRepository) {
         this.filesProperties = filesProperties;
         this.publicFileRepository = publicFileRepository;
+        createPublicFilesDirectoryIfNotExists();
     }
 
     @Override
@@ -76,5 +77,15 @@ public class PublicFileServiceImpl implements PublicFileService {
             case MimeTypeUtils.IMAGE_GIF_VALUE -> ".gif";
             default -> "";
         };
+    }
+
+    private void createPublicFilesDirectoryIfNotExists() {
+        try {
+            if (Files.notExists(this.filesProperties.getPublicDiskPath())) {
+                Files.createDirectory(this.filesProperties.getPublicDiskPath());
+            }
+        } catch (IOException e) {
+            throw new PublicFileStorageException("Unable to create directory at publicDiskPath %s".formatted(this.filesProperties.getPublicDiskPath()), e);
+        }
     }
 }

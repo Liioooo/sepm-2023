@@ -4,6 +4,9 @@
 ### Log-Files ###
 log/
 
+### Public-Files ###
+/public-files/
+
 ### Database-Files ###
 /database/
 *.mv.db
