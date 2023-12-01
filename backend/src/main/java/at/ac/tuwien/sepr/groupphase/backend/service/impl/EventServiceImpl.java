@@ -4,6 +4,7 @@ import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventSearchDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepr.groupphase.backend.entity.PublicFile;
+import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepr.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepr.groupphase.backend.service.EventService;
 import at.ac.tuwien.sepr.groupphase.backend.service.PublicFileService;
@@ -38,5 +39,10 @@ public class EventServiceImpl implements EventService {
         if (eventCreateDto.getImage() != null) {
             imageFile = this.publicFileService.storeFile(eventCreateDto.getImage());
         }
+    }
+
+    @Override
+    public Event getEvent(long id) {
+        return eventRepository.findById(id).orElseThrow(() -> new NotFoundException("The event was not found"));
     }
 }
