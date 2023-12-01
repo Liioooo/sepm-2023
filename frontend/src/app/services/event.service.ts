@@ -40,4 +40,14 @@ export class EventService {
       map(convertToDatesInObject)
     );
   }
+
+  /**
+   * Get a single event from the backend
+   * @param id The id of the event to load
+   */
+  getEvent(id: number): Observable<EventDetailDto> {
+    return this.httpClient.get<EventDetailDto>(`${this.baseUri}/${id}`).pipe(
+      map(convertToDatesInObject)
+    );
+  }
 }

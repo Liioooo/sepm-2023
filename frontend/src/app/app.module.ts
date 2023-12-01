@@ -32,6 +32,7 @@ import { LocationItemComponent } from './components/locations/location-item/loca
 import {
   LocationSearchFieldsComponent
 } from './components/locations/location-search-fields/location-search-fields.component';
+import { EventDetailComponent } from './components/events/event-detail/event-detail.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import {
     ConfirmDeleteProfileModalComponent,
     LocationsComponent,
     LocationItemComponent,
-    LocationSearchFieldsComponent
+    LocationSearchFieldsComponent,
+    EventDetailComponent
   ],
   imports: [
     BrowserModule,

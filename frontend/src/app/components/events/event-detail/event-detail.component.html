@@ -1,0 +1,95 @@
+<div class="mb-4" *ngIf="(event$ | async) as event; else loading">
+  <div class="py-5 bg-light">
+    <div class="container">
+      <h1 class="fs-1 fw-bold mb-0">{{ event.title }}</h1>
+      <div class="fs-3 fw-bold mb-0">{{ artistName(event) }}</div>
+    </div>
+  </div>
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-12 col-lg-6">
+        <div
+          class="d-flex align-items-center justify-content-center bg-light rounded-3 p-3 text-description mb-3 fw-bold"
+        >
+          Stage
+        </div>
+        <div *ngIf="event.hall.standingCount > 0" (click)="incrementStanding(event)"
+             class="d-flex align-items-center justify-content-center bg-light rounded-3 p-3 text-description mb-3 fw-bold standing-area"
+        >
+          Standing
+        </div>
+        <div class="d-flex flex-row py-1" *ngFor="let tier of event.hall.tiers">
+          <div class="tier-number d-flex align-items-center text-description">{{ tier.number }}</div>
+          <div class="flex-grow-1 d-flex justify-content-center align-items-center">
+            <button
+              ngbPopover="Row {{ tier.number }}, Seat {{ seat + 1 }}"
+              triggers="mouseenter:mouseleave"
+              class="seat-button me-1"
+              (click)="toggleSeat(tier.number, seat + 1)"
+              [class]="'seat-button me-1 ' + (isSeatSelected(tier.number, seat + 1) ? 'bg-secondary' : '')"
+              *ngFor="let _ of [].constructor(tier.numberOfSeats); let seat = index"
+            ></button>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-6 bg-light rounded-3 p-5 mt-4 mt-lg-0">
+        <h2 class="fw-bold">Select Tickets</h2>
+        <div class="fw-bold">{{ event.startDate.toLocaleDateString() }}</div>
+        <hr>
+        <div class="d-flex flex-row">
+          <div>
+            <div class="fw-bold fs-3">Seats</div>
+            <div class="text-description">{{ event.seatPrice | currency:'EUR' }}</div>
+          </div>
+          <span class="flex-grow-1"></span>
+          <div class="d-flex align-items-center fw-bold fs-3 justify-content-center ticket-control">
+            {{ selectedSeatsLength }}
+          </div>
+        </div>
+        <div class="d-flex flex-row mt-4">
+          <div>
+            <div class="fw-bold fs-3">Standing</div>
+            <div class="text-description">{{ event.standingPrice | currency:'EUR' }}</div>
+          </div>
+          <span class="flex-grow-1"></span>
+          <div class="d-flex align-items-center fw-bold fs-3 justify-content-center ticket-control">
+            <button class="amount-button d-flex align-items-center justify-content-center"
+                    [disabled]="selectedStanding === 0"
+                    (click)="decrementStanding()">
+              <i class="bi bi-dash"></i>
+            </button>
+            <span class="mx-2">{{ selectedStanding }}</span>
+            <button class="amount-button d-flex align-items-center justify-content-center"
+                    (click)="incrementStanding(event)">
+              <i class="bi bi-plus"></i>
+            </button>
+          </div>
+        </div>
+        <div class="d-flex flex-row mt-4">
+          <div class="fw-bold fs-3">Total</div>
+          <span class="flex-grow-1"></span>
+          <div class="fw-bold fs-3">
+            {{ getTotalPrice(event) | currency:'EUR' }}
+          </div>
+        </div>
+        <hr>
+        <p class="text-description">
+          You can reserve the selected tickets for now and buy them until 30 minutes before this event starts. If not,
+          the reservation expires and is no longer valid.
+        </p>
+        <div class="text-center">
+          <a href="#">Reserve Tickets for now</a>
+        </div>
+        <div class="text-center">
+          <button class="btn btn-primary mt-4" (click)="buyTickets()">Buy Tickets</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="container text-center fs-2">
+    Loading event data &hellip;
+  </div>
+</ng-template>

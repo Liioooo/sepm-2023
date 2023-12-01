@@ -23,4 +23,12 @@ public interface EventService {
      * @param eventCreateDto data of the event to create
      */
     void createEvent(EventCreateDto eventCreateDto);
+
+    /**
+     * Get a single event by id.
+     *
+     * @param id the id of the event
+     * @return the Event entity
+     */
+    Event getEvent(long id);
 }

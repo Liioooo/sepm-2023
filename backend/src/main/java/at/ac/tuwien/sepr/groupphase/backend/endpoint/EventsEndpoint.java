@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepr.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventCreateDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventListDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventSearchDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.PageDto;
@@ -11,8 +12,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +34,14 @@ public class EventsEndpoint {
         this.eventService = eventService;
         this.eventMapper = eventMapper;
         this.pageMapper = pageMapper;
+    }
+
+    @PermitAll
+    @GetMapping("{id}")
+    @Operation(summary = "Get event by id")
+    @Transactional
+    public EventDetailDto getEvent(@PathVariable long id) {
+        return eventMapper.toEventDetailDto(eventService.getEvent(id));
     }
 
     @PermitAll
