@@ -3,8 +3,8 @@ package at.ac.tuwien.sepr.groupphase.backend.service;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventListDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventSearchDto;
-
-import java.util.List;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.PageDto;
+import org.springframework.data.domain.Pageable;
 
 public interface EventService {
 
@@ -14,7 +14,7 @@ public interface EventService {
      * @param search the search criteria
      * @return the collection of events
      */
-    List<EventListDto> getEventsBySearch(EventSearchDto search);
+    PageDto<EventListDto> getEventsBySearch(EventSearchDto search, Pageable pageable);
 
 
     /**

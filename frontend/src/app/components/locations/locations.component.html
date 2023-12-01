@@ -12,4 +12,12 @@
       [location]="location"
     ></app-location-item>
   </div>
+  <div class="d-flex justify-content-center mt-4">
+    <ngb-pagination
+      [(page)]="pageableState.currentPage"
+      [pageSize]="pageableState.pageSize"
+      [collectionSize]="pageableState.totalElements"
+      (pageChange)="onPageChange($event)"
+    ></ngb-pagination>
+  </div>
 </div>

@@ -2,12 +2,12 @@ package at.ac.tuwien.sepr.groupphase.backend.repository;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventSearchDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.Collection;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
@@ -32,6 +32,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         + "  UPPER(e.artist.firstname) LIKE UPPER(CONCAT('%', :#{#search.search}, '%')) OR "
         + "  UPPER(e.artist.lastname) LIKE UPPER(CONCAT('%', :#{#search.search}, '%')) OR "
         + "  UPPER(e.title) LIKE UPPER(CONCAT('%', :#{#search.search}, '%'))))"
+        + "  ORDER BY e.title ASC"
     )
-    Collection<Event> findBySearchCriteria(@Param("search") EventSearchDto search);
+    Page<Event> findBySearchCriteria(@Param("search") EventSearchDto search, Pageable pageable);
 }
