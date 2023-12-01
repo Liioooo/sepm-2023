@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepr.groupphase.backend.integrationtest.endpoint;
 
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.NewsDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.NewsListDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepr.groupphase.backend.entity.UserLocation;
@@ -58,6 +59,40 @@ public class NewsEndpointTest {
 
     @Test
     void getSingleNews_whileLoggedInAsKnownUser_showsNewsWithId1() {
+        String username = "user1@email.com";
+
+        assertDoesNotThrow(() -> {
+            // Read Test-News-1 to mark it as read
+            var result = this.mockMvc.perform(get(API_BASE + "/1")
+                .accept(MediaType.APPLICATION_JSON)
+                .with(user(username).roles("USER"))
+            ).andExpectAll(
+                status().is(200)
+            ).andReturn().getResponse().getContentAsByteArray();
+
+            NewsDetailDto news = objectMapper.readerFor(NewsDetailDto.class).<NewsDetailDto>readValues(result).next();
+
+            assertThat(news).isNotNull();
+
+            assertThat(news)
+                .extracting(
+                    NewsDetailDto::getId,
+                    NewsDetailDto::getTitle,
+                    NewsDetailDto::getText,
+                    NewsDetailDto::getOverviewText,
+                    NewsDetailDto::getPublishDate,
+                    NewsDetailDto::getAuthorName
+                ).containsExactly(
+                    1L,
+                    "News-Title-1",
+                    "This is text for News-Title-1",
+                    "This is an abstract for News-Title-1",
+                    OffsetDateTime.of(2023, 12, 9, 20, 0, 0, 0, ZoneOffset.UTC),
+                    "Admin, Admin"
+                );
+
+        });
+
         ApplicationUser expectedAuthor = ApplicationUser.builder()
             .email("admin@email.com")
             .firstName("Admin")
