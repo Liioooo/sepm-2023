@@ -1,8 +1,8 @@
 package at.ac.tuwien.sepr.groupphase.backend.service;
 
-import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.LocationDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.LocationSearchDto;
-import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.PageDto;
+import at.ac.tuwien.sepr.groupphase.backend.entity.Location;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface LocationService {
@@ -13,7 +13,7 @@ public interface LocationService {
      * @param search the search criteria
      * @return the collection of locations
      */
-    PageDto<LocationDetailDto> getLocationsBySearch(LocationSearchDto search, Pageable pageable);
+    Page<Location> getLocationsBySearch(LocationSearchDto search, Pageable pageable);
 
     /**
      * Finds a location by id.
@@ -21,5 +21,5 @@ public interface LocationService {
      * @param id of the location to get
      * @return the location
      */
-    LocationDetailDto getLocationById(long id);
+    Location getLocationById(long id);
 }

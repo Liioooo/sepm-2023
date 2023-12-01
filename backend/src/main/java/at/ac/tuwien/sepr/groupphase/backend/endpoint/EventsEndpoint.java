@@ -4,6 +4,8 @@ import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventListDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventSearchDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.PageDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.EventMapper;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.PageMapper;
 import at.ac.tuwien.sepr.groupphase.backend.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.security.PermitAll;
@@ -21,15 +23,23 @@ public class EventsEndpoint {
 
     private final EventService eventService;
 
-    public EventsEndpoint(EventService eventService) {
+    private final EventMapper eventMapper;
+
+    private final PageMapper pageMapper;
+
+    public EventsEndpoint(EventService eventService, EventMapper eventMapper, PageMapper pageMapper) {
         this.eventService = eventService;
+        this.eventMapper = eventMapper;
+        this.pageMapper = pageMapper;
     }
 
     @PermitAll
     @GetMapping()
     @Operation(summary = "Get events, optionally filter by search criteria")
     public PageDto<EventListDto> getEvents(EventSearchDto search, Pageable pageable) {
-        return eventService.getEventsBySearch(search, pageable);
+        return this.pageMapper.toPageDtoListMapper(
+            eventService.getEventsBySearch(search, pageable), this.eventMapper::eventCollectionToEventListDtoCollection
+        );
     }
 
     @Secured("ROLE_ADMIN")
