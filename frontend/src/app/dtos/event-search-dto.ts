@@ -2,7 +2,7 @@ export interface EventSearchDto {
   search?: string;
   artist?: string;
   title?: string;
-  location?: string;
+  locationId?: string;
   timeStart?: Date;
   timeEnd?: Date;
   priceMax?: number;

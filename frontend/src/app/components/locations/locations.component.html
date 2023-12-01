@@ -1,18 +1,16 @@
 <div class="mb-4">
   <div class="col py-4">
-    <h2 class="fs-1 fw-bold">Events</h2>
+    <h2 class="fs-1 fw-bold">Locations</h2>
   </div>
-  <app-event-search-fields
+  <app-location-search-fields
     class="d-block mb-5"
     (searchChange)="searchAttributes$.next($event)"
-  ></app-event-search-fields>
-  <h3 class="fs-4 fw-bold mb-5" *ngIf="searchTerm$ | async as searchTerm">Results for Search: {{ searchTerm }}</h3>
-  <h3 class="fs-4 fw-bold mb-5" *ngIf="location$ | async as location">Results for Location: {{ location.title }}</h3>
+  ></app-location-search-fields>
   <div class="events d-flex flex-column gap-3">
-    <app-event-item
-      *ngFor="let event of events$ | async"
-      [event]="event"
-    ></app-event-item>
+    <app-location-item
+      *ngFor="let location of locations$ | async"
+      [location]="location"
+    ></app-location-item>
   </div>
   <div class="d-flex justify-content-center mt-4">
     <ngb-pagination
@@ -23,4 +21,3 @@
     ></ngb-pagination>
   </div>
 </div>
-

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { EventDetailDto } from '../../../dtos/event-detail-dto';
 
 @Component({
@@ -6,16 +6,9 @@ import { EventDetailDto } from '../../../dtos/event-detail-dto';
   templateUrl: './event-item.component.html',
   styleUrls: ['./event-item.component.scss']
 })
-export class EventItemComponent implements OnInit {
+export class EventItemComponent {
 
   @Input() event!: EventDetailDto;
-
-  constructor() {
-  }
-
-  ngOnInit() {
-
-  }
 
   get price() {
     return Math.min(this.event.seatPrice, this.event.standingPrice);

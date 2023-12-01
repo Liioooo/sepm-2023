@@ -27,6 +27,11 @@ import { EventSearchFieldsComponent } from './components/events/event-search-fie
 import {
   ConfirmDeleteProfileModalComponent
 } from './components/modal/confirm-delete-profile-modal/confirm-delete-profile-modal.component';
+import { LocationsComponent } from './components/locations/locations.component';
+import { LocationItemComponent } from './components/locations/location-item/location-item.component';
+import {
+  LocationSearchFieldsComponent
+} from './components/locations/location-search-fields/location-search-fields.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +53,10 @@ import {
     ProfileSettingsComponent,
     ToastsComponent,
     RegisterComponent,
-    ConfirmDeleteProfileModalComponent
+    ConfirmDeleteProfileModalComponent,
+    LocationsComponent,
+    LocationItemComponent,
+    LocationSearchFieldsComponent
   ],
   imports: [
     BrowserModule,
