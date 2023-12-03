@@ -55,7 +55,7 @@ export class ResetPasswordComponent {
       next: () => {
         console.log('Successfully reset password');
         this.toastService.showSuccess('Success', 'Password has been set successfully, you can now login with your new password.');
-        this.router.navigate(['/login']);
+        this.router.navigate(['/login'], { replaceUrl: true });
       },
       error: err => {
         this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto));
