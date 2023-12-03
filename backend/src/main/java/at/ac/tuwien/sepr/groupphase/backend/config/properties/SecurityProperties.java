@@ -49,4 +49,8 @@ public class SecurityProperties {
         return jwt.getExpirationTime();
     }
 
+    public Long getPasswordResetExpirationTime() {
+        return jwt.getPasswordResetExpirationTime();
+    }
+
 }
