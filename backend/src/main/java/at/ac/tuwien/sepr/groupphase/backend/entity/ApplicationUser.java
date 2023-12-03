@@ -1,15 +1,18 @@
 package at.ac.tuwien.sepr.groupphase.backend.entity;
 
+import at.ac.tuwien.sepr.groupphase.backend.entity.listener.ApplicationUserListener;
 import at.ac.tuwien.sepr.groupphase.backend.enums.UserRole;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
@@ -25,6 +28,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -33,6 +37,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@EntityListeners(ApplicationUserListener.class)
 public class ApplicationUser implements UserDetails {
 
     @Id
@@ -67,6 +72,12 @@ public class ApplicationUser implements UserDetails {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "allowedViewer")
     private List<EmbeddedFile> allowedEmbeddedFiles;
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "readBy")
+    private Set<News> readNews;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
+    private Set<News> authoredNews;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     private List<Order> orders;
