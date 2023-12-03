@@ -1,109 +1,111 @@
-<div class="mt-5">
-  <a class="btn btn-outline-dark" routerLink="/profile">
-    <i class="bi bi-chevron-left"></i>
-    To the profile overview
-  </a>
-  <h1 class="mt-1">Profile Settings</h1>
-  <form class="row" [formGroup]="editAccountForm" (ngSubmit)="updateProfile()">
-    <fieldset class="col-12 col-lg-6">
-      <legend>Personal Information</legend>
-      <div class="mb-3">
-        <label for="firstName" class="form-label">First Name *</label>
-        <input type="text" name="firstName" formControlName="firstName" class="form-control"
-               [class.is-invalid]="editAccountForm.controls.firstName.touched && editAccountForm.controls.firstName.errors"
-               id="firstName"
-               placeholder="John">
-        <div class="invalid-feedback" *ngIf="editAccountForm.controls.firstName.errors?.required">
-          Your first name is required!
+<div class="container">
+  <div class="mt-5">
+    <a class="btn btn-outline-dark" routerLink="/profile">
+      <i class="bi bi-chevron-left"></i>
+      To the profile overview
+    </a>
+    <h1 class="mt-1">Profile Settings</h1>
+    <form class="row" [formGroup]="editAccountForm" (ngSubmit)="updateProfile()">
+      <fieldset class="col-12 col-lg-6">
+        <legend>Personal Information</legend>
+        <div class="mb-3">
+          <label for="firstName" class="form-label">First Name *</label>
+          <input type="text" name="firstName" formControlName="firstName" class="form-control"
+                 [class.is-invalid]="editAccountForm.controls.firstName.touched && editAccountForm.controls.firstName.errors"
+                 id="firstName"
+                 placeholder="John">
+          <div class="invalid-feedback" *ngIf="editAccountForm.controls.firstName.errors?.required">
+            Your first name is required!
+          </div>
         </div>
+        <div class="mb-3">
+          <label for="lastName" class="form-label">Last Name *</label>
+          <input type="text" name="lastName" formControlName="lastName" class="form-control"
+                 [class.is-invalid]="editAccountForm.controls.lastName.touched && editAccountForm.controls.lastName.errors"
+                 id="lastName"
+                 placeholder="Doe">
+          <div class="invalid-feedback" *ngIf="editAccountForm.controls.lastName.errors?.required">
+            Your last name is required!
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="inputEmail" class="form-label">Email *</label>
+          <input type="text" name="email" formControlName="email" class="form-control"
+                 [class.is-invalid]="editAccountForm.controls.email.touched && editAccountForm.controls.email.errors"
+                 id="inputEmail"
+                 placeholder="john.doe@email.com">
+          <div class="invalid-feedback" *ngIf="editAccountForm.controls.email.errors?.required">
+            Your email is required!
+          </div>
+          <div class="invalid-feedback" *ngIf="editAccountForm.controls.email.errors?.email">
+            Your email must be a valid email!
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="inputPassword" class="form-label">New Password</label>
+          <input type="password" name="password" formControlName="password" class="form-control"
+                 [class.is-invalid]="editAccountForm.controls.password.touched && editAccountForm.controls.password.errors"
+                 id="inputPassword"
+                 placeholder="*****">
+          <div class="invalid-feedback" *ngIf="editAccountForm.controls.password.errors?.minlength">
+            Your password must be at least 8 characters long!
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="inputConfirmPassword" class="form-label">Repeat New Password</label>
+          <input type="password" name="confirmPassword" formControlName="confirmPassword" class="form-control"
+                 [class.is-invalid]="editAccountForm.controls.confirmPassword.touched && editAccountForm.controls.confirmPassword.errors"
+                 id="inputConfirmPassword"
+                 placeholder="*****">
+          <div class="invalid-feedback" *ngIf="editAccountForm.controls.confirmPassword.errors?.mismatch">
+            Your passwords do not match.
+          </div>
+        </div>
+      </fieldset>
+      <fieldset class="col-12 col-lg-6" formGroupName="location">
+        <legend>Billing Address</legend>
+        <div class="mb-3">
+          <label for="inputAddress" class="form-label">Address</label>
+          <input type="text" name="address" formControlName="address" class="form-control"
+                 [class.is-invalid]="editAccountForm.controls.location.controls.address.touched && editAccountForm.controls.location.controls.address.errors"
+                 id="inputAddress"
+                 placeholder="Street 15/2">
+          <div class="invalid-feedback" *ngIf="editAccountForm.controls.location.controls.address.errors?.required">
+            Your email is required!
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-lg-6 mb-3">
+            <label for="inputPostalCode" class="form-label">Postal Code</label>
+            <input type="text" name="postalCode" formControlName="postalCode" class="form-control"
+                   [class.is-invalid]="editAccountForm.controls.location.controls.postalCode.touched && editAccountForm.controls.location.controls.postalCode.errors"
+                   id="inputPostalCode"
+                   placeholder="1060">
+          </div>
+          <div class="col-12 col-lg-6 mb-3">
+            <label for="inputCity" class="form-label">City</label>
+            <input type="text" name="city" formControlName="city" class="form-control"
+                   [class.is-invalid]="editAccountForm.controls.location.controls.city.touched && editAccountForm.controls.location.controls.city.errors"
+                   id="inputCity"
+                   placeholder="Vienna">
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="inputCountry" class="form-label">Country</label>
+          <input type="text" name="country" formControlName="country" class="form-control"
+                 [class.is-invalid]="editAccountForm.controls.location.controls.country.touched && editAccountForm.controls.location.controls.country.errors"
+                 id="inputCountry"
+                 placeholder="Austria">
+        </div>
+      </fieldset>
+      <div class="d-flex justify-content-between mb-5">
+        <button type="button" class="btn btn-danger" (click)="deleteProfile()">
+          Delete Profile
+        </button>
+        <button type="submit" class="btn btn-primary">
+          Save Changes
+        </button>
       </div>
-      <div class="mb-3">
-        <label for="lastName" class="form-label">Last Name *</label>
-        <input type="text" name="lastName" formControlName="lastName" class="form-control"
-               [class.is-invalid]="editAccountForm.controls.lastName.touched && editAccountForm.controls.lastName.errors"
-               id="lastName"
-               placeholder="Doe">
-        <div class="invalid-feedback" *ngIf="editAccountForm.controls.lastName.errors?.required">
-          Your last name is required!
-        </div>
-      </div>
-      <div class="mb-3">
-        <label for="inputEmail" class="form-label">Email *</label>
-        <input type="text" name="email" formControlName="email" class="form-control"
-               [class.is-invalid]="editAccountForm.controls.email.touched && editAccountForm.controls.email.errors"
-               id="inputEmail"
-               placeholder="john.doe@email.com">
-        <div class="invalid-feedback" *ngIf="editAccountForm.controls.email.errors?.required">
-          Your email is required!
-        </div>
-        <div class="invalid-feedback" *ngIf="editAccountForm.controls.email.errors?.email">
-          Your email must be a valid email!
-        </div>
-      </div>
-      <div class="mb-3">
-        <label for="inputPassword" class="form-label">New Password</label>
-        <input type="password" name="password" formControlName="password" class="form-control"
-               [class.is-invalid]="editAccountForm.controls.password.touched && editAccountForm.controls.password.errors"
-               id="inputPassword"
-               placeholder="*****">
-        <div class="invalid-feedback" *ngIf="editAccountForm.controls.password.errors?.minlength">
-          Your password must be at least 8 characters long!
-        </div>
-      </div>
-      <div class="mb-3">
-        <label for="inputConfirmPassword" class="form-label">Repeat New Password</label>
-        <input type="password" name="confirmPassword" formControlName="confirmPassword" class="form-control"
-               [class.is-invalid]="editAccountForm.controls.confirmPassword.touched && editAccountForm.controls.confirmPassword.errors"
-               id="inputConfirmPassword"
-               placeholder="*****">
-        <div class="invalid-feedback" *ngIf="editAccountForm.controls.confirmPassword.errors?.mismatch">
-          Your passwords do not match.
-        </div>
-      </div>
-    </fieldset>
-    <fieldset class="col-12 col-lg-6" formGroupName="location">
-      <legend>Billing Address</legend>
-      <div class="mb-3">
-        <label for="inputAddress" class="form-label">Address</label>
-        <input type="text" name="address" formControlName="address" class="form-control"
-               [class.is-invalid]="editAccountForm.controls.location.controls.address.touched && editAccountForm.controls.location.controls.address.errors"
-               id="inputAddress"
-               placeholder="Street 15/2">
-        <div class="invalid-feedback" *ngIf="editAccountForm.controls.location.controls.address.errors?.required">
-          Your email is required!
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-12 col-lg-6 mb-3">
-          <label for="inputPostalCode" class="form-label">Postal Code</label>
-          <input type="text" name="postalCode" formControlName="postalCode" class="form-control"
-                 [class.is-invalid]="editAccountForm.controls.location.controls.postalCode.touched && editAccountForm.controls.location.controls.postalCode.errors"
-                 id="inputPostalCode"
-                 placeholder="1060">
-        </div>
-        <div class="col-12 col-lg-6 mb-3">
-          <label for="inputCity" class="form-label">City</label>
-          <input type="text" name="city" formControlName="city" class="form-control"
-                 [class.is-invalid]="editAccountForm.controls.location.controls.city.touched && editAccountForm.controls.location.controls.city.errors"
-                 id="inputCity"
-                 placeholder="Vienna">
-        </div>
-      </div>
-      <div class="mb-3">
-        <label for="inputCountry" class="form-label">Country</label>
-        <input type="text" name="country" formControlName="country" class="form-control"
-               [class.is-invalid]="editAccountForm.controls.location.controls.country.touched && editAccountForm.controls.location.controls.country.errors"
-               id="inputCountry"
-               placeholder="Austria">
-      </div>
-    </fieldset>
-    <div class="d-flex justify-content-between mb-5">
-      <button type="button" class="btn btn-danger text-white" (click)="deleteProfile()">
-        Delete Profile
-      </button>
-      <button type="submit" class="btn btn-primary">
-        Save Changes
-      </button>
-    </div>
-  </form>
+    </form>
+  </div>
 </div>

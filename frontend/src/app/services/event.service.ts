@@ -7,6 +7,8 @@ import { EventDetailDto } from '../dtos/event-detail-dto';
 import { convertToDatesInObject } from '../utils/convertToDatesInObject';
 import { convertFromDatesInObject } from '../utils/convertFromDatesInObject';
 import { removeNullOrUndefinedProps } from '../utils/removeNullOrUndefinedProps';
+import { PageableRequest } from '../types/pageable-request';
+import { PageDto } from '../dtos/page-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -22,11 +24,29 @@ export class EventService {
    * Get Events from backend, optionally filtered by search parameters
    *
    * @param search Optional: Search by parameters in EventSearchDto
+   * @param pageable Optional: Pageable data
    */
-  getEvents(search: EventSearchDto | null): Observable<EventDetailDto[]> {
-    return this.httpClient.get<EventDetailDto[]>(this.baseUri, {
-      params: search ? convertFromDatesInObject(removeNullOrUndefinedProps(search as { [key: string]: string })) : {}
+  getEvents(search: EventSearchDto | null, pageable?: PageableRequest): Observable<PageDto<EventDetailDto>> {
+    const searchParams = search ? convertFromDatesInObject(removeNullOrUndefinedProps(search as {
+      [key: string]: string
+    })) : {};
+
+    return this.httpClient.get<PageDto<EventDetailDto>>(this.baseUri, {
+      params: {
+        ...searchParams,
+        ...pageable
+      }
     }).pipe(
+      map(convertToDatesInObject)
+    );
+  }
+
+  /**
+   * Get a single event from the backend
+   * @param id The id of the event to load
+   */
+  getEvent(id: number): Observable<EventDetailDto> {
+    return this.httpClient.get<EventDetailDto>(`${this.baseUri}/${id}`).pipe(
       map(convertToDatesInObject)
     );
   }

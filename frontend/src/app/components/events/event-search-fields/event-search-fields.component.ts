@@ -15,7 +15,6 @@ export class EventSearchFieldsComponent {
   public form: FormGroup = new FormGroup({
     artist: new FormControl(''),
     title: new FormControl(''),
-    location: new FormControl(''),
     priceMax: new FormControl(''),
     type: new FormControl(''),
     duration: new FormControl('')

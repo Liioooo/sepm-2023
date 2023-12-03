@@ -29,8 +29,7 @@ public class EventSearchDto {
     @Size(max = 255)
     String title;
 
-    @Size(max = 255)
-    String location;
+    Long locationId;
 
     OffsetDateTime timeStart;
 

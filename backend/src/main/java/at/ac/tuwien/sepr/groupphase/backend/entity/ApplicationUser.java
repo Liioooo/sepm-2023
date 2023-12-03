@@ -73,6 +73,9 @@ public class ApplicationUser implements UserDetails {
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "readBy")
     private Set<News> readNews;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    private List<Order> orders;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (role == UserRole.ROLE_ADMIN) {

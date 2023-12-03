@@ -43,4 +43,6 @@ public class Hall {
     @ManyToOne(fetch = FetchType.EAGER)
     private Location location;
 
+    @OneToMany(mappedBy = "hall")
+    private List<Tier> tiers;
 }

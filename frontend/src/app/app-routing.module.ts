@@ -14,12 +14,16 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
 import { ProfileSettingsComponent } from './components/profile-settings/profile-settings.component';
 import { RegisterComponent } from './components/register/register.component';
 import { EventsComponent } from './components/events/events.component';
+import { EventDetailComponent } from './components/events/event-detail/event-detail.component';
+import { LocationsComponent } from './components/locations/locations.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'events', component: EventsComponent },
+  { path: 'events/:id', component: EventDetailComponent },
+  { path: 'locations', component: LocationsComponent },
   { path: 'news', canActivate: [authGuard], component: NewsListComponent },
   { path: 'profile', canActivate: [authGuard], component: ProfileOverviewComponent },
   { path: 'profile/settings', canActivate: [authGuard], component: ProfileSettingsComponent },

@@ -10,6 +10,7 @@
         </div>
         <div class="text-description">
           <p class="m-0">
+            {{ event.hall.name }},
             {{ event.hall.location.title }},
             {{ event.hall.location.address }},
             {{ event.hall.location.city }},
@@ -22,7 +23,7 @@
     </div>
     <div>
       <p class="mt-2 mt-md-0 mb-1">From {{ price | currency:'EUR' }}</p>
-      <button class="btn btn-outline-primary flex-shrink-0 w-100">Buy Ticket</button>
+      <a routerLink="{{event.id}}" class="btn btn-outline-primary flex-shrink-0 w-100">Buy Ticket</a>
     </div>
   </div>
 </div>
