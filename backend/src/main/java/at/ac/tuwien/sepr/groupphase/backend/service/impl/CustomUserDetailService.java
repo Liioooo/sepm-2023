@@ -173,7 +173,7 @@ public class CustomUserDetailService implements UserService {
     public void sendPasswordResetEmail(EmailResetDto emailResetDto) {
         var mailBody = "<h1>Reset your password</h1>\n"
             + "<p>Please click the following link to reset your password: "
-            + "<a href=\"http://localhost:4200/reset-password?token=%s\">Reset Password</a></p>";
+            + "<a href=\"http://localhost:4200/#/reset-password?token=%s\">Reset Password</a></p>";
 
         try {
             var user = loadUserByUsername(emailResetDto.getEmail());

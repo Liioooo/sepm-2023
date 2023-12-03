@@ -36,8 +36,9 @@
               </div>
               <div class="mt-2 d-flex gap-1">
                 <p class="m-0">Forgot your password?</p>
-                <button type="button" class="btn btn-link p-0 border-0" (click)="resetPassword()">Click here to reset
-                </button>
+                <a class="p-0 border-0" routerLink="/request-password-reset">
+                  Click here to reset
+                </a>
               </div>
             </div>
           </div>
@@ -52,7 +53,6 @@
           <p class="text-description mb-1">You don’t have an account yet?</p>
           <a routerLink="/register">Register here</a>
         </div>
-
       </div>
     </div>
   </div>
