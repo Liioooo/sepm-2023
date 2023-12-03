@@ -7,6 +7,8 @@ import { Globals } from '../global/globals';
 import { UserLoginDto } from '../dtos/user-login-dto';
 import { UserDetailDto } from '../dtos/user-detail-dto';
 import { UpdateUserDetailDto } from '../dtos/update-user-detail-dto';
+import { EmailResetDto } from '../dtos/email-reset-dto';
+import { ResetPasswordDto } from '../dtos/reset-password-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -45,6 +47,13 @@ export class UserService {
       );
   }
 
+  sendPasswordResetEmail(emailResetDto: EmailResetDto): Observable<void> {
+    return this.httpClient.post<void>(`${this.authBaseUri}/send-password-reset-email`, emailResetDto, { responseType: 'json' });
+  }
+
+  resetPassword(resetPasswordDto: ResetPasswordDto): Observable<void> {
+    return this.httpClient.post<void>(`${this.authBaseUri}/reset-password`, resetPasswordDto, { responseType: 'json' });
+  }
 
   /**
    * Check if a valid JWT token is saved in the localStorage

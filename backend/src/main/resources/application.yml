@@ -21,6 +21,18 @@ spring:
     # is disabled since it breaks the principle of least astonishment and leads to bad performance. To learn more,
     # follow this link: https://bit.ly/2LaX9ku
     open-in-view: false
+  mail:
+    host: smtp.freesmtpservers.com
+    port: 25
+    username:
+    password:
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+            required: false
   data:
     web:
       sort:
@@ -41,6 +53,8 @@ security:
     audience: secure-app
     # 12 hours in milliseconds
     expiration-time: 43200000
+    # 1 hour in milliseconds
+    password-reset-expiration-time: 3600000
 
 files:
   public-serve-url: /public-files/**

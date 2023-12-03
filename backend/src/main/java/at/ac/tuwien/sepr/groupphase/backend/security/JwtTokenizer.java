@@ -31,4 +31,17 @@ public class JwtTokenizer {
             .compact();
         return securityProperties.getAuthTokenPrefix() + token;
     }
+
+    public String getPasswordResetToken(Long userId) {
+        byte[] signingKey = securityProperties.getJwtSecret().getBytes();
+        return Jwts.builder()
+            .signWith(Keys.hmacShaKeyFor(signingKey), SignatureAlgorithm.HS512)
+            .setHeaderParam("typ", securityProperties.getJwtType())
+            .setIssuer(securityProperties.getJwtIssuer())
+            .setAudience(securityProperties.getJwtAudience())
+            .setSubject("password-reset")
+            .setExpiration(new Date(System.currentTimeMillis() + securityProperties.getPasswordResetExpirationTime()))
+            .claim("userId", userId)
+            .compact();
+    }
 }

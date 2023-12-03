@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepr.groupphase.backend.service;
 
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EmailResetDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.ResetPasswordDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UpdateUserDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserLoginDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserRegisterDto;
@@ -76,4 +78,18 @@ public interface UserService extends UserDetailsService {
      * Delete the currently authenticated user.
      */
     void deleteAuthenticatedUser();
+
+    /**
+     * Sends a password reset email to the user, if the user exists.
+     *
+     * @param emailResetDto a DTO with the email address of the user
+     */
+    void sendPasswordResetEmail(EmailResetDto emailResetDto);
+
+    /**
+     * Sets the password of the user to the new provided password, if the token is valid.
+     *
+     * @param resetPasswordDto a DTO with the reset token and the new password
+     */
+    void resetPassword(ResetPasswordDto resetPasswordDto);
 }

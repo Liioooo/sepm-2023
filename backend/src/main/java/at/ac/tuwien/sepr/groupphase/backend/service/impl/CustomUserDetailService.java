@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepr.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EmailResetDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.ResetPasswordDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UpdateUserDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserLoginDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserRegisterDto;
@@ -11,7 +13,10 @@ import at.ac.tuwien.sepr.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepr.groupphase.backend.repository.ApplicationUserRepository;
 import at.ac.tuwien.sepr.groupphase.backend.security.JwtTokenizer;
+import at.ac.tuwien.sepr.groupphase.backend.security.JwtVerifier;
+import at.ac.tuwien.sepr.groupphase.backend.service.EmailService;
 import at.ac.tuwien.sepr.groupphase.backend.service.UserService;
+import io.jsonwebtoken.JwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,14 +40,23 @@ public class CustomUserDetailService implements UserService {
     private final ApplicationUserRepository applicationUserRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenizer jwtTokenizer;
+    private final JwtVerifier jwtVerifier;
     private final UserLocationMapper userLocationMapper;
+    private final EmailService emailService;
 
     @Autowired
-    public CustomUserDetailService(ApplicationUserRepository applicationUserRepository, PasswordEncoder passwordEncoder, JwtTokenizer jwtTokenizer, UserLocationMapper userLocationMapper) {
+    public CustomUserDetailService(ApplicationUserRepository applicationUserRepository,
+                                   PasswordEncoder passwordEncoder,
+                                   JwtTokenizer jwtTokenizer,
+                                   UserLocationMapper userLocationMapper,
+                                   EmailService emailService,
+                                   JwtVerifier jwtVerifier) {
         this.applicationUserRepository = applicationUserRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenizer = jwtTokenizer;
+        this.jwtVerifier = jwtVerifier;
         this.userLocationMapper = userLocationMapper;
+        this.emailService = emailService;
     }
 
     @Override
@@ -153,5 +167,37 @@ public class CustomUserDetailService implements UserService {
     public void deleteAuthenticatedUser() {
         var applicationUser = getCurrentlyAuthenticatedUser().orElseThrow(() -> new NotFoundException("No user currently logged in"));
         applicationUserRepository.delete(applicationUser);
+    }
+
+    @Override
+    public void sendPasswordResetEmail(EmailResetDto emailResetDto) {
+        var mailBody = "<h1>Reset your password</h1>\n"
+            + "<p>Please click the following link to reset your password: "
+            + "<a href=\"http://localhost:4200/#/reset-password?token=%s\">Reset Password</a></p>";
+
+        try {
+            var user = loadUserByUsername(emailResetDto.getEmail());
+
+            var token = jwtTokenizer.getPasswordResetToken(user.getId());
+            this.emailService.sendSimpleMail(
+                emailResetDto.getEmail(),
+                "Password Reset",
+                mailBody.formatted(token)
+            );
+        } catch (UsernameNotFoundException e) {
+            LOGGER.info("User with email {} not found", emailResetDto.getEmail());
+        }
+    }
+
+    @Override
+    public void resetPassword(ResetPasswordDto resetPasswordDto) throws JwtException {
+        var userId = jwtVerifier.getUserIdFromPasswordResetToken(resetPasswordDto.getToken());
+        var user = applicationUserRepository.findById(userId).orElseThrow(() -> new NotFoundException("No user with id %s found".formatted(userId)));
+
+        user.setLocked(false);
+        user.setFailedAuths(0);
+        user.setPassword(passwordEncoder.encode(resetPasswordDto.getNewPassword()));
+
+        applicationUserRepository.save(user);
     }
 }

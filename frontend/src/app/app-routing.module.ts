@@ -16,10 +16,14 @@ import { RegisterComponent } from './components/register/register.component';
 import { EventsComponent } from './components/events/events.component';
 import { EventDetailComponent } from './components/events/event-detail/event-detail.component';
 import { LocationsComponent } from './components/locations/locations.component';
+import { RequestPasswordResetComponent } from './components/request-password-reset/request-password-reset.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'request-password-reset', component: RequestPasswordResetComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'events', component: EventsComponent },
   { path: 'events/:id', component: EventDetailComponent },

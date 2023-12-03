@@ -57,8 +57,4 @@ export class LoginComponent {
     });
   }
 
-  resetPassword() {
-    // TODO
-  }
-
 }

@@ -38,5 +38,6 @@ public class SecurityPropertiesConfig {
         private String issuer;
         private String audience;
         private Long expirationTime;
+        private Long passwordResetExpirationTime;
     }
 }

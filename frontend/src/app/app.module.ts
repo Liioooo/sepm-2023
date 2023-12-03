@@ -33,6 +33,8 @@ import {
   LocationSearchFieldsComponent
 } from './components/locations/location-search-fields/location-search-fields.component';
 import { EventDetailComponent } from './components/events/event-detail/event-detail.component';
+import { RequestPasswordResetComponent } from './components/request-password-reset/request-password-reset.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +43,8 @@ import { EventDetailComponent } from './components/events/event-detail/event-det
     FooterComponent,
     HomeComponent,
     LoginComponent,
+    RequestPasswordResetComponent,
+    ResetPasswordComponent,
     NewsListComponent,
     ProfileOverviewComponent,
     EventsComponent,
