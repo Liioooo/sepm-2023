@@ -29,7 +29,7 @@ export class ResetPasswordComponent {
   ) {
     this.form = this.formBuilder.group<ControlsOf<Partial<ResetPasswordDto>>>({
       newPassword: this.formBuilder.control('', [Validators.required, Validators.minLength(8)]),
-      confirmPassword: this.formBuilder.control('', [Validators.required]),
+      confirmPassword: this.formBuilder.control('', [Validators.required])
     }, {
       validators: matchValidator('confirmPassword', 'newPassword')
     });
