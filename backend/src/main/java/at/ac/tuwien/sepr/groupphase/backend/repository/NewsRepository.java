@@ -11,4 +11,6 @@ import java.util.Collection;
 public interface NewsRepository extends JpaRepository<News, Long> {
     //Page<News> test();
     Collection<News> findAllByReadByNotContains(ApplicationUser user);
+
+    Collection<News> findAllByTitleContains(String title);
 }

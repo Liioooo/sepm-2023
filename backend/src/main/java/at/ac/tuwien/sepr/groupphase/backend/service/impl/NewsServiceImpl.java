@@ -16,6 +16,7 @@ import at.ac.tuwien.sepr.groupphase.backend.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Service
@@ -45,6 +46,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
+    @Transactional
     public List<NewsListDto> getAllUnreadNews() {
         ApplicationUser user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
         return newsRepository.findAllByReadByNotContains(user).stream().map(newsMapper::toNewsListDto).toList();
@@ -52,6 +54,7 @@ public class NewsServiceImpl implements NewsService {
 
 
     @Override
+    @Transactional
     public List<NewsListDto> getAllReadNews() {
         ApplicationUser user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
         return user.getReadNews().stream().map(newsMapper::toNewsListDto).toList();
@@ -60,11 +63,18 @@ public class NewsServiceImpl implements NewsService {
     @Override
     @Transactional
     public void createNews(NewsCreateDto newsCreateDto) {
-        PublicFile file = publicFileService.storeFile(newsCreateDto.getImage());
+        PublicFile imageFile = new PublicFile();
+        if (newsCreateDto.getImage() != null) {
+            imageFile = publicFileService.storeFile(newsCreateDto.getImage());
+        }
 
         News n = News.builder()
+            .title(newsCreateDto.getTitle())
+            .overviewText(newsCreateDto.getOverviewText())
+            .text(newsCreateDto.getText())
+            .publishDate(OffsetDateTime.now())
             .author(userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user currently logged in")))
-            .image(file)
+            .image(imageFile)
             .build();
 
         newsRepository.save(n);

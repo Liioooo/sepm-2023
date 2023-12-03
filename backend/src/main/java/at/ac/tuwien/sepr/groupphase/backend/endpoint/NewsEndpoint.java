@@ -52,9 +52,8 @@ public class NewsEndpoint {
     @Secured("ROLE_ADMIN")
     @PostMapping()
     @Operation(summary = "Creates a new news-article")
-    public void createNews(@Valid @ModelAttribute NewsCreateDto eventCreateDto) {
-        newsService.createNews(eventCreateDto);
-        // Just for testing file upload...
+    public void createNews(@Valid @ModelAttribute NewsCreateDto newsCreateDto) {
+        newsService.createNews(newsCreateDto);
     }
 
 
