@@ -7,6 +7,7 @@ import { ErrorResponseDto } from '../../dtos/error-response-dto';
 import { ToastService } from '../../services/toast.service';
 import { ErrorFormatterService } from '../../services/error-formatter.service';
 import { ResetPasswordDto } from '../../dtos/reset-password-dto';
+import { matchValidator } from '../../validators/match-validator';
 
 @Component({
   selector: 'app-reset-password',
@@ -27,7 +28,10 @@ export class ResetPasswordComponent {
     private errorFormatterService: ErrorFormatterService
   ) {
     this.form = this.formBuilder.group<ControlsOf<Partial<ResetPasswordDto>>>({
-      newPassword: this.formBuilder.control('', [Validators.required, Validators.minLength(8)])
+      newPassword: this.formBuilder.control('', [Validators.required, Validators.minLength(8)]),
+      confirmPassword: this.formBuilder.control('', [Validators.required]),
+    }, {
+      validators: matchValidator('confirmPassword', 'newPassword')
     });
   }
 
