@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -72,18 +73,29 @@ public class NewsEndpointTest {
             null
         );
 
+        MockMultipartFile imageFile = new MockMultipartFile(
+            "image",                   // parameter name matching the NewsCreateDto field
+            "image.jpg",               // original filename
+            MediaType.IMAGE_JPEG_VALUE, // media type
+            "image content".getBytes() // content as byte array (replace with your image content)
+        );
+
         assertDoesNotThrow(() -> {
             // Read Test-News-1 to mark it as read
-            var result = this.mockMvc.perform(MockMvcRequestBuilders.post(API_BASE)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writer().withDefaultPrettyPrinter().writeValueAsString(toCreate))
+
+            var result = this.mockMvc.perform(MockMvcRequestBuilders.multipart(API_BASE)
+                .file(imageFile) // Attach the image file
+                .param("title", toCreate.getTitle()) // Set parameters from NewsCreateDto
+                .param("overviewText", toCreate.getOverviewText())
+                .param("text", toCreate.getText())
                 .with(user(username).roles("ADMIN"))
             ).andExpect(
-                status().isOk()
+                status().isCreated()
             ).andReturn().getResponse().getContentAsByteArray();
 
+
             // Check if newly created News-Article in a Database
-            Collection<News> selectedNews = newsRepository.findAllByTitleContains(toCreate.getTitle());
+            Collection<News> selectedNews = newsRepository.findAllByTitleContains("create-test-title");
 
             assertAll(() -> {
                 assertNotNull(selectedNews);
