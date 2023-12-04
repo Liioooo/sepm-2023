@@ -110,6 +110,8 @@ export class UserService {
   private initUserData() {
     if (this.isLoggedIn()) {
       setTimeout(() => this.fetchUserDetails(), 0);
+    } else {
+      this.logoutUser();
     }
   }
 
