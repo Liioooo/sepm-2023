@@ -27,6 +27,7 @@ import { EventSearchFieldsComponent } from './components/events/event-search-fie
 import {
   ConfirmDeleteProfileModalComponent
 } from './components/modal/confirm-delete-profile-modal/confirm-delete-profile-modal.component';
+import { PiechartComponent } from './components/home/piechart/piechart.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import {
     ProfileSettingsComponent,
     ToastsComponent,
     RegisterComponent,
-    ConfirmDeleteProfileModalComponent
+    ConfirmDeleteProfileModalComponent,
+    PiechartComponent
   ],
   imports: [
     BrowserModule,
