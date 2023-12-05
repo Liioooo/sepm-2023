@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import {Component, Input} from '@angular/core';
+import {NewsListDto} from "../../../dtos/news-list-dto";
 
 @Component({
   selector: 'app-news-list-item',
@@ -6,5 +7,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./news-list-item.component.scss']
 })
 export class NewsListItemComponent {
+
+  @Input() news!: NewsListDto;
 
 }

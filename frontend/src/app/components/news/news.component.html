@@ -1,1 +1,31 @@
-<p>news works!</p>
+<div class="container">
+  <div class="mb-4">
+    <div class="col py-4">
+      <h2 class="fs-1 fw-bold">News</h2>
+    </div>
+    <div class="btn-group" role="group">
+      <button type="button" class="btn btn-outline-dark"
+              [class.active]="selectedRequestType === NewsReqType.Unread"
+              (click)="setRequestType(NewsReqType.Unread)">Unread
+      </button>
+      <button type="button" class="btn btn-outline-dark"
+              [class.active]="selectedRequestType === NewsReqType.Read"
+              (click)="setRequestType(NewsReqType.Read)">Read
+      </button>
+    </div>
+    <div class="news d-flex flex-column gap-3">
+      <app-news-list-item
+        *ngFor="let news of newsList$ | async"
+        [news]="news"
+      ></app-news-list-item>
+    </div>
+    <div class="d-flex justify-content-center mt-4">
+      <ngb-pagination
+        [(page)]="pageableState.currentPage"
+        [pageSize]="pageableState.pageSize"
+        [collectionSize]="pageableState.totalElements"
+        (pageChange)="onPageChange($event)"
+      ></ngb-pagination>
+    </div>
+  </div>
+</div>
