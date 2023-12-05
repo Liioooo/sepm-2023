@@ -3,7 +3,7 @@
     <div class="col py-4">
       <h2 class="fs-1 fw-bold">News</h2>
     </div>
-    <div class="btn-group" role="group">
+    <div class="btn-group" role="group" *ngIf="selectedRequestType$ | async as selectedRequestType">
       <button type="button" class="btn btn-outline-dark"
               [class.active]="selectedRequestType === NewsReqType.Unread"
               (click)="setRequestType(NewsReqType.Unread)">Unread

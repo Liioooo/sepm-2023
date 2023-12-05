@@ -1,4 +1,5 @@
+// eslint-disable-next-line no-shadow
 export enum NewsReqType {
-  Unread = 0,
-  Read = 1
+  Unread = 'unread',
+  Read = 'read'
 }

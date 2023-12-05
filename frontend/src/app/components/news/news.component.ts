@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { BehaviorSubject, distinctUntilChanged, map, merge, Observable, switchMap } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, switchMap } from 'rxjs';
 import { NewsListDto } from '../../dtos/news-list-dto';
 import { DEFAULT_PAGEABLE_STATE, PageableState } from '../../types/pageable-request';
 import { FormBuilder } from '@angular/forms';
@@ -17,7 +17,7 @@ import { tap } from 'rxjs/operators';
 })
 export class NewsComponent {
   public newsList$: Observable<NewsListDto[]>;
-  public selectedRequestType: NewsReqType;
+  public selectedRequestType$: BehaviorSubject<NewsReqType>;
   private onPageChange$ = new BehaviorSubject<number>(0);
   public pageableState: PageableState = DEFAULT_PAGEABLE_STATE;
 
@@ -28,11 +28,14 @@ export class NewsComponent {
     private toastService: ToastService,
     private errorFormatterService: ErrorFormatterService
   ) {
+    this.selectedRequestType$ = new BehaviorSubject<NewsReqType>(NewsReqType.Unread);
+
     // Merge onPageChangeDistinct$ and requestType changes
-    merge(this.onPageChangeDistinct$, this.selectedRequestType).pipe(
-      switchMap((val: any) => {
-        // Assuming `newsService.requestType$` is the BehaviorSubject holding requestType
-        return this.newsService.getNewsList(val); // Call loadNews whenever either value changes
+    combineLatest([this.selectedRequestType$, this.onPageChangeDistinct$]).pipe(
+      switchMap(([requestType, page]) => {
+        return this.newsService.getNewsList(
+          requestType, { page, size: 20 }
+        );
       }),
       tap(page => {
         this.pageableState = {
@@ -48,6 +51,8 @@ export class NewsComponent {
     });
   }
 
+  protected readonly NewsReqType = NewsReqType;
+
   onPageChange(newPage: number) {
     this.onPageChange$.next(newPage - 1);
   }
@@ -58,10 +63,8 @@ export class NewsComponent {
     );
   }
 
-  protected readonly NewsReqType = NewsReqType;
-
   setRequestType(reqType: NewsReqType) {
-    this.selectedRequestType = reqType;
+    this.selectedRequestType$.next(reqType);
   }
 
 }

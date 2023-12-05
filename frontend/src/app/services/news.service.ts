@@ -15,24 +15,14 @@ import { NewsReqType } from '../enums/newsReqType';
 export class NewsService {
 
   private baseUri: string = this.globals.backendUri + '/news';
-  private readUri: string = this.baseUri + 'read';
-  private unReadUri: string = this.baseUri + 'unread';
 
   constructor(
     private httpClient: HttpClient,
     private globals: Globals) {
-
   }
 
   private getUriFromReqType(reqType: NewsReqType): string {
-    switch (reqType) {
-      case NewsReqType.Read:
-        return this.readUri;
-      case NewsReqType.Unread:
-        return this.unReadUri;
-      default:
-        return this.unReadUri;
-    }
+    return `${this.baseUri}/${reqType}`;
   }
 
   /**

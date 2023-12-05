@@ -7,5 +7,5 @@ export interface NewsDetailDto {
   overviewText: string;
   publishDate: Date;
   authorName: string;
-  image: PublicFileDto
+  image?: PublicFileDto
 }

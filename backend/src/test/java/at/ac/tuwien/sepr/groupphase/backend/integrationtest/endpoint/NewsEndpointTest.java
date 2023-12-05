@@ -230,6 +230,7 @@ public class NewsEndpointTest {
 
 
     @Test
+    @DirtiesContext
     void getAllReadNews_whileLoggedInAsKnownUser_containsReadNews() {
         String username = "user1@email.com";
 
@@ -272,7 +273,7 @@ public class NewsEndpointTest {
                         NewsListDto::getTitle,
                         NewsListDto::getPublishDate,
                         NewsListDto::getOverviewText
-                    ).contains(
+                    ).containsExactlyInAnyOrder(
                         tuple(
                             "News-Title-1",
                             OffsetDateTime.of(2023, 12, 9, 20, 0, 0, 0, ZoneOffset.UTC),
