@@ -1,13 +1,13 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {Globals} from "../global/globals";
-import {map, Observable} from "rxjs";
-import {convertToDatesInObject} from "../utils/convertToDatesInObject";
-import {NewsDetailDto} from "../dtos/news-detail-dto";
-import {PageableRequest} from "../types/pageable-request";
-import {PageDto} from "../dtos/page-dto";
-import {NewsListDto} from "../dtos/news-list-dto";
-import {NewsReqType} from "../enums/newsReqType";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Globals } from '../global/globals';
+import { map, Observable } from 'rxjs';
+import { convertToDatesInObject } from '../utils/convertToDatesInObject';
+import { NewsDetailDto } from '../dtos/news-detail-dto';
+import { PageableRequest } from '../types/pageable-request';
+import { PageDto } from '../dtos/page-dto';
+import { NewsListDto } from '../dtos/news-list-dto';
+import { NewsReqType } from '../enums/newsReqType';
 
 @Injectable({
   providedIn: 'root'

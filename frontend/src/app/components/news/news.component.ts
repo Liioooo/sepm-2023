@@ -1,14 +1,14 @@
-import {Component} from '@angular/core';
-import {BehaviorSubject, distinctUntilChanged, map, merge, Observable, switchMap} from "rxjs";
-import {NewsListDto} from "../../dtos/news-list-dto";
-import {DEFAULT_PAGEABLE_STATE, PageableState} from "../../types/pageable-request";
-import {FormBuilder} from "@angular/forms";
-import {Router} from "@angular/router";
-import {ToastService} from "../../services/toast.service";
-import {ErrorFormatterService} from "../../services/error-formatter.service";
-import {NewsService} from "../../services/news.service";
-import {NewsReqType} from "../../enums/newsReqType";
-import {tap} from "rxjs/operators";
+import { Component } from '@angular/core';
+import { BehaviorSubject, distinctUntilChanged, map, merge, Observable, switchMap } from 'rxjs';
+import { NewsListDto } from '../../dtos/news-list-dto';
+import { DEFAULT_PAGEABLE_STATE, PageableState } from '../../types/pageable-request';
+import { FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
+import { ToastService } from '../../services/toast.service';
+import { ErrorFormatterService } from '../../services/error-formatter.service';
+import { NewsService } from '../../services/news.service';
+import { NewsReqType } from '../../enums/newsReqType';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-news',

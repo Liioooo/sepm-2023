@@ -1,4 +1,4 @@
-import {PublicFileDto} from "./public-file-dto";
+import { PublicFileDto } from './public-file-dto';
 
 export interface NewsDetailDto {
   id: number;

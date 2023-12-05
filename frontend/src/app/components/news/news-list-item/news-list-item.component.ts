@@ -1,5 +1,5 @@
-import {Component, Input} from '@angular/core';
-import {NewsListDto} from "../../../dtos/news-list-dto";
+import { Component, Input } from '@angular/core';
+import { NewsListDto } from '../../../dtos/news-list-dto';
 
 @Component({
   selector: 'app-news-list-item',

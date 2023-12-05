@@ -1,6 +1,22 @@
-<p>news-detail works!</p>
-
 <a class="btn btn-outline-dark" routerLink="/profile">
   <i class="bi bi-chevron-left"></i>
   To the News overview
 </a>
+
+<div class="row">
+  <!-- Left Part -->
+  <div class="col-lg-9">
+    <h1>{{ newsDetail.title }}</h1>
+    <div class="mb-3">
+      <p>{{ newsDetail.publishDate | date: 'medium' }}</p>
+      <p>{{ newsDetail.authorName }}</p>
+    </div>
+    <p>{{ newsDetail.overviewText }}</p>
+    <p>{{ newsDetail.text }}</p>
+  </div>
+
+  <!-- Right Part -->
+  <div class="col-lg-3">
+    <img [src]="newsDetail.image.path" alt="News Image" class="img-fluid" *ngIf="newsDetail.image">
+  </div>
+</div>
