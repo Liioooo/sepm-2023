@@ -12,7 +12,7 @@ describe('FooterComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule, ReactiveFormsModule],
-      declarations: [ FooterComponent ]
+      declarations: [FooterComponent]
     }).compileComponents();
   }));
 

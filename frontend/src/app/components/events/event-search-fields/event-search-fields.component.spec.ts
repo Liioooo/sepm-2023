@@ -12,7 +12,7 @@ describe('EventSearchFieldsComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule, ReactiveFormsModule],
-      declarations: [ EventSearchFieldsComponent ]
+      declarations: [EventSearchFieldsComponent]
     }).compileComponents();
   }));
 
