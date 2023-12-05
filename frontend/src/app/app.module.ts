@@ -35,6 +35,7 @@ import {
 import { EventDetailComponent } from './components/events/event-detail/event-detail.component';
 import { RequestPasswordResetComponent } from './components/request-password-reset/request-password-reset.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import { PiechartComponent } from './components/home/piechart/piechart.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,9 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
     LocationsComponent,
     LocationItemComponent,
     LocationSearchFieldsComponent,
-    EventDetailComponent
+    EventDetailComponent,
+    ConfirmDeleteProfileModalComponent,
+    PiechartComponent
   ],
   imports: [
     BrowserModule,
