@@ -30,8 +30,7 @@ export class NewsComponent {
   ) {
     this.selectedRequestType$ = new BehaviorSubject<NewsReqType>(NewsReqType.Unread);
 
-    // Merge onPageChangeDistinct$ and requestType changes
-    combineLatest([this.selectedRequestType$, this.onPageChangeDistinct$]).pipe(
+    this.newsList$ = combineLatest([this.selectedRequestType$, this.onPageChangeDistinct$]).pipe(
       switchMap(([requestType, page]) => {
         return this.newsService.getNewsList(
           requestType, { page, size: 20 }
@@ -45,10 +44,9 @@ export class NewsComponent {
           totalElements: page.totalElements
         };
       }),
+      tap(data => console.log('Received Data:', data)), // TODO: REMOVE ME AFTER TESTING
       map(page => page.content)
-    ).subscribe((data: any) => {
-      this.newsList$ = data;
-    });
+    );
   }
 
   protected readonly NewsReqType = NewsReqType;

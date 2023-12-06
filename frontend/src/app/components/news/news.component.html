@@ -13,10 +13,11 @@
               (click)="setRequestType(NewsReqType.Read)">Read
       </button>
     </div>
+
     <div class="news d-flex flex-column gap-3">
       <app-news-list-item
         *ngFor="let news of newsList$ | async"
-        [news]="news"
+        [newsItem]="news"
       ></app-news-list-item>
     </div>
     <div class="d-flex justify-content-center mt-4">

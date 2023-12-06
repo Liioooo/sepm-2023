@@ -1,1 +1,9 @@
-<p>news-list-item works!</p>
+<div class="card mb-3">
+  <img [src]="newsItem.image.url" class="card-img-top" alt="News-List Image" *ngIf="newsItem.image"/>
+
+  <div class="card-body">
+    <p class="card-text text-muted mb-1">{{ newsItem.publishDate.toLocaleDateString() }}</p>
+    <h5 class="card-title">{{ newsItem.title }}</h5>
+    <p class="card-text">{{ newsItem.overviewText | slice:0:200 }}</p>
+  </div>
+</div>
