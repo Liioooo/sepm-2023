@@ -43,7 +43,7 @@
           the reservation expires and is no longer valid.
         </p>
         <div class="text-center">
-          <button *ngIf="isBuy" class="btn btn-primary mt-4">Buy Tickets</button>
+          <button *ngIf="isBuy" (click)="submit(event)" class="btn btn-primary mt-4">Buy Tickets</button>
           <button *ngIf="isReserve" class="btn btn-primary mt-4">Reserve Tickets</button>
         </div>
       </div>
