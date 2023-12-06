@@ -60,5 +60,12 @@ export class EventDetailComponent {
   buyTickets() {
     this.ticketService.selectedSeats = this.selectedSeats;
     this.ticketService.selectedStanding = this.selectedStanding;
+    this.router.navigate(['buy'], { relativeTo: this.route });
+  }
+
+  reserveTickets() {
+    this.ticketService.selectedSeats = this.selectedSeats;
+    this.ticketService.selectedStanding = this.selectedStanding;
+    this.router.navigate(['reserve'], { relativeTo: this.route });
   }
 }

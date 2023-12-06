@@ -1,0 +1,58 @@
+<div class="mb-4" *ngIf="(event$ | async) as event; else loading">
+  <div class="py-5 bg-light">
+    <div class="container">
+      <h1 class="fs-1 fw-bold mb-0">{{ event.title }}</h1>
+      <div class="fs-3 fw-bold mb-0">{{ artistName(event) }}</div>
+    </div>
+  </div>
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-12 col-lg-12 bg-light rounded-3 p-5 mt-4 mt-lg-0">
+        <h2 class="fw-bold">Your Tickets</h2>
+        <hr>
+        <div class="d-flex flex-row">
+          <div>
+            <div class="fw-bold fs-3">Seats</div>
+            <div class="text-description">{{ selectedSeats }} x {{ event.seatPrice | currency:'EUR' }}</div>
+          </div>
+          <span class="flex-grow-1"></span>
+          <div class="d-flex align-items-center fw-bold fs-3 justify-content-center">
+            {{ getSeatingPrice(event) | currency:'EUR' }}
+          </div>
+        </div>
+        <div class="d-flex flex-row mt-4">
+          <div>
+            <div class="fw-bold fs-3">Standing</div>
+            <div class="text-description">{{ selectedStanding }} x {{ event.standingPrice | currency:'EUR' }}</div>
+          </div>
+          <span class="flex-grow-1"></span>
+          <div class="d-flex align-items-center fw-bold fs-3 justify-content-center">
+            {{ getStandingPrice(event) | currency:'EUR' }}
+          </div>
+        </div>
+        <hr>
+        <div class="d-flex flex-row mt-4">
+          <div class="fw-bold fs-3">Total</div>
+          <span class="flex-grow-1"></span>
+          <div class="fw-bold fs-3">
+            {{ getTotalPrice(event) | currency:'EUR' }}
+          </div>
+        </div>
+        <p class="text-description" *ngIf="isReserve">
+          You can reserve the selected tickets for now and buy them until 30 minutes before this event starts. If not,
+          the reservation expires and is no longer valid.
+        </p>
+        <div class="text-center">
+          <button *ngIf="isBuy" class="btn btn-primary mt-4">Buy Tickets</button>
+          <button *ngIf="isReserve" class="btn btn-primary mt-4">Reserve Tickets</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="container text-center fs-2">
+    Loading event data &hellip;
+  </div>
+</ng-template>
