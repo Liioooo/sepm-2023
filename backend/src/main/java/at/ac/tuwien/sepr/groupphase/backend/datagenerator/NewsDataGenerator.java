@@ -41,7 +41,7 @@ public class NewsDataGenerator extends DataGenerator<News> {
                 .build(),
             News.builder()
                 .title("News-Title-2")
-                .publishDate(OffsetDateTime.of(2023, 12, 9, 20, 0, 0, 0, ZoneOffset.UTC))
+                .publishDate(OffsetDateTime.of(2021, 2, 9, 20, 0, 0, 0, ZoneOffset.UTC))
                 .overviewText("This is an abstract for News-Title-2")
                 .text("This is text for News-Title-2")
                 .author(userDataGenerator.getTestData().get(0))
@@ -58,6 +58,13 @@ public class NewsDataGenerator extends DataGenerator<News> {
                 .publishDate(OffsetDateTime.of(2022, 1, 1, 15, 30, 0, 0, ZoneOffset.UTC))
                 .overviewText("This is an abstract for News-Title-4")
                 .text("This is text for News-Title-4")
+                .author(userDataGenerator.getTestData().get(0))
+                .build(),
+            News.builder()
+                .title("News-Title-5")
+                .publishDate(OffsetDateTime.of(2020, 10, 25, 20, 15, 0, 0, ZoneOffset.UTC))
+                .overviewText("This is an abstract for News-Title-5")
+                .text("This is text for News-Title-5")
                 .author(userDataGenerator.getTestData().get(0))
                 .build()
         );

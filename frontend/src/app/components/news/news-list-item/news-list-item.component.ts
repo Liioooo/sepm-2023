@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { NewsListDto } from '../../../dtos/news-list-dto';
 
 @Component({
@@ -6,12 +6,8 @@ import { NewsListDto } from '../../../dtos/news-list-dto';
   templateUrl: './news-list-item.component.html',
   styleUrls: ['./news-list-item.component.scss']
 })
-export class NewsListItemComponent implements OnInit {
+export class NewsListItemComponent {
 
   @Input() public newsItem!: NewsListDto;
-
-  ngOnInit(): void {
-    console.log('NewsListItemComponent created');
-  }
 
 }

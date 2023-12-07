@@ -11,9 +11,9 @@ import java.util.Collection;
 
 @Repository
 public interface NewsRepository extends JpaRepository<News, Long> {
-    Page<News> findAllByReadByNotContains(ApplicationUser user, Pageable pageable);
+    Page<News> findAllByReadByNotContainsOrderByPublishDateDesc(ApplicationUser user, Pageable pageable);
 
-    Page<News> findAllByReadByContains(ApplicationUser user, Pageable pageable);
+    Page<News> findAllByReadByContainsOrderByPublishDateDesc(ApplicationUser user, Pageable pageable);
 
     Collection<News> findAllByTitleContains(String title);
 }

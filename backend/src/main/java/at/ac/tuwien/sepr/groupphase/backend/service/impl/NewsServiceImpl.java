@@ -55,7 +55,7 @@ public class NewsServiceImpl implements NewsService {
         ApplicationUser user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
 
         return pageMapper.toPageDtoListMapper(
-            newsRepository.findAllByReadByNotContains(user, pageable),
+            newsRepository.findAllByReadByNotContainsOrderByPublishDateDesc(user, pageable),
             newsMapper::newsCollectionToNewsListDtoCollection
         );
     }
@@ -66,7 +66,7 @@ public class NewsServiceImpl implements NewsService {
         ApplicationUser user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
 
         return pageMapper.toPageDtoListMapper(
-            newsRepository.findAllByReadByContains(user, pageable),
+            newsRepository.findAllByReadByContainsOrderByPublishDateDesc(user, pageable),
             newsMapper::newsCollectionToNewsListDtoCollection
         );
     }

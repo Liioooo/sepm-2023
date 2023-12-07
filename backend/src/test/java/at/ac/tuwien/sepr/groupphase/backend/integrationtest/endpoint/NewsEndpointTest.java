@@ -3,10 +3,12 @@ package at.ac.tuwien.sepr.groupphase.backend.integrationtest.endpoint;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.NewsCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.NewsDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.NewsListDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.PageDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.News;
 import at.ac.tuwien.sepr.groupphase.backend.repository.ApplicationUserRepository;
 import at.ac.tuwien.sepr.groupphase.backend.repository.NewsRepository;
 import at.ac.tuwien.sepr.groupphase.backend.service.UserService;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +26,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -185,23 +186,27 @@ public class NewsEndpointTest {
         String username = "user1@email.com";
 
         assertDoesNotThrow(() -> {
-            var result = this.mockMvc.perform(MockMvcRequestBuilders.get(API_UNREAD)
+            int page = 0; // Page number
+            int size = 20; // Page size
+
+            byte[] result = this.mockMvc.perform(MockMvcRequestBuilders.get(API_UNREAD)
+                .param("page", String.valueOf(page))
+                .param("size", String.valueOf(size))
                 .accept(MediaType.APPLICATION_JSON)
                 .with(user(username).roles("USER"))
-            ).andExpectAll(
-                status().is(200)
+            ).andExpect(
+                status().isOk()
             ).andReturn().getResponse().getContentAsByteArray();
 
-            var newsIterator = objectMapper.readerFor(NewsListDto.class).<NewsListDto>readValues(result);
+            PageDto<NewsListDto> pageDto = objectMapper.readValue(result, new TypeReference<>() {
+            });
 
-            List<NewsListDto> news = new ArrayList<>();
-            newsIterator.forEachRemaining(news::add);
+            List<NewsListDto> actualNews = pageDto.getContent();
 
             assertAll(() -> {
-                assertNotNull(newsIterator);
-                assertThat(news).isNotNull();
+                assertThat(actualNews).isNotNull();
 
-                assertThat(news)
+                assertThat(actualNews)
                     .extracting(
                         NewsListDto::getTitle,
                         NewsListDto::getPublishDate,
@@ -215,13 +220,23 @@ public class NewsEndpointTest {
                         ),
                         tuple(
                             "News-Title-2",
-                            OffsetDateTime.of(2023, 12, 9, 20, 0, 0, 0, ZoneOffset.UTC),
+                            OffsetDateTime.of(2021, 2, 9, 20, 0, 0, 0, ZoneOffset.UTC),
                             "This is an abstract for News-Title-2"
                         ),
                         tuple(
                             "News-Title-3",
                             OffsetDateTime.of(2023, 12, 9, 20, 0, 0, 0, ZoneOffset.UTC),
                             "This is an abstract for News-Title-3"
+                        ),
+                        tuple(
+                            "News-Title-4",
+                            OffsetDateTime.of(2022, 1, 1, 15, 30, 0, 0, ZoneOffset.UTC),
+                            "This is an abstract for News-Title-4"
+                        ),
+                        tuple(
+                            "News-Title-5",
+                            OffsetDateTime.of(2020, 10, 25, 20, 15, 0, 0, ZoneOffset.UTC),
+                            "This is an abstract for News-Title-5"
                         )
                     );
             });
@@ -252,23 +267,27 @@ public class NewsEndpointTest {
             );
 
             // Get the actual List of read News
-            var result = this.mockMvc.perform(get(API_READ)
+            int page = 0; // Page number
+            int size = 20; // Page size
+
+            byte[] result = this.mockMvc.perform(MockMvcRequestBuilders.get(API_READ)
+                .param("page", String.valueOf(page))
+                .param("size", String.valueOf(size))
                 .accept(MediaType.APPLICATION_JSON)
                 .with(user(username).roles("USER"))
-            ).andExpectAll(
-                status().is(200)
+            ).andExpect(
+                status().isOk()
             ).andReturn().getResponse().getContentAsByteArray();
 
-            var newsIterator = objectMapper.readerFor(NewsListDto.class).<NewsListDto>readValues(result);
+            PageDto<NewsListDto> pageDto = objectMapper.readValue(result, new TypeReference<>() {
+            });
 
-            List<NewsListDto> news = new ArrayList<>();
-            newsIterator.forEachRemaining(news::add);
+            List<NewsListDto> actualNews = pageDto.getContent();
 
             assertAll(() -> {
-                assertNotNull(newsIterator);
-                assertThat(news).isNotNull();
+                assertThat(actualNews).isNotNull();
 
-                assertThat(news)
+                assertThat(actualNews)
                     .extracting(
                         NewsListDto::getTitle,
                         NewsListDto::getPublishDate,
@@ -281,8 +300,31 @@ public class NewsEndpointTest {
                         ),
                         tuple(
                             "News-Title-2",
-                            OffsetDateTime.of(2023, 12, 9, 20, 0, 0, 0, ZoneOffset.UTC),
+                            OffsetDateTime.of(2021, 2, 9, 20, 0, 0, 0, ZoneOffset.UTC),
                             "This is an abstract for News-Title-2"
+                        )
+                    );
+
+                assertThat(actualNews)
+                    .extracting(
+                        NewsListDto::getTitle,
+                        NewsListDto::getPublishDate,
+                        NewsListDto::getOverviewText
+                    ).doesNotContain(
+                        tuple(
+                            "News-Title-3",
+                            OffsetDateTime.of(2023, 12, 9, 20, 0, 0, 0, ZoneOffset.UTC),
+                            "This is an abstract for News-Title-3"
+                        ),
+                        tuple(
+                            "News-Title-4",
+                            OffsetDateTime.of(2022, 1, 1, 15, 30, 0, 0, ZoneOffset.UTC),
+                            "This is an abstract for News-Title-4"
+                        ),
+                        tuple(
+                            "News-Title-5",
+                            OffsetDateTime.of(2020, 10, 25, 20, 15, 0, 0, ZoneOffset.UTC),
+                            "This is an abstract for News-Title-5"
                         )
                     );
             });
