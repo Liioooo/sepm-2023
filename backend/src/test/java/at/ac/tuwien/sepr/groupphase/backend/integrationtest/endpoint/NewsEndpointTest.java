@@ -231,7 +231,7 @@ public class NewsEndpointTest {
 
     @Test
     @DirtiesContext
-    void getAllReadNews_whileLoggedInAsKnownUser_containsReadNews() {
+    void getAllReadNews_whileLoggedInAsKnownUser_containsOnlyReadNews() {
         String username = "user1@email.com";
 
         assertDoesNotThrow(() -> {
