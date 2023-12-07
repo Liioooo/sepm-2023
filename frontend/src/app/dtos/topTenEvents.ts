@@ -1,4 +1,4 @@
-export interface TopTenEventDto {
+export interface TopTenEvents {
   id: number;
   name: string;
   bought: number;
