@@ -14,7 +14,7 @@
       </button>
     </div>
 
-    <div class="news d-flex flex-column gap-3">
+    <div class="news d-flex flex-wrap gap-3">
       <app-news-list-item
         *ngFor="let news of newsList$ | async"
         [newsItem]="news"
