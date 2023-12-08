@@ -53,10 +53,10 @@ public class FreemarkerConfig {
         cfg.setLogTemplateExceptions(false);
 
         // Wrap unchecked exceptions thrown during template processing into TemplateException-s:
-//        cfg.setWrapUncheckedExceptions(true);
+        // cfg.setWrapUncheckedExceptions(true);
 
         // Do not fall back to higher scopes when reading a null loop variable:
-//        cfg.setFallbackOnNullLoopVariable(false);
+        // cfg.setFallbackOnNullLoopVariable(false);
 
         // To accomodate to how JDBC returns values; see Javadoc!
         cfg.setSQLDateAndTimeTimeZone(TimeZone.getDefault());
