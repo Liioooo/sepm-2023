@@ -39,10 +39,10 @@ public class Ticket {
     @Enumerated(EnumType.STRING)
     private TicketCategory ticketCategory;
 
-    @Column(nullable = true)
+    @Column()
     private Long tierNumber;
 
-    @Column(nullable = true)
+    @Column()
     private Long seatNumber;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)

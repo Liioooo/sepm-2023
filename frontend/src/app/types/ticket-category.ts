@@ -1,4 +1,4 @@
 export const enum TicketCategory {
-  SEAT = 'SEAT',
+  SEATING = 'SEATING',
   STANDING = 'STANDING'
 }

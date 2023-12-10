@@ -1,4 +1,4 @@
 export const enum OrderType {
-  BUY= 'BUY',
+  BUY = 'BUY',
   RESERVE = 'RESERVE'
 }

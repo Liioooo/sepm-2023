@@ -75,7 +75,7 @@ export class EventCheckoutComponent implements OnInit {
       const [seatNumber, tierNumber] = seat.split(':').map(Number);
 
       seats.push({
-        category: TicketCategory.SEAT,
+        ticketCategory: TicketCategory.SEATING,
         seatNumber,
         tierNumber,
         eventId: event.id
@@ -86,7 +86,7 @@ export class EventCheckoutComponent implements OnInit {
       tickets: [
         ...seats,
         ...new Array<TicketCreateDto>(this.ticketService.selectedStanding).fill({
-          category: TicketCategory.STANDING,
+          ticketCategory: TicketCategory.STANDING,
           eventId: event.id
         })
       ],
