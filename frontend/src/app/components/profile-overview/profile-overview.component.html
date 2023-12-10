@@ -22,7 +22,10 @@
       </div>
     </div>
     <div class="col p-5">
-      <h2 class="fs-1 fw-bold">My tickets</h2>
+      <h2 class="fs-1 fw-bold mb-5">My tickets</h2>
+      <div class="d-flex flex-column gap-3">
+        <app-order-item *ngFor="let order of $orders | async" [order]="order" (deleteReservationEvent)="deleteReservation($event)"></app-order-item>
+      </div>
     </div>
   </div>
 </div>
