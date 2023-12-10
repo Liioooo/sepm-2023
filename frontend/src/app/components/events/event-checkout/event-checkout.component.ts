@@ -12,6 +12,7 @@ import { OrderService } from '../../../services/order.service';
 import { ToastService } from '../../../services/toast.service';
 import { ErrorResponseDto } from '../../../dtos/error-response-dto';
 import { ErrorFormatterService } from '../../../services/error-formatter.service';
+import { CheckoutMode } from '../../../types/checkout-mode';
 
 @Component({
   selector: 'app-event-checkout',
@@ -20,7 +21,8 @@ import { ErrorFormatterService } from '../../../services/error-formatter.service
 })
 export class EventCheckoutComponent implements OnInit {
   event$: Observable<EventDetailDto>;
-  type: OrderType;
+  mode: CheckoutMode;
+  reservationId: number;
 
   constructor(
     private eventService: EventService,
@@ -34,15 +36,43 @@ export class EventCheckoutComponent implements OnInit {
 
   ngOnInit(): void {
     this.event$ = this.eventService.getEvent(Number(this.route.snapshot.paramMap.get('id')));
-    this.type = this.route.snapshot.data.type ?? OrderType.BUY;
+    this.reservationId = Number(this.route.snapshot.paramMap.get('reservationId'));
+    this.mode = this.route.snapshot.data.type ?? CheckoutMode.BUY;
+
+    if (this.mode === CheckoutMode.BUY_RESERVATION) {
+      this.orderService.getOrder(this.reservationId).subscribe({
+        next: order => {
+          if (order.orderType !== OrderType.RESERVE) {
+            this.toastService.showError('Error', 'This order is not a reservation');
+            this.router.navigate(['/profile']);
+          }
+
+          this.ticketService.selectedSeats = new Map(order.tickets
+            .filter(t => t.ticketCategory === TicketCategory.SEATING)
+            .map(t => [`${t.seatNumber}:${t.tierNumber}`, true]));
+
+          this.ticketService.selectedStanding = order.tickets
+            .filter(t => t.ticketCategory === TicketCategory.STANDING)
+            .length;
+        },
+        error: err => {
+          this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto));
+          this.router.navigate(['/profile']);
+        }
+      });
+    }
   }
 
   get isBuy(): boolean {
-    return this.type === OrderType.BUY;
+    return this.mode === CheckoutMode.BUY;
   }
 
   get isReserve(): boolean {
-    return this.type === OrderType.RESERVE;
+    return this.mode === CheckoutMode.RESERVE;
+  }
+
+  get isBuyingReservation(): boolean {
+    return this.mode === CheckoutMode.BUY_RESERVATION;
   }
 
   get selectedSeats() {
@@ -69,7 +99,7 @@ export class EventCheckoutComponent implements OnInit {
     return this.getSeatingPrice(event) + this.getStandingPrice(event);
   }
 
-  submit(event: EventDetailDto) {
+  submitNewOrder(event: EventDetailDto) {
     let seats: TicketCreateDto[] = [];
     for (const [seat] of this.ticketService.selectedSeats) {
       const [seatNumber, tierNumber] = seat.split(':').map(Number);
@@ -77,25 +107,36 @@ export class EventCheckoutComponent implements OnInit {
       seats.push({
         ticketCategory: TicketCategory.SEATING,
         seatNumber,
-        tierNumber,
-        eventId: event.id
+        tierNumber
       });
     }
+
+    const orderType = this.mode === CheckoutMode.BUY ? OrderType.BUY : OrderType.RESERVE;
 
     const order: OrderCreateDto = {
       tickets: [
         ...seats,
         ...new Array<TicketCreateDto>(this.ticketService.selectedStanding).fill({
-          ticketCategory: TicketCategory.STANDING,
-          eventId: event.id
+          ticketCategory: TicketCategory.STANDING
         })
       ],
-      orderType: this.type
+      orderType,
+      eventId: event.id
     };
 
     this.orderService.createOrder(order).subscribe({
       next: () => {
         this.toastService.showSuccess('Success', 'Order created successfully');
+        this.router.navigate(['/profile']);
+      },
+      error: err => this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto))
+    });
+  }
+
+  submitReservationPurchase() {
+    this.orderService.purchaseReservation(this.reservationId).subscribe({
+      next: () => {
+        this.toastService.showSuccess('Success', 'Reservation redeemed successfully');
         this.router.navigate(['/profile']);
       },
       error: err => this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto))

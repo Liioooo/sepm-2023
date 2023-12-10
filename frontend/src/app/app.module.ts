@@ -36,6 +36,7 @@ import { EventDetailComponent } from './components/events/event-detail/event-det
 import { RequestPasswordResetComponent } from './components/request-password-reset/request-password-reset.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { EventCheckoutComponent } from './components/events/event-checkout/event-checkout.component';
+import { OrderItemComponent } from './components/profile-overview/order-item/order-item.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import { EventCheckoutComponent } from './components/events/event-checkout/event
     LocationItemComponent,
     LocationSearchFieldsComponent,
     EventDetailComponent,
-    EventCheckoutComponent
+    EventCheckoutComponent,
+    OrderItemComponent
   ],
   imports: [
     BrowserModule,

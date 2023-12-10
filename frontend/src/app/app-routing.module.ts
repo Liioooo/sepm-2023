@@ -19,7 +19,7 @@ import { LocationsComponent } from './components/locations/locations.component';
 import { RequestPasswordResetComponent } from './components/request-password-reset/request-password-reset.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { EventCheckoutComponent } from './components/events/event-checkout/event-checkout.component';
-import { OrderType } from './types/order-type';
+import { CheckoutMode } from './types/checkout-mode';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -29,8 +29,9 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'events', component: EventsComponent },
   { path: 'events/:id', canActivate: [authGuard], component: EventDetailComponent },
-  { path: 'events/:id/buy', canActivate: [authGuard], component: EventCheckoutComponent, data: { type: OrderType.BUY } },
-  { path: 'events/:id/reserve', canActivate: [authGuard], component: EventCheckoutComponent, data: { type: OrderType.RESERVE } },
+  { path: 'events/:id/buy', canActivate: [authGuard], component: EventCheckoutComponent, data: { type: CheckoutMode.BUY } },
+  { path: 'events/:id/reserve', canActivate: [authGuard], component: EventCheckoutComponent, data: { type: CheckoutMode.RESERVE } },
+  { path: 'events/:id/buy-reservation/:reservationId', canActivate: [authGuard], component: EventCheckoutComponent, data: { type: CheckoutMode.BUY_RESERVATION } },
   { path: 'locations', component: LocationsComponent },
   { path: 'news', canActivate: [authGuard], component: NewsListComponent },
   { path: 'profile', canActivate: [authGuard], component: ProfileOverviewComponent },
