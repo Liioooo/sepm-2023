@@ -27,7 +27,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @Table(uniqueConstraints = {
-    @UniqueConstraint(name = "seatPos", columnNames = {"tierNumber", "seatNumber", "EVENT_ID"})
+    // A constraint with EVENT_ID won't work because there can be expired reservations for the same seat
+    @UniqueConstraint(name = "seatPos", columnNames = {"tierNumber", "seatNumber", "ORDER_ID"})
 })
 public class Ticket {
 
@@ -47,8 +48,5 @@ public class Ticket {
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Order order;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private Event event;
 
 }

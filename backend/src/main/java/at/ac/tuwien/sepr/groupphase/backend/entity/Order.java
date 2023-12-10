@@ -48,7 +48,10 @@ public class Order {
     @Column(nullable = true)
     private OffsetDateTime cancellationDate;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    private Event event;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "order")
     private List<Ticket> tickets;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)

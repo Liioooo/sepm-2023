@@ -21,7 +21,10 @@ public class OrderCreateDto {
     @NotNull(message = "The order must contain tickets")
     @Size(min = 1, message = "The order must contain at least one ticket")
     @Valid
-    private CreateTicketDto[] tickets;
+    private TicketCreateDto[] tickets;
+
+    @NotNull(message = "The order must be associated with an event")
+    private Long eventId;
 
     @NotNull(message = "The order type must be specified")
     private OrderType orderType;
