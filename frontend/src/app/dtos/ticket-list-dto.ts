@@ -1,7 +1,8 @@
 import { TicketCategory } from '../types/ticket-category';
 
-export interface TicketCreateDto {
+export interface TicketListDto {
+  id: number;
   ticketCategory: TicketCategory;
-  seatNumber?: number;
-  tierNumber?: number;
+  tierNumber: number;
+  seatNumber: number;
 }
