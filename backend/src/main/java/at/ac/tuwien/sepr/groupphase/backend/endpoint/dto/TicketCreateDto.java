@@ -16,12 +16,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class CreateTicketDto {
+public class TicketCreateDto {
     @NotNull(message = "The ticket must have a category")
     private TicketCategory ticketCategory;
-
-    @NotNull(message = "The ticket must be associated with an event")
-    private Long eventId;
 
     @Min(0)
     private Long seatNumber;
