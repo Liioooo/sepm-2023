@@ -14,5 +14,6 @@ public interface EventMapper {
     List<EventListDto> eventCollectionToEventListDtoCollection(Collection<Event> events);
 
     EventDetailDto toEventDetailDto(Event event);
+    EventDetailDto[] toEventDetailDtos(Event[] events);
 
 }

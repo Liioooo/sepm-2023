@@ -7,10 +7,14 @@ import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventSearchDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.PageDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.EventMapper;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.PageMapper;
+import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
+import at.ac.tuwien.sepr.groupphase.backend.enums.EventType;
 import at.ac.tuwien.sepr.groupphase.backend.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.security.PermitAll;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +22,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/events")
@@ -59,5 +67,14 @@ public class EventsEndpoint {
     public void createEvent(@ModelAttribute EventCreateDto eventCreateDto) {
         eventService.createEvent(eventCreateDto);
         // Just for testing file upload...
+    }
+    @PermitAll
+    @GetMapping(value = "/top10")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Gets the top 10 events")
+
+    public EventDetailDto[] getTopEvents(@RequestParam EventType typeId, @RequestParam int  month) {
+        //logging
+        return  eventMapper.toEventDetailDtos(eventService.getTopTenEvents(month, typeId));
     }
 }

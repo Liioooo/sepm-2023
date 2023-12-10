@@ -2,12 +2,15 @@ package at.ac.tuwien.sepr.groupphase.backend.repository;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventSearchDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
+import at.ac.tuwien.sepr.groupphase.backend.enums.EventType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.time.LocalDateTime;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
@@ -35,4 +38,14 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         + "  ORDER BY e.title ASC"
     )
     Page<Event> findBySearchCriteria(@Param("search") EventSearchDto search, Pageable pageable);
+
+    @Query(value = "SELECT DISTINCT e.id AS id, e.title AS name, e.startDate AS startingAt, " +
+        "(SELECT COUNT(t) FROM e.tickets t) AS bought " +
+        "FROM Event e " +
+        "WHERE e.startDate IS NOT NULL AND e.startDate >= (:startDate) AND e.endDate <= (:endDate) AND ((:type) IS NULL OR e.type = (:type)) " +
+        "ORDER BY (SELECT COUNT(t) FROM e.tickets t) ASC " +
+        "LIMIT 10"
+    )
+    Event[] findTopTenEvent(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, @Param("type") EventType type);
+
 }
