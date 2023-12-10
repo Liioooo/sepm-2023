@@ -2,7 +2,9 @@ package at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventListDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventWithBoughtCountDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
+import at.ac.tuwien.sepr.groupphase.backend.entity.interfaces.EventWithBoughtCount;
 import org.mapstruct.Mapper;
 
 import java.util.Collection;
@@ -14,6 +16,7 @@ public interface EventMapper {
     List<EventListDto> eventCollectionToEventListDtoCollection(Collection<Event> events);
 
     EventDetailDto toEventDetailDto(Event event);
-    EventDetailDto[] toEventDetailDtos(Event[] events);
+
+    List<EventWithBoughtCountDto> eventWithBoughtToEventWithBoughtDtoList(Collection<EventWithBoughtCount> events);
 
 }
