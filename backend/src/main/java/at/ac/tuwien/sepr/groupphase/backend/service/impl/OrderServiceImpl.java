@@ -23,7 +23,6 @@ import java.lang.invoke.MethodHandles;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -54,11 +53,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public Order getOrderById(Long id) {
         var user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
-        var order = orderRepository.findOrderById(id);
-
-        if (order == null || !Objects.equals(order.getUser().getId(), user.getId())) {
-            throw new NotFoundException("Order not found");
-        }
+        var order = orderRepository.findOrderByIdAndUserId(id, user.getId()).orElseThrow(() -> new NotFoundException("Order not found"));
 
         // Trigger lazy loading of tickets
         order.getTickets().size();
@@ -107,11 +102,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void redeemReservation(Long orderId) {
         var user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
-        var order = orderRepository.findOrderById(orderId);
-
-        if (order == null || !Objects.equals(order.getUser().getId(), user.getId())) {
-            throw new NotFoundException("Order not found");
-        }
+        var order = orderRepository.findOrderByIdAndUserId(orderId, user.getId()).orElseThrow(() -> new NotFoundException("Order not found"));
 
         if (order.getOrderType() != OrderType.RESERVE) {
             throw new ConflictException("Order is not a reservation");
@@ -134,11 +125,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void deleteReservation(Long orderId) {
         var user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
-        var order = orderRepository.findOrderById(orderId);
-
-        if (order == null || !Objects.equals(order.getUser().getId(), user.getId())) {
-            throw new NotFoundException("Order not found");
-        }
+        var order = orderRepository.findOrderByIdAndUserId(orderId, user.getId()).orElseThrow(() -> new NotFoundException("Order not found"));
 
         if (order.getOrderType() != OrderType.RESERVE) {
             throw new ConflictException("Order is not a reservation");
