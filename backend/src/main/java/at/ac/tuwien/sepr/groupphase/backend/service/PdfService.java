@@ -13,7 +13,7 @@ import java.util.List;
 public interface PdfService {
 
     /**
-     * Create an EmbeddedFile for the Invoice PDF
+     * Create an EmbeddedFile for the Invoice PDF.
      *
      * @param order The order of which to create the invoice
      * @return The EmbeddedFile as PDF
@@ -21,7 +21,7 @@ public interface PdfService {
     EmbeddedFile createInvoicePdf(@NotNull Order order, @NotNull List<Ticket> tickets, @NotNull Event event) throws IOException, TemplateException;
 
     /**
-     * Create an EmbeddedFile for the Cancellation Invoice PDF
+     * Create an EmbeddedFile for the Cancellation Invoice PDF.
      *
      * @param order The cancellation order of which to create the invoice
      * @return The EmbeddedFile as PDF
@@ -29,7 +29,7 @@ public interface PdfService {
     EmbeddedFile createCancellationInvoicePdf(Order order);
 
     /**
-     * Create a PDF for a Ticket
+     * Create a PDF for a Ticket.
      *
      * @param ticket The ticket for which to create the PDF
      * @return The EmbeddedFile as PDF
