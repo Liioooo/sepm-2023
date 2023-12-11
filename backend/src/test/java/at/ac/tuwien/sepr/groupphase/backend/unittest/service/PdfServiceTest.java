@@ -2,6 +2,7 @@ package at.ac.tuwien.sepr.groupphase.backend.unittest.service;
 
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepr.groupphase.backend.entity.EmbeddedFile;
+import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepr.groupphase.backend.entity.UserLocation;
 import at.ac.tuwien.sepr.groupphase.backend.enums.UserRole;
@@ -16,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -32,12 +34,15 @@ public class PdfServiceTest {
 
     private Order order;
 
+    private Event event;
+
     private ApplicationUser user;
 
     @BeforeEach
     void init() {
         initUser();
         initOrder();
+        initEvent();
     }
 
     void initUser() {
@@ -63,10 +68,17 @@ public class PdfServiceTest {
             .build();
     }
 
+    void initEvent() {
+        event = Event.builder()
+            .seatPrice(12.99f)
+            .standingPrice(9.99f)
+            .build();
+    }
+
     @Test
     void createInvoicePdf_withValidOrder_createsCorrectEmbeddedFile() {
         assertDoesNotThrow(() -> {
-            EmbeddedFile embeddedFile = pdfService.createInvoicePdf(order);
+            EmbeddedFile embeddedFile = pdfService.createInvoicePdf(order, List.of(), event);
             assertAll(() -> {
                 assertNotNull(embeddedFile);
                 assertThat(embeddedFile.getMimeType()).isEqualTo(MediaType.APPLICATION_PDF_VALUE);
