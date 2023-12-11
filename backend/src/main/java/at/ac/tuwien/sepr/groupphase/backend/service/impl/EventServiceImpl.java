@@ -53,7 +53,7 @@ public class EventServiceImpl implements EventService {
 
     public Event[] getTopTenEvents(int month, EventType type) {
 
-        YearMonth yearMonth = YearMonth.from(LocalDate.now().plusMonths(month));
+        YearMonth yearMonth = YearMonth.from(LocalDate.now().plusMonths(month)); // idee ist, dass je nach month eben vom current month ne "int month" zahl addiert wird um das monat zu bekommen für das wir die daten haben wollen
         LocalDateTime startDate = yearMonth.atDay(1).atTime(0, 0, 0);
         LocalDateTime endDate = yearMonth.atEndOfMonth().atTime(23, 59, 59);
         return eventRepository.findTopTenEvent(startDate, endDate, type);

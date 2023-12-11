@@ -7,6 +7,7 @@ import { ErrorFormatterService } from '../../services/error-formatter.service';
 import { TopTenEventDto } from '../../dtos/top-ten-event-dto';
 
 
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -17,11 +18,18 @@ export class HomeComponent implements OnInit {
     type: [null],
     month: [null]
   });
+
+  /* public form: FormGroup = new FormGroup({
+  month: new FormControl(''),
+    type: new FormControl('')
+  });
+  */
   public searchType: string;
   public searchMonth: string;
   top10: TopTenEventDto[];
 
   noEvents = false;
+  top10ChartData: number[] = [];
 
   constructor(private eventService: EventService, private formBuilder: FormBuilder,
               private toastService: ToastService, private errorFormatterService: ErrorFormatterService) {
@@ -48,7 +56,7 @@ export class HomeComponent implements OnInit {
           : 'All events';
 
         this.searchMonth = this.searchForm.value.month
-          ? `${(new Date(this.searchForm.value.month).getMonth() + 1)}.${(new Date(this.searchForm.value.month).getFullYear())}`
+          ? `${(new Date(this.searchForm.value.month).getMonth() + 1)}-${(new Date(this.searchForm.value.month).getFullYear())}`
           : `${(new Date()).getMonth() + 1}-${(new Date()).getFullYear()}`;
 
         this.top10 = top10;

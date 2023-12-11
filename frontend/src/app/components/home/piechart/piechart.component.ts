@@ -27,13 +27,25 @@ export class PiechartComponent implements OnInit, OnChanges {
   public chart: any;
 
   createChart() {
-    this.chart = new Chart('Top 10 Events', {
+    this.chart = new Chart('MyChart', {
       type: 'pie',
+      // type: 'doughnut',
       data: {
-        labels: [], // You can add labels dynamically if needed
+        labels: [
+          //da gehören die Event names hin
+          'Miley Cyrus',
+          'Harry Styles Show 2',
+          'Harry Styles Show 1',
+          'Seiler und Speer',
+          'Taylor Swift Eras Vienna',
+          'Taylor Swift Eras Graz',
+          'Taylor Swift Eras Klagenfurt',
+          'John Legend'
+        ],
+
         datasets: [{
-          label: 'Top 10 ' + this.eventType + ' in ' + this.searchMonth,
-          data: this.chartData,
+          label: 'Top 10 '+ this.eventType + ' in '+ this.searchMonth,
+          data: [9168.2, 1417.8, 3335.1, 1165.0, 2078.9, 3533, 5324, 5232, 2324, 2354],
           backgroundColor: [
             'rgb(1,21,104)',
             'rgb(70,61,133)',
@@ -47,6 +59,7 @@ export class PiechartComponent implements OnInit, OnChanges {
             'rgb(233,77,82)'
           ],
           hoverOffset: 4
+
         }]
       },
       options: {
@@ -56,15 +69,16 @@ export class PiechartComponent implements OnInit, OnChanges {
             display: true,
             text: 'Top 10 ' + this.eventType + ' in ' + this.searchMonth,
             font: {
-              size: 24,
+              size: 34,
               weight: 'bold',
               family: '\'Helvetica Neue\', \'Helvetica\', \'Arial\', sans-serif'
             },
             padding: {
-              top: 10,
-              bottom: 30
+              top: 40,
+              bottom: 40
             }
           },
+
           legend: {
             display: true,
             labels: {
