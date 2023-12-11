@@ -2,9 +2,10 @@ package at.ac.tuwien.sepr.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventSearchDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventTop10SearchDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepr.groupphase.backend.entity.PublicFile;
-import at.ac.tuwien.sepr.groupphase.backend.enums.EventType;
+import at.ac.tuwien.sepr.groupphase.backend.entity.interfaces.EventWithBoughtCount;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepr.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepr.groupphase.backend.service.EventService;
@@ -16,8 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.YearMonth;
+import java.time.ZoneOffset;
+import java.util.List;
 
 @Service
 public class EventServiceImpl implements EventService {
@@ -51,12 +54,12 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findById(id).orElseThrow(() -> new NotFoundException("The event was not found"));
     }
 
-    public Event[] getTopTenEvents(int month, EventType type) {
-
-        YearMonth yearMonth = YearMonth.from(LocalDate.now().plusMonths(month)); // idee ist, dass je nach month eben vom current month ne "int month" zahl addiert wird um das monat zu bekommen für das wir die daten haben wollen
-        LocalDateTime startDate = yearMonth.atDay(1).atTime(0, 0, 0);
-        LocalDateTime endDate = yearMonth.atEndOfMonth().atTime(23, 59, 59);
-        return eventRepository.findTopTenEvent(startDate, endDate, type);
+    @Override
+    public List<EventWithBoughtCount> getTopTenEvents(EventTop10SearchDto searchDto) {
+        YearMonth yearMonth = YearMonth.from(LocalDate.now().plusMonths(searchDto.getMonth()));
+        OffsetDateTime startDate = yearMonth.atDay(1).atTime(0, 0, 0).atOffset(ZoneOffset.UTC);
+        OffsetDateTime endDate = yearMonth.atEndOfMonth().atTime(23, 59, 59).atOffset(ZoneOffset.UTC);
+        return eventRepository.findTopTenEvent(startDate, endDate, searchDto.getEventType());
     }
 }
 
