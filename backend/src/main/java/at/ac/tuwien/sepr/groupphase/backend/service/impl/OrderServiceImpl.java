@@ -131,8 +131,8 @@ public class OrderServiceImpl implements OrderService {
 
         if (orderCreateDto.getOrderType() == OrderType.BUY) {
             try {
-                var pdfFile = pdfService.createInvoicePdf(order, tickets, event);
-                order.setPdfTickets(pdfFile);
+                var pdfFile = pdfService.createInvoicePdf(order, dbTickets, event);
+                order.setReceipt(pdfFile);
                 orderRepository.save(order);
                 embeddedFileRepository.save(pdfFile);
             } catch (IOException | TemplateException e) {

@@ -23,8 +23,9 @@
     </div>
     <div class="d-flex flex-column">
       <div class="status-bar d-flex justify-content-end gap-2 mb-4">
-        <button *ngIf="order.receipt" type="button" class="btn btn-sm btn-outline-description"><i
-          class="bi bi-download"></i> Receipt
+        <button *ngIf="order.receipt" (click)="downloadFile(order.receipt)" type="button"
+                class="btn btn-sm btn-outline-description">
+          <i class="bi bi-download"></i> Invoice
         </button>
         <span *ngIf="isReservation && !isExpired" class="badge bg-warn-200 text-warn-800 pt-2">Reserved</span>
         <span *ngIf="isReservation && isExpired" class="badge bg-danger pt-2">Expired</span>
@@ -34,7 +35,7 @@
       </div>
       <div class="d-flex gap-2 justify-content-end">
         <button *ngIf="order.pdfTickets" type="button" class="btn btn-outline-primary"
-                (click)="downloadTicket(order.pdfTickets)">Download Ticket
+                (click)="downloadFile(order.pdfTickets)">Download Ticket
         </button>
         <a *ngIf="isReservation && !isExpired" [routerLink]="['/events', order.event.id, 'buy-reservation', order.id]"
            class="btn btn-outline-primary">Buy Now</a>

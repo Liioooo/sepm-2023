@@ -48,7 +48,7 @@ export class OrderItemComponent {
     this.deleteReservationEvent.emit(this.order);
   }
 
-  downloadTicket(pdfTickets: EmbeddedFileDto) {
-    this.embeddedFileService.openEmbeddedFile(pdfTickets);
+  downloadFile(file: EmbeddedFileDto) {
+    this.embeddedFileService.openEmbeddedFile(file);
   }
 }
