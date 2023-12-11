@@ -1,9 +1,11 @@
 package at.ac.tuwien.sepr.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderCreateDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.RedeemReservationDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.OrderMapper;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.TicketMapper;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Order;
+import at.ac.tuwien.sepr.groupphase.backend.entity.Ticket;
 import at.ac.tuwien.sepr.groupphase.backend.enums.OrderType;
 import at.ac.tuwien.sepr.groupphase.backend.enums.TicketCategory;
 import at.ac.tuwien.sepr.groupphase.backend.exception.ConflictException;
@@ -23,8 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.invoke.MethodHandles;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -115,8 +119,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional
-    public void redeemReservation(Long orderId) {
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    public void redeemReservation(Long orderId, RedeemReservationDto redeemReservationDto) {
         var user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
         var order = orderRepository.findOrderByIdAndUserId(orderId, user.getId()).orElseThrow(() -> new NotFoundException("Order not found"));
 
@@ -132,6 +136,24 @@ public class OrderServiceImpl implements OrderService {
             throw new ConflictException("Reservation has expired");
         }
 
+        List<Ticket> standingTicketsInOrder = order.getTickets().stream().filter(t -> t.getTicketCategory() == TicketCategory.STANDING).toList();
+        int standingTicketsToRedeem = Arrays.stream(redeemReservationDto.getTickets()).filter(t -> t.getTicketCategory() == TicketCategory.STANDING).toList().size();
+
+        if (standingTicketsToRedeem > standingTicketsInOrder.size()) {
+            throw new ConflictException("Cannot redeem more standing tickets than were reserved");
+        }
+
+        List<Ticket> tickets = new ArrayList<>(order.getTickets().stream().filter(t -> {
+            if (t.getTicketCategory() == TicketCategory.SEATING) {
+                return Arrays.stream(redeemReservationDto.getTickets()).anyMatch(rt -> Objects.equals(rt.getSeatNumber(), t.getSeatNumber()) && Objects.equals(rt.getTierNumber(), t.getTierNumber()));
+            }
+            return false;
+        }).toList());
+
+        tickets.addAll(standingTicketsInOrder.stream().limit(standingTicketsToRedeem).toList());
+
+        order.getTickets().clear();
+        order.getTickets().addAll(tickets);
         order.setOrderType(OrderType.BUY);
         order.setOrderDate(OffsetDateTime.now());
         orderRepository.save(order);

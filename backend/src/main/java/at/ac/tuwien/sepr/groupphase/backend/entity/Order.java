@@ -51,7 +51,7 @@ public class Order {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Event event;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "order")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "order")
     private List<Ticket> tickets;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)

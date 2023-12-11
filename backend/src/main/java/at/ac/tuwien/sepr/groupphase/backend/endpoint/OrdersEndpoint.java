@@ -3,9 +3,8 @@ package at.ac.tuwien.sepr.groupphase.backend.endpoint;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderListDto;
-import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderPatchDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.RedeemReservationDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.OrderMapper;
-import at.ac.tuwien.sepr.groupphase.backend.enums.OrderType;
 import at.ac.tuwien.sepr.groupphase.backend.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -63,10 +62,8 @@ public class OrdersEndpoint {
     @PatchMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Converts a reservation to an order")
-    public void redeemReservation(@PathVariable Long id, @Valid @RequestBody OrderPatchDto orderPatchDto) {
-        if (orderPatchDto.getOrderType() == OrderType.BUY) {
-            orderService.redeemReservation(id);
-        }
+    public void redeemReservation(@PathVariable Long id, @Valid @RequestBody RedeemReservationDto redeemReservationDto) {
+        orderService.redeemReservation(id, redeemReservationDto);
     }
 
     @Secured("ROLE_USER")

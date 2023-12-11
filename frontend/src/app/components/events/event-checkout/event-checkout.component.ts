@@ -13,6 +13,7 @@ import { ToastService } from '../../../services/toast.service';
 import { ErrorResponseDto } from '../../../dtos/error-response-dto';
 import { ErrorFormatterService } from '../../../services/error-formatter.service';
 import { CheckoutMode } from '../../../types/checkout-mode';
+import { RedeemReservationDto } from '../../../dtos/redeem-reservation-dto';
 
 @Component({
   selector: 'app-event-checkout',
@@ -32,35 +33,13 @@ export class EventCheckoutComponent implements OnInit {
     private errorFormatterService: ErrorFormatterService,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.event$ = this.eventService.getEvent(Number(this.route.snapshot.paramMap.get('id')));
     this.reservationId = Number(this.route.snapshot.paramMap.get('reservationId'));
     this.mode = this.route.snapshot.data.type ?? CheckoutMode.BUY;
-
-    if (this.mode === CheckoutMode.BUY_RESERVATION) {
-      this.orderService.getOrder(this.reservationId).subscribe({
-        next: order => {
-          if (order.orderType !== OrderType.RESERVE) {
-            this.toastService.showError('Error', 'This order is not a reservation');
-            this.router.navigate(['/profile']);
-          }
-
-          this.ticketService.selectedSeats = new Map(order.tickets
-            .filter(t => t.ticketCategory === TicketCategory.SEATING)
-            .map(t => [`${t.seatNumber}:${t.tierNumber}`, true]));
-
-          this.ticketService.selectedStanding = order.tickets
-            .filter(t => t.ticketCategory === TicketCategory.STANDING)
-            .length;
-        },
-        error: err => {
-          this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto));
-          this.router.navigate(['/profile']);
-        }
-      });
-    }
   }
 
   get isBuy(): boolean {
@@ -100,26 +79,10 @@ export class EventCheckoutComponent implements OnInit {
   }
 
   submitNewOrder(event: EventDetailDto) {
-    let seats: TicketCreateDto[] = [];
-    for (const [seat] of this.ticketService.selectedSeats) {
-      const [seatNumber, tierNumber] = seat.split(':').map(Number);
-
-      seats.push({
-        ticketCategory: TicketCategory.SEATING,
-        seatNumber,
-        tierNumber
-      });
-    }
-
     const orderType = this.mode === CheckoutMode.BUY ? OrderType.BUY : OrderType.RESERVE;
 
     const order: OrderCreateDto = {
-      tickets: [
-        ...seats,
-        ...new Array<TicketCreateDto>(this.ticketService.selectedStanding).fill({
-          ticketCategory: TicketCategory.STANDING
-        })
-      ],
+      tickets: this.generateTickets(),
       orderType,
       eventId: event.id
     };
@@ -134,12 +97,36 @@ export class EventCheckoutComponent implements OnInit {
   }
 
   submitReservationPurchase() {
-    this.orderService.purchaseReservation(this.reservationId).subscribe({
+    const redeemReservationDto: RedeemReservationDto = {
+      tickets: this.generateTickets()
+    };
+
+    this.orderService.purchaseReservation(this.reservationId, redeemReservationDto).subscribe({
       next: () => {
         this.toastService.showSuccess('Success', 'Reservation redeemed successfully');
         this.router.navigate(['/profile']);
       },
       error: err => this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto))
     });
+  }
+
+  private generateTickets(): TicketCreateDto[] {
+    let seats: TicketCreateDto[] = [];
+    for (const [seat] of this.ticketService.selectedSeats) {
+      const [seatNumber, tierNumber] = seat.split(':').map(Number);
+
+      seats.push({
+        ticketCategory: TicketCategory.SEATING,
+        seatNumber,
+        tierNumber
+      });
+    }
+
+    return [
+      ...seats,
+      ...new Array<TicketCreateDto>(this.ticketService.selectedStanding).fill({
+        ticketCategory: TicketCategory.STANDING
+      })
+    ];
   }
 }

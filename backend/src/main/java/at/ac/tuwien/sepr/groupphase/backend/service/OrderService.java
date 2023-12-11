@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepr.groupphase.backend.service;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderCreateDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.RedeemReservationDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Order;
 
 import java.util.List;
@@ -30,9 +31,10 @@ public interface OrderService {
     /**
      * Redeems a reservation.
      *
-     * @param orderId the id of the order to redeem
+     * @param orderId              the id of the order to redeem
+     * @param redeemReservationDto the tickets to redeem in the reservation
      */
-    void redeemReservation(Long orderId);
+    void redeemReservation(Long orderId, RedeemReservationDto redeemReservationDto);
 
     /**
      * Deletes a reservation.

@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { map, Observable, pipe } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Globals } from '../global/globals';
 import { OrderCreateDto } from '../dtos/order-create-dto';
 import { OrderListDto } from '../dtos/order-list-dto';
 import { convertToDatesInObject } from '../utils/convertToDatesInObject';
 import { OrderDetailDto } from '../dtos/order-detail-dto';
-import { OrderType } from '../types/order-type';
+import { RedeemReservationDto } from '../dtos/redeem-reservation-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -47,13 +47,12 @@ export class OrderService {
   }
 
   /**
-   * Delete a reservation by its id
+   * Purchase some tickets from a reservation
    * @param orderId
+   * @param redeemReservationDto
    */
-  purchaseReservation(orderId: number): Observable<void> {
-    return this.httpClient.patch<void>(`${this.baseUri}/${orderId}`, {
-      orderType: OrderType.BUY
-    });
+  purchaseReservation(orderId: number, redeemReservationDto: RedeemReservationDto): Observable<void> {
+    return this.httpClient.patch<void>(`${this.baseUri}/${orderId}`, redeemReservationDto);
   }
 
   /**

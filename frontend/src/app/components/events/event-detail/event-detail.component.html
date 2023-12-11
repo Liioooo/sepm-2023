@@ -73,13 +73,15 @@
           </div>
         </div>
         <hr>
-        <p class="text-description">
-          You can reserve the selected tickets for now and buy them until 30 minutes before this event starts. If not,
-          the reservation expires and is no longer valid.
-        </p>
-        <div class="text-center">
-          <a href="javascript:void(0)" (click)="reserveTickets()">Reserve Tickets for now</a>
-        </div>
+        <ng-container *ngIf="isSelectNew">
+          <p class="text-description">
+            You can reserve the selected tickets for now and buy them until 30 minutes before this event starts. If not,
+            the reservation expires and is no longer valid.
+          </p>
+          <div class="text-center">
+            <a href="javascript:void(0)" (click)="reserveTickets()">Reserve Tickets for now</a>
+          </div>
+        </ng-container>
         <div class="text-center">
           <button class="btn btn-primary mt-4" (click)="buyTickets()">Buy Tickets</button>
         </div>
