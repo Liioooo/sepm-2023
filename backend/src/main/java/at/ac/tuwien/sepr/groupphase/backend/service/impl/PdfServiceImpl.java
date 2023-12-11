@@ -2,8 +2,10 @@ package at.ac.tuwien.sepr.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepr.groupphase.backend.config.FreemarkerConfig;
 import at.ac.tuwien.sepr.groupphase.backend.entity.EmbeddedFile;
+import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Ticket;
+import at.ac.tuwien.sepr.groupphase.backend.enums.TicketCategory;
 import at.ac.tuwien.sepr.groupphase.backend.service.PdfService;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import freemarker.template.Configuration;
@@ -19,7 +21,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -34,12 +38,24 @@ public class PdfServiceImpl implements PdfService {
     }
 
     @Override
-    public EmbeddedFile createInvoicePdf(@NotNull Order order) throws IOException, TemplateException {
+    public EmbeddedFile createInvoicePdf(@NotNull Order order, @NotNull List<Ticket> tickets, @NotNull Event event) throws IOException, TemplateException {
         Template template = freemarkerConfiguration.getTemplate(freemarkerConfig.getTemplates().get("invoice"));
         try (Writer stringWriter = new StringWriter();
              ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream()) {
             Map<String, Object> variables = new HashMap<>();
             variables.put("order", order);
+            variables.put("event", event);
+            variables.put("tickets", tickets);
+            variables.put("standingTicketsCount", tickets.stream().filter((ticket) -> ticket.getTicketCategory() == TicketCategory.STANDING).count());
+            variables.put("orderDate", order.getOrderDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+            variables.put("totalPrice", tickets.stream().map((ticket) -> {
+                if (ticket.getTicketCategory() == TicketCategory.STANDING) {
+                    return event.getStandingPrice();
+                } else if (ticket.getTicketCategory() == TicketCategory.SEATING) {
+                    return event.getSeatPrice();
+                }
+                return 0;
+            }).mapToDouble(Number::doubleValue).sum());
             template.process(variables, stringWriter);
 
             PdfRendererBuilder builder = new PdfRendererBuilder();
