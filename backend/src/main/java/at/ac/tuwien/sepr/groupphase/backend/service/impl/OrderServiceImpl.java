@@ -5,9 +5,11 @@ import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.OrderMapper;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.TicketMapper;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepr.groupphase.backend.enums.OrderType;
+import at.ac.tuwien.sepr.groupphase.backend.enums.TicketCategory;
 import at.ac.tuwien.sepr.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.UnauthorizedException;
+import at.ac.tuwien.sepr.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepr.groupphase.backend.repository.OrderRepository;
 import at.ac.tuwien.sepr.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepr.groupphase.backend.service.OrderService;
@@ -34,19 +36,22 @@ public class OrderServiceImpl implements OrderService {
     private final UserService userService;
     private final TicketMapper ticketMapper;
     private final OrderMapper orderMapper;
+    private final EventRepository eventRepository;
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository,
                             TicketRepository ticketRepository,
                             TicketMapper ticketMapper,
                             OrderMapper orderMapper,
-                            UserService userService
+                            UserService userService,
+                            EventRepository eventRepository
     ) {
         this.orderRepository = orderRepository;
         this.ticketRepository = ticketRepository;
         this.ticketMapper = ticketMapper;
         this.orderMapper = orderMapper;
         this.userService = userService;
+        this.eventRepository = eventRepository;
     }
 
     @Override
@@ -73,9 +78,10 @@ public class OrderServiceImpl implements OrderService {
         var user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
 
         // Check if tickets are still available
-        for (var ticket : orderCreateDto.getTickets()) {
-            var existingTickets = ticketRepository.findValidTicketsByEventIdAndSeatNumberAndTierNumber(
-                orderCreateDto.getEventId(), ticket.getSeatNumber(), ticket.getTierNumber());
+        for (var ticket : Arrays.stream(orderCreateDto.getTickets()).filter(t -> t.getTicketCategory() == TicketCategory.SEATING).toList()) {
+            var existingTickets = ticketRepository.findValidSeatingTicketsByEventIdAndSeatNumberAndTierNumber(
+                orderCreateDto.getEventId(), ticket.getSeatNumber(), ticket.getTierNumber()
+            );
 
             if (!existingTickets.isEmpty()) {
                 if (existingTickets.size() > 1) {
@@ -85,6 +91,16 @@ public class OrderServiceImpl implements OrderService {
 
                 throw new ConflictException("One ore more tickets have already been sold");
             }
+        }
+
+        int standingTicketCount = Arrays.stream(orderCreateDto.getTickets()).filter(t -> t.getTicketCategory() == TicketCategory.STANDING).toList().size();
+        int validStandingTickets = ticketRepository.findValidStandingTicketsByEventId(orderCreateDto.getEventId());
+
+        var event = eventRepository.findById(orderCreateDto.getEventId()).orElseThrow(() -> new NotFoundException("Event not found"));
+        long standingCountInHall = event.getHall().getStandingCount();
+
+        if (standingTicketCount + validStandingTickets > standingCountInHall) {
+            throw new ConflictException("There are not enough standing tickets available");
         }
 
         // Save order and tickets
