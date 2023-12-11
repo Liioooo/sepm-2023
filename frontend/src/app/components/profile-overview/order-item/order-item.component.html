@@ -1,0 +1,38 @@
+<div class="card">
+  <div
+    class="card-body d-flex justify-content-between align-items-md-stretch flex-column flex-md-row gap-md-0 gap-4">
+    <div class="d-flex gap-3">
+      <div class="p-5 bg-light rounded-2 flex-shrink-0"></div> <!-- TODO: add image -->
+      <div class="d-flex flex-column justify-content-between gap-3">
+        <div>
+          <h6 class="fw-bold mb-0">{{ event.title }}</h6>
+          <span class="mt-2">{{ artist }}</span>
+        </div>
+        <div class="text-description">
+          <p class="m-0">
+            {{ event.hall.name }},
+            {{ event.hall.location.title }},
+            {{ event.hall.location.address }},
+            {{ event.hall.location.city }},
+            {{ event.hall.location.country }}
+          </p>
+          <p class="m-0">{{event.startDate.toLocaleDateString([], { hour: 'numeric', minute: 'numeric' })}}
+            - {{event.endDate.toLocaleDateString([], { hour: 'numeric', minute: 'numeric' })}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex flex-column">
+      <div class="status-bar d-flex justify-content-end gap-2 mb-4">
+        <button *ngIf="order.receipt" type="button" class="btn btn-sm btn-outline-description"><i class="bi bi-download"></i> Receipt</button>
+        <span *ngIf="isReservation && !isExpired" class="badge bg-warn-200 text-warn-800 pt-2">Reserved</span>
+        <span *ngIf="isReservation && isExpired" class="badge bg-danger pt-2">Expired</span>
+        <span *ngIf="!isReservation" class="badge bg-success-200 text-success-800 pt-2">Paid</span>
+        <button *ngIf="isReservation" (click)="deleteReservation()" type="button" class="btn btn-danger btn-sm text-white"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="d-flex gap-2 justify-content-end">
+        <button *ngIf="order.pdfTickets" type="button" class="btn btn-outline-primary">Download Ticket</button>
+        <a *ngIf="isReservation && !isExpired" [routerLink]="['/events', order.event.id, 'buy-reservation', order.id]" class="btn btn-outline-primary">Buy Now</a>
+      </div>
+    </div>
+  </div>
+</div>

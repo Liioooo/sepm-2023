@@ -18,6 +18,9 @@ import { EventDetailComponent } from './components/events/event-detail/event-det
 import { LocationsComponent } from './components/locations/locations.component';
 import { RequestPasswordResetComponent } from './components/request-password-reset/request-password-reset.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import { EventCheckoutComponent } from './components/events/event-checkout/event-checkout.component';
+import { CheckoutMode } from './types/checkout-mode';
+import { TicketSelectMode } from './types/ticket-select-mode';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -26,7 +29,36 @@ const routes: Routes = [
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'events', component: EventsComponent },
-  { path: 'events/:id', component: EventDetailComponent },
+  {
+    path: 'events/:id',
+    canActivate: [authGuard],
+    component: EventDetailComponent,
+    data: { type: TicketSelectMode.SELECT_NEW }
+  },
+  {
+    path: 'events/:id/buy',
+    canActivate: [authGuard],
+    component: EventCheckoutComponent,
+    data: { type: CheckoutMode.BUY }
+  },
+  {
+    path: 'events/:id/reserve',
+    canActivate: [authGuard],
+    component: EventCheckoutComponent,
+    data: { type: CheckoutMode.RESERVE }
+  },
+  {
+    path: 'events/:id/buy-reservation/:reservationId',
+    canActivate: [authGuard],
+    component: EventDetailComponent,
+    data: { type: TicketSelectMode.SELECT_RESERVED }
+  },
+  {
+    path: 'events/:id/buy-reservation/:reservationId/confirm',
+    canActivate: [authGuard],
+    component: EventCheckoutComponent,
+    data: { type: CheckoutMode.BUY_RESERVATION }
+  },
   { path: 'locations', component: LocationsComponent },
   { path: 'news', canActivate: [authGuard], component: NewsListComponent },
   { path: 'profile', canActivate: [authGuard], component: ProfileOverviewComponent },
