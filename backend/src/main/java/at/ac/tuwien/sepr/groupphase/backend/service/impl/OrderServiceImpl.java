@@ -4,18 +4,23 @@ import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.RedeemReservationDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.OrderMapper;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.TicketMapper;
+import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Ticket;
 import at.ac.tuwien.sepr.groupphase.backend.enums.OrderType;
 import at.ac.tuwien.sepr.groupphase.backend.enums.TicketCategory;
 import at.ac.tuwien.sepr.groupphase.backend.exception.ConflictException;
+import at.ac.tuwien.sepr.groupphase.backend.exception.InternalServerException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.UnauthorizedException;
+import at.ac.tuwien.sepr.groupphase.backend.repository.EmbeddedFileRepository;
 import at.ac.tuwien.sepr.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepr.groupphase.backend.repository.OrderRepository;
 import at.ac.tuwien.sepr.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepr.groupphase.backend.service.OrderService;
+import at.ac.tuwien.sepr.groupphase.backend.service.PdfService;
 import at.ac.tuwien.sepr.groupphase.backend.service.UserService;
+import freemarker.template.TemplateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -42,20 +48,27 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final EventRepository eventRepository;
 
+    private final PdfService pdfService;
+
+    private final EmbeddedFileRepository embeddedFileRepository;
+
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository,
                             TicketRepository ticketRepository,
                             TicketMapper ticketMapper,
                             OrderMapper orderMapper,
                             UserService userService,
-                            EventRepository eventRepository
-    ) {
+                            EventRepository eventRepository,
+                            PdfService pdfService,
+                            EmbeddedFileRepository embeddedFileRepository) {
         this.orderRepository = orderRepository;
         this.ticketRepository = ticketRepository;
         this.ticketMapper = ticketMapper;
         this.orderMapper = orderMapper;
         this.userService = userService;
         this.eventRepository = eventRepository;
+        this.pdfService = pdfService;
+        this.embeddedFileRepository = embeddedFileRepository;
     }
 
     @Override
@@ -115,7 +128,11 @@ public class OrderServiceImpl implements OrderService {
             .peek(ticket -> ticket.setOrder(order))
             .toList();
 
-        ticketRepository.saveAll(tickets);
+        var dbTickets = ticketRepository.saveAll(tickets);
+
+        if (orderCreateDto.getOrderType() == OrderType.BUY) {
+            createInvoicePdf(order, dbTickets, event);
+        }
     }
 
     @Override
@@ -157,6 +174,9 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderType(OrderType.BUY);
         order.setOrderDate(OffsetDateTime.now());
         orderRepository.save(order);
+
+        var event = eventRepository.findById(order.getEvent().getId()).orElseThrow(() -> new NotFoundException("Event not found"));
+        createInvoicePdf(order, tickets, event);
     }
 
     @Override
@@ -170,5 +190,16 @@ public class OrderServiceImpl implements OrderService {
         }
 
         orderRepository.delete(order);
+    }
+
+    private void createInvoicePdf(Order order, List<Ticket> tickets, Event event) {
+        try {
+            var pdfFile = pdfService.createInvoicePdf(order, tickets, event);
+            order.setReceipt(pdfFile);
+            orderRepository.save(order);
+            embeddedFileRepository.save(pdfFile);
+        } catch (IOException | TemplateException e) {
+            throw new InternalServerException("Could not generate invoice PDF.", e);
+        }
     }
 }

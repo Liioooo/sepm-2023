@@ -5,6 +5,8 @@ import { MODAL_DISMISSED, ModalService } from '../../../services/modal.service';
 import {
   ConfirmDeleteReservationModalComponent
 } from '../../modal/confirm-delete-reservation-modal/confirm-delete-reservation-modal.component';
+import { EmbeddedFileDto } from '../../../dtos/embedded-file-dto';
+import { EmbeddedFileService } from '../../../services/embedded-file.service';
 
 @Component({
   selector: 'app-order-item',
@@ -17,7 +19,7 @@ export class OrderItemComponent {
 
   @Output() deleteReservationEvent = new EventEmitter<OrderListDto>();
 
-  constructor(private modalService: ModalService) {
+  constructor(private modalService: ModalService, private embeddedFileService: EmbeddedFileService) {
   }
 
   get event() {
@@ -46,4 +48,7 @@ export class OrderItemComponent {
     this.deleteReservationEvent.emit(this.order);
   }
 
+  downloadFile(file: EmbeddedFileDto) {
+    this.embeddedFileService.openEmbeddedFile(file);
+  }
 }
