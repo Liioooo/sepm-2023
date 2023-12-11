@@ -4,6 +4,7 @@ import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.RedeemReservationDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.OrderMapper;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.TicketMapper;
+import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Ticket;
 import at.ac.tuwien.sepr.groupphase.backend.enums.OrderType;
@@ -130,14 +131,7 @@ public class OrderServiceImpl implements OrderService {
         var dbTickets = ticketRepository.saveAll(tickets);
 
         if (orderCreateDto.getOrderType() == OrderType.BUY) {
-            try {
-                var pdfFile = pdfService.createInvoicePdf(order, dbTickets, event);
-                order.setReceipt(pdfFile);
-                orderRepository.save(order);
-                embeddedFileRepository.save(pdfFile);
-            } catch (IOException | TemplateException e) {
-                throw new InternalServerException("Could not generate invoice PDF.", e);
-            }
+            createInvoicePdf(order, dbTickets, event);
         }
     }
 
@@ -180,6 +174,9 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderType(OrderType.BUY);
         order.setOrderDate(OffsetDateTime.now());
         orderRepository.save(order);
+
+        var event = eventRepository.findById(order.getEvent().getId()).orElseThrow(() -> new NotFoundException("Event not found"));
+        createInvoicePdf(order, tickets, event);
     }
 
     @Override
@@ -193,5 +190,16 @@ public class OrderServiceImpl implements OrderService {
         }
 
         orderRepository.delete(order);
+    }
+
+    private void createInvoicePdf(Order order, List<Ticket> tickets, Event event) {
+        try {
+            var pdfFile = pdfService.createInvoicePdf(order, tickets, event);
+            order.setReceipt(pdfFile);
+            orderRepository.save(order);
+            embeddedFileRepository.save(pdfFile);
+        } catch (IOException | TemplateException e) {
+            throw new InternalServerException("Could not generate invoice PDF.", e);
+        }
     }
 }
