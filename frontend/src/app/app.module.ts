@@ -37,6 +37,9 @@ import { RequestPasswordResetComponent } from './components/request-password-res
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { EventCheckoutComponent } from './components/events/event-checkout/event-checkout.component';
 import { OrderItemComponent } from './components/profile-overview/order-item/order-item.component';
+import {
+  ConfirmDeleteReservationModalComponent
+} from './components/modal/confirm-delete-reservation-modal/confirm-delete-reservation-modal.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +69,8 @@ import { OrderItemComponent } from './components/profile-overview/order-item/ord
     LocationSearchFieldsComponent,
     EventDetailComponent,
     EventCheckoutComponent,
-    OrderItemComponent
+    OrderItemComponent,
+    ConfirmDeleteReservationModalComponent
   ],
   imports: [
     BrowserModule,
