@@ -20,17 +20,17 @@ export class EventOverviewComponent {
   ) {
     this.route.data.subscribe(
       data => {
-      const id = Number(this.route.snapshot.paramMap.get('id'));
-      if (Number.isNaN(id)) {
-        this.notification.showError('Could not load Event', 'This event could not be found');
-        this.router.navigate(['/management/events']);
-      } else {
-        this.service.getEvent(id).subscribe({
-          next: event => {
-            this.event = event;
-          }
-        });
-      }
-    });
+        const id = Number(this.route.snapshot.paramMap.get('id'));
+        if (Number.isNaN(id)) {
+          this.notification.showError('Could not load Event', 'This event could not be found');
+          this.router.navigate(['/management/events']);
+        } else {
+          this.service.getEvent(id).subscribe({
+            next: event => {
+              this.event = event;
+            }
+          });
+        }
+      });
   }
 }
