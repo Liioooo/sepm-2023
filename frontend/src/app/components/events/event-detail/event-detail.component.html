@@ -22,10 +22,11 @@
           <div class="tier-number d-flex align-items-center text-description">{{ tier.number }}</div>
           <div class="flex-grow-1 d-flex justify-content-center align-items-center">
             <button
-              ngbPopover="Row {{ tier.number }}, Seat {{ seat + 1 }}"
+              [ngbPopover]="getPopoverText(tier.number, seat + 1)"
               triggers="mouseenter:mouseleave"
               class="seat-button me-1"
               (click)="toggleSeat(tier.number, seat + 1)"
+              [disabled]="isOccupied(tier.number, seat + 1)"
               [class]="'seat-button me-1 ' + (isSeatSelected(tier.number, seat + 1) ? 'bg-secondary' : '')"
               *ngFor="let _ of [].constructor(tier.numberOfSeats); let seat = index"
             ></button>
@@ -60,7 +61,7 @@
             </button>
             <span class="mx-2">{{ selectedStanding }}</span>
             <button class="amount-button d-flex align-items-center justify-content-center"
-                    (click)="incrementStanding(event)">
+                    (click)="incrementStanding(event)" [disabled]="selectedStanding >= getRemainingStandings(event)">
               <i class="bi bi-plus"></i>
             </button>
           </div>

@@ -11,6 +11,7 @@ import { TicketCategory } from '../../../types/ticket-category';
 import { ErrorResponseDto } from '../../../dtos/error-response-dto';
 import { ToastService } from '../../../services/toast.service';
 import { ErrorFormatterService } from '../../../services/error-formatter.service';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-event-detail',
@@ -24,6 +25,8 @@ export class EventDetailComponent {
   selectedSeats: Map<String, boolean> = new Map<String, boolean>();
   selectedStanding: number = 0;
 
+  occupiedSeats: Map<String, boolean> = new Map<String, boolean>();
+
   selectedSeatsInReservation: Map<String, boolean> = new Map<String, boolean>();
   selectedStandingInReservation: number = 0;
 
@@ -36,7 +39,14 @@ export class EventDetailComponent {
     private toastService: ToastService,
     private errorFormatterService: ErrorFormatterService
   ) {
-    this.event$ = this.eventService.getEvent(Number(this.route.snapshot.paramMap.get('id')));
+    this.event$ = this.eventService.getEvent(Number(this.route.snapshot.paramMap.get('id'))).pipe(
+      tap(event => {
+        for (let seat of event.occupiedSeats) {
+          this.occupiedSeats.set(`${seat.tierNumber}:${seat.seatNumber}`, true);
+        }
+      })
+    );
+
     this.reservationId = Number(this.route.snapshot.paramMap.get('reservationId'));
     this.mode = this.route.snapshot.data.type ?? TicketSelectMode.SELECT_NEW;
 
@@ -97,14 +107,17 @@ export class EventDetailComponent {
     this.selectedStanding = Math.max(this.selectedStanding - 1, 0);
   }
 
+  getRemainingStandings(event: EventDetailDto): number {
+    return event.hall.standingCount - event.occupiedStandings;
+  }
+
   incrementStanding(event: EventDetailDto) {
     if (this.isSelectReserved) {
       this.selectedStanding = Math.min(this.selectedStanding + 1, this.selectedStandingInReservation);
       return;
     }
 
-    // TODO: max needs to respect already bought standing tickets
-    this.selectedStanding = Math.min(this.selectedStanding + 1, event.hall.standingCount);
+    this.selectedStanding = Math.min(this.selectedStanding + 1, this.getRemainingStandings(event));
   }
 
   buyTickets() {
@@ -129,5 +142,17 @@ export class EventDetailComponent {
 
   get isSelectReserved(): boolean {
     return this.mode === TicketSelectMode.SELECT_RESERVED;
+  }
+
+  isOccupied(tierNumber: number, seatNumber: number): boolean {
+    return this.occupiedSeats.has(`${tierNumber}:${seatNumber}`);
+  }
+
+  getPopoverText(tierNumber: number, seatNumber: number): string {
+    if (this.isOccupied(tierNumber, seatNumber)) {
+      return 'Occupied';
+    } else {
+      return `Row ${tierNumber}, Seat ${seatNumber}`;
+    }
   }
 }
