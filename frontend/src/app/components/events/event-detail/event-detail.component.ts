@@ -60,7 +60,7 @@ export class EventDetailComponent {
 
           this.selectedSeats = new Map(order.tickets
             .filter(t => t.ticketCategory === TicketCategory.SEATING)
-            .map(t => [`${t.seatNumber}:${t.rowNumber}`, true]));
+            .map(t => [`${t.rowNumber}:${t.seatNumber}`, true]));
           this.selectedSeatsInReservation = new Map(this.selectedSeats);
 
           this.selectedStanding = order.tickets
@@ -145,12 +145,16 @@ export class EventDetailComponent {
   }
 
   isOccupied(rowNumber: number, seatNumber: number): boolean {
-    return this.occupiedSeats.has(`${rowNumber}:${seatNumber}`);
+    if (this.isSelectReserved) {
+      return !this.selectedSeatsInReservation.has(`${rowNumber}:${seatNumber}`);
+    } else {
+      return this.occupiedSeats.has(`${rowNumber}:${seatNumber}`);
+    }
   }
 
   getPopoverText(rowNumber: number, seatNumber: number): string {
     if (this.isOccupied(rowNumber, seatNumber)) {
-      return 'Occupied';
+      return this.isSelectReserved ? 'Not reserved' : 'Occupied';
     } else {
       return `Row ${rowNumber}, Seat ${seatNumber}`;
     }
