@@ -9,8 +9,9 @@ import { convertFromDatesInObject } from '../utils/convertFromDatesInObject';
 import { removeNullOrUndefinedProps } from '../utils/removeNullOrUndefinedProps';
 import { PageableRequest } from '../types/pageable-request';
 import { PageDto } from '../dtos/page-dto';
-import { TopTenEventDto } from '../dtos/top-ten-event-dto';
+import { EventListDto } from '../dtos/event-list-dto';
 import { TopTenEventSearchDto } from '../dtos/top-ten-event-search-dto';
+import {EventWithBoughtCountDto} from '../dtos/event-with-bought-count-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -53,14 +54,14 @@ export class EventService {
     );
   }
 
-  getTopEvents(search: TopTenEventSearchDto): Observable<TopTenEventDto[]> {
+  getTopEvents(search: TopTenEventSearchDto): Observable<EventWithBoughtCountDto[]> {
     const params = new HttpParams()
-      .set('typeId', search.type?.toString() || '')
-      .set('month', search.month ? JSON.stringify(search.month) : '');
+      .set('month', search.month)
+      .set('eventType', search.type || '');
 
     console.log('Loading the top 10 events with search query:', params.toString());
 
     const url = `${this.baseUri}/top10`;
-    return this.httpClient.get<TopTenEventDto[]>(url, { params });
+    return this.httpClient.get<EventWithBoughtCountDto[]>(url, { params });
   }
 }

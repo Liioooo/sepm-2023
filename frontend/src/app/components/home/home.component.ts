@@ -4,8 +4,7 @@ import { EventService } from '../../services/event.service';
 import { FormBuilder } from '@angular/forms';
 import { ErrorResponseDto } from '../../dtos/error-response-dto';
 import { ErrorFormatterService } from '../../services/error-formatter.service';
-import { TopTenEventDto } from '../../dtos/top-ten-event-dto';
-
+import { EventWithBoughtCountDto } from '../../dtos/event-with-bought-count-dto';
 
 
 @Component({
@@ -14,21 +13,20 @@ import { TopTenEventDto } from '../../dtos/top-ten-event-dto';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+  monthNames: string[] = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
+    'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
   searchForm = this.formBuilder.group({
-    type: [null],
-    month: [null]
+    type: 'CONCERT',
+    month: this.monthNames[new Date().getMonth()]
   });
 
-  /* public form: FormGroup = new FormGroup({
-  month: new FormControl(''),
-    type: new FormControl('')
-  });
-  */
+  currentMonth: number = new Date().getMonth();
   public searchType: string;
   public searchMonth: string;
-  top10: TopTenEventDto[];
+  top10: EventWithBoughtCountDto[];
 
-  noEvents = false;
+
+  noEvents: boolean = false;
   top10ChartData: number[] = [];
 
   constructor(private eventService: EventService, private formBuilder: FormBuilder,
@@ -36,35 +34,31 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.searchType = 'All Events';
-    this.searchMonth = ((new Date()).getMonth() + 1) + '-' + ((new Date()).getFullYear());
+
+    this.searchType = this.searchForm.value.type.charAt(0) + this.searchForm.value.type.slice(1).toLowerCase();
+    this.setSearchMonth();
     this.getTop10Events();
   }
 
   onSubmit() {
     this.eventService.getTopEvents(
       {
-        type: this.searchForm.value.type === null ? null : this.searchForm.value.type.id,
-        month: this.searchForm.value.month === null ? null : this.searchForm.value.month
+        type: this.searchForm.value.type === '' ? 'CONCERT' : this.searchForm.value.type,
+        month: this.searchForm.value.month === '' ? 0 : this.convertStringToNumber()
       }
     ).subscribe({
-      next: (top10: TopTenEventDto[]) => {
+      next: (top10: EventWithBoughtCountDto[]) => {
         console.log(this.searchForm.value.type);
         console.log(this.searchForm.value.month);
-        this.searchType = this.searchForm.value.type && typeof this.searchForm.value.type !== 'string'
-          ? this.searchForm.value.type.name
-          : 'All events';
+        this.searchType = this.searchForm.value.type.charAt(0) + this.searchForm.value.type.slice(1).toLowerCase();
 
-        this.searchMonth = this.searchForm.value.month
-          ? `${(new Date(this.searchForm.value.month).getMonth() + 1)}-${(new Date(this.searchForm.value.month).getFullYear())}`
-          : `${(new Date()).getMonth() + 1}-${(new Date()).getFullYear()}`;
+        this.setSearchMonth();
 
         this.top10 = top10;
         if (this.top10.length === 0) {
           this.noEvents = true;
         } else {
           this.noEvents = false;
-          this.toastService.showSuccess('Success', 'The Top 10 events for chosen category and month are being displayed.');
         }
       },
       error: error => {
@@ -73,15 +67,27 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  convertStringToNumber(): number {
+    const wantedMonthNumber = this.monthNames.indexOf(this.searchForm.value.month);
+    if (this.currentMonth <= wantedMonthNumber) return wantedMonthNumber - this.currentMonth;
+    return 12 - (this.currentMonth - wantedMonthNumber);
+  }
+
+  setSearchMonth(): void {
+    let month = this.searchForm.value.month;
+    const wantedMonthNumber = this.monthNames.indexOf(this.searchForm.value.month);
+    if (this.currentMonth <= wantedMonthNumber) this.searchMonth = `${month.charAt(0) + month.slice(1).toLowerCase()} ${new Date().getFullYear()}`;
+    else this.searchMonth = `${month.charAt(0) + month.slice(1).toLowerCase()} ${new Date().getFullYear()+1}`;
+  }
 
   private getTop10Events() {
     this.eventService.getTopEvents(
       {
-        type: null,
-        month: null
+        type: this.searchForm.value.type === '' ? 'CONCERT' : this.searchForm.value.type,
+        month: this.searchForm.value.month === '' ? 0 : this.convertStringToNumber()
       }
     ).subscribe({
-      next: (top10: TopTenEventDto[]) => {
+      next: (top10: EventWithBoughtCountDto[]) => {
         this.top10 = top10;
       },
       error: error => {
@@ -89,6 +95,4 @@ export class HomeComponent implements OnInit {
       }
     });
   }
-
 }
-

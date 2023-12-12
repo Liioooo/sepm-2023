@@ -1,51 +1,46 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import Chart from 'chart.js/auto';
+import { EventWithBoughtCountDto } from '../../../dtos/event-with-bought-count-dto';
 
 @Component({
   selector: 'app-piechart',
   templateUrl: './piechart.component.html',
   styleUrls: ['./piechart.component.scss']
 })
-export class PiechartComponent implements OnInit, OnChanges {
+export class PiechartComponent implements OnChanges {
   @Input() searchMonth: string = '';
   @Input() eventType: string = '';
-  @Input() chartData: number[] = []; // Input for dynamic data
+  @Input() chartData: EventWithBoughtCountDto[] = []; // Input for dynamic data
+  eventNames: string[] = [];
+  ticketCounts: number[] = [];
+  public chart?: Chart<'pie', number[], string>;
 
   constructor() {}
 
-  ngOnInit(): void {
-    this.createChart();
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
+    //console.log(this.chartData);
+    if (!this.chart) {
+      this.createChart();
+    }
     if (changes.chartData && !changes.chartData.firstChange) {
       // Update the chart when the input data changes
       this.updateChart();
     }
-  }
 
-  public chart: any;
+    if (changes.searchMonth && !changes.searchMonth.firstChange) {
+      // Update the chart when the search month input changes
+      this.updateChart();
+    }
+  }
 
   createChart() {
     this.chart = new Chart('MyChart', {
       type: 'pie',
-      // type: 'doughnut',
       data: {
-        labels: [
-          //da gehören die Event names hin
-          'Miley Cyrus',
-          'Harry Styles Show 2',
-          'Harry Styles Show 1',
-          'Seiler und Speer',
-          'Taylor Swift Eras Vienna',
-          'Taylor Swift Eras Graz',
-          'Taylor Swift Eras Klagenfurt',
-          'John Legend'
-        ],
-
+        labels: [],
         datasets: [{
-          label: 'Top 10 '+ this.eventType + ' in '+ this.searchMonth,
-          data: [9168.2, 1417.8, 3335.1, 1165.0, 2078.9, 3533, 5324, 5232, 2324, 2354],
+          label: 'Top 10 ' + this.eventType + ' in ' + this.searchMonth,
+          data: [],
           backgroundColor: [
             'rgb(1,21,104)',
             'rgb(70,61,133)',
@@ -91,11 +86,13 @@ export class PiechartComponent implements OnInit, OnChanges {
         }
       }
     });
+    console.log(this.chart);
   }
 
   updateChart() {
-    // Update the chart data when the input data changes
-    this.chart.data.datasets[0].data = this.chartData;
+    this.chart.data.labels =  this.chartData.map(temp => temp.event.title);
+    this.chart.data.datasets[0].data = this.chartData.map(temp => temp.boughtCount+2); //TODO remove +2, only for testing purposes cause count = 0
+    this.chart.options.plugins.title.text = 'Top 10 ' + this.eventType + ' in ' + this.searchMonth;
     this.chart.update();
   }
 }
