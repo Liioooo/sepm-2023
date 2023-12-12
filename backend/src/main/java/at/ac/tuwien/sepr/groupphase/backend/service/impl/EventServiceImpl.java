@@ -53,7 +53,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public SeatDto[] getOccupiedSeats(long id) {
-        return ticketRepository.findOccupiedSeatsById(id).stream().map((seat -> new SeatDto(seat.getTierNumber(), seat.getSeatNumber()))).toArray(SeatDto[]::new);
+        return ticketRepository.findOccupiedSeatsById(id).stream().map((seat -> new SeatDto(seat.getRowNumber(), seat.getSeatNumber()))).toArray(SeatDto[]::new);
     }
 
     @Override

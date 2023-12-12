@@ -18,17 +18,17 @@
         >
           Standing
         </div>
-        <div class="d-flex flex-row py-1" *ngFor="let tier of event.hall.tiers">
-          <div class="tier-number d-flex align-items-center text-description">{{ tier.number }}</div>
+        <div class="d-flex flex-row py-1" *ngFor="let row of event.hall.rows">
+          <div class="row-number d-flex align-items-center text-description">{{ row.number }}</div>
           <div class="flex-grow-1 d-flex justify-content-center align-items-center">
             <button
-              [ngbPopover]="getPopoverText(tier.number, seat + 1)"
+              [ngbPopover]="getPopoverText(row.number, seat + 1)"
               triggers="mouseenter:mouseleave"
               class="seat-button me-1"
-              (click)="toggleSeat(tier.number, seat + 1)"
-              [disabled]="isOccupied(tier.number, seat + 1)"
-              [class]="'seat-button me-1 ' + (isSeatSelected(tier.number, seat + 1) ? 'bg-secondary' : '')"
-              *ngFor="let _ of [].constructor(tier.numberOfSeats); let seat = index"
+              (click)="toggleSeat(row.number, seat + 1)"
+              [disabled]="isOccupied(row.number, seat + 1)"
+              [class]="'seat-button me-1 ' + (isSeatSelected(row.number, seat + 1) ? 'bg-secondary' : '')"
+              *ngFor="let _ of [].constructor(row.numberOfSeats); let seat = index"
             ></button>
           </div>
         </div>

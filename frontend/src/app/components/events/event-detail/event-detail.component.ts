@@ -42,7 +42,7 @@ export class EventDetailComponent {
     this.event$ = this.eventService.getEvent(Number(this.route.snapshot.paramMap.get('id'))).pipe(
       tap(event => {
         for (let seat of event.occupiedSeats) {
-          this.occupiedSeats.set(`${seat.tierNumber}:${seat.seatNumber}`, true);
+          this.occupiedSeats.set(`${seat.rowNumber}:${seat.seatNumber}`, true);
         }
       })
     );
@@ -60,7 +60,7 @@ export class EventDetailComponent {
 
           this.selectedSeats = new Map(order.tickets
             .filter(t => t.ticketCategory === TicketCategory.SEATING)
-            .map(t => [`${t.seatNumber}:${t.tierNumber}`, true]));
+            .map(t => [`${t.seatNumber}:${t.rowNumber}`, true]));
           this.selectedSeatsInReservation = new Map(this.selectedSeats);
 
           this.selectedStanding = order.tickets
@@ -88,19 +88,19 @@ export class EventDetailComponent {
     return this.selectedSeatsLength * event.seatPrice + this.selectedStanding * event.standingPrice;
   }
 
-  toggleSeat(tierNumber: number, seatNumber: number) {
-    if (this.selectedSeats.get(`${tierNumber}:${seatNumber}`)) {
-      this.selectedSeats.delete(`${tierNumber}:${seatNumber}`);
+  toggleSeat(rowNumber: number, seatNumber: number) {
+    if (this.selectedSeats.get(`${rowNumber}:${seatNumber}`)) {
+      this.selectedSeats.delete(`${rowNumber}:${seatNumber}`);
     } else {
-      if (this.isSelectReserved && !this.selectedSeatsInReservation.has(`${tierNumber}:${seatNumber}`)) {
+      if (this.isSelectReserved && !this.selectedSeatsInReservation.has(`${rowNumber}:${seatNumber}`)) {
         return;
       }
-      this.selectedSeats.set(`${tierNumber}:${seatNumber}`, true);
+      this.selectedSeats.set(`${rowNumber}:${seatNumber}`, true);
     }
   }
 
-  isSeatSelected(tierNumber: number, seatNumber: number) {
-    return this.selectedSeats.get(`${tierNumber}:${seatNumber}`) ?? false;
+  isSeatSelected(rowNumber: number, seatNumber: number) {
+    return this.selectedSeats.get(`${rowNumber}:${seatNumber}`) ?? false;
   }
 
   decrementStanding() {
@@ -144,15 +144,15 @@ export class EventDetailComponent {
     return this.mode === TicketSelectMode.SELECT_RESERVED;
   }
 
-  isOccupied(tierNumber: number, seatNumber: number): boolean {
-    return this.occupiedSeats.has(`${tierNumber}:${seatNumber}`);
+  isOccupied(rowNumber: number, seatNumber: number): boolean {
+    return this.occupiedSeats.has(`${rowNumber}:${seatNumber}`);
   }
 
-  getPopoverText(tierNumber: number, seatNumber: number): string {
-    if (this.isOccupied(tierNumber, seatNumber)) {
+  getPopoverText(rowNumber: number, seatNumber: number): string {
+    if (this.isOccupied(rowNumber, seatNumber)) {
       return 'Occupied';
     } else {
-      return `Row ${tierNumber}, Seat ${seatNumber}`;
+      return `Row ${rowNumber}, Seat ${seatNumber}`;
     }
   }
 }

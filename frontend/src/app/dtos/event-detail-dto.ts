@@ -1,5 +1,5 @@
 import { ArtistDetailDto } from './artist-detail-dto';
-import { HallTiersDetailDto } from './hall-tiers-detail-dto';
+import { HallRowsDetailDto } from './hall-rows-detail-dto';
 import { SeatDto } from './seat-dto';
 
 export interface EventDetailDto {
@@ -10,7 +10,7 @@ export interface EventDetailDto {
   seatPrice: number;
   standingPrice: number;
   artist: ArtistDetailDto;
-  hall: HallTiersDetailDto;
+  hall: HallRowsDetailDto;
   occupiedSeats: SeatDto[];
   occupiedStandings: number;
 }

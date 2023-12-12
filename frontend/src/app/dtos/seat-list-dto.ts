@@ -1,4 +1,4 @@
 export interface SeatListDto {
-  tierNumber: number;
+  rowNumber: number;
   seatNumber: number;
 }

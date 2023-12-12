@@ -11,7 +11,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @AllArgsConstructor
 @ToString
-public class TierListDto {
+public class RowListDto {
 
     private Long number;
 

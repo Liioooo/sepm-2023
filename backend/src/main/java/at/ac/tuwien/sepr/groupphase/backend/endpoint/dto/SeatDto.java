@@ -15,7 +15,7 @@ import lombok.ToString;
 @ToString
 public class SeatDto {
 
-    private Long tierNumber;
+    private Long rowNumber;
 
     private Long seatNumber;
 
