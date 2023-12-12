@@ -93,9 +93,15 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void createOrder(OrderCreateDto orderCreateDto) {
         var user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
+        var event = eventRepository.findById(orderCreateDto.getEventId()).orElseThrow(() -> new NotFoundException("Event not found"));
+        var hall = event.getHall();
 
         // Check if tickets are still available
         for (var ticket : Arrays.stream(orderCreateDto.getTickets()).filter(t -> t.getTicketCategory() == TicketCategory.SEATING).toList()) {
+            if (ticket.getRowNumber() > hall.getRows().size() || ticket.getSeatNumber() > hall.getRows().get((int) (ticket.getRowNumber() - 1)).getNumberOfSeats()) {
+                throw new ConflictException("Seat does not exist");
+            }
+
             var existingTickets = ticketRepository.findValidSeatingTicketsByEventIdAndSeatNumberAndRowNumber(
                 orderCreateDto.getEventId(), ticket.getSeatNumber(), ticket.getRowNumber()
             );
@@ -113,7 +119,6 @@ public class OrderServiceImpl implements OrderService {
         int standingTicketCount = Arrays.stream(orderCreateDto.getTickets()).filter(t -> t.getTicketCategory() == TicketCategory.STANDING).toList().size();
         int validStandingTickets = ticketRepository.findValidStandingTicketsByEventId(orderCreateDto.getEventId());
 
-        var event = eventRepository.findById(orderCreateDto.getEventId()).orElseThrow(() -> new NotFoundException("Event not found"));
         long standingCountInHall = event.getHall().getStandingCount();
 
         if (standingTicketCount + validStandingTickets > standingCountInHall) {
