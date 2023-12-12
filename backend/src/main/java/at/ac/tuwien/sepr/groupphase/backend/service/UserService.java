@@ -2,7 +2,7 @@ package at.ac.tuwien.sepr.groupphase.backend.service;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EmailResetDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.ResetPasswordDto;
-import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UpdateUserDetailDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserLoginDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserRegisterDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
@@ -69,10 +69,10 @@ public interface UserService extends UserDetailsService {
     /**
      * Update the currently authenticated user.
      *
-     * @param updateUserDetailDto the new use data
+     * @param userUpdateDetailDto the new use data
      * @return the updated user details
      */
-    ApplicationUser updateAuthenticatedUser(UpdateUserDetailDto updateUserDetailDto);
+    ApplicationUser updateAuthenticatedUser(UserUpdateDetailDto userUpdateDetailDto);
 
     /**
      * Delete the currently authenticated user.

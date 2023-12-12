@@ -44,7 +44,6 @@ export class NewsComponent {
           totalElements: page.totalElements
         };
       }),
-      tap(data => console.log('Received Data:', data)), // TODO: REMOVE ME AFTER TESTING
       map(page => page.content)
     );
   }

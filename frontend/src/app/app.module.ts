@@ -11,6 +11,9 @@ import { LoginComponent } from './components/login/login.component';
 import { NgbDateAdapter, NgbDateNativeAdapter, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { httpInterceptorProviders } from './interceptors';
 import { NgOptimizedImage } from '@angular/common';
+import { NewsComponent } from './components/news/news.component';
+import { NewsDetailComponent } from './components/news/news-detail/news-detail.component';
+import { NewsListItemComponent } from './components/news/news-list-item/news-list-item.component';
 import { ProfileOverviewComponent } from './components/profile-overview/profile-overview.component';
 import { ManagementComponent } from './components/management/management.component';
 import { ManagementEventsComponent } from './components/management/management-events/management-events.component';
@@ -34,9 +37,12 @@ import {
 import { EventDetailComponent } from './components/events/event-detail/event-detail.component';
 import { RequestPasswordResetComponent } from './components/request-password-reset/request-password-reset.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
-import { NewsComponent } from './components/news/news.component';
-import { NewsDetailComponent } from './components/news/news-detail/news-detail.component';
-import { NewsListItemComponent } from './components/news/news-list-item/news-list-item.component';
+import { EventCheckoutComponent } from './components/events/event-checkout/event-checkout.component';
+import { OrderItemComponent } from './components/profile-overview/order-item/order-item.component';
+import {
+  ConfirmDeleteReservationModalComponent
+} from './components/modal/confirm-delete-reservation-modal/confirm-delete-reservation-modal.component';
+import { NewsCreateComponent } from './components/news/news-create/news-create.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +53,9 @@ import { NewsListItemComponent } from './components/news/news-list-item/news-lis
     LoginComponent,
     RequestPasswordResetComponent,
     ResetPasswordComponent,
+    NewsComponent,
+    NewsDetailComponent,
+    NewsListItemComponent,
     ProfileOverviewComponent,
     EventsComponent,
     EventItemComponent,
@@ -64,9 +73,10 @@ import { NewsListItemComponent } from './components/news/news-list-item/news-lis
     LocationItemComponent,
     LocationSearchFieldsComponent,
     EventDetailComponent,
-    NewsComponent,
-    NewsDetailComponent,
-    NewsListItemComponent
+    EventCheckoutComponent,
+    OrderItemComponent,
+    ConfirmDeleteReservationModalComponent,
+    NewsCreateComponent
   ],
   imports: [
     BrowserModule,

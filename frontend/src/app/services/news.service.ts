@@ -8,6 +8,7 @@ import { PageableRequest } from '../types/pageable-request';
 import { PageDto } from '../dtos/page-dto';
 import { NewsListDto } from '../dtos/news-list-dto';
 import { NewsReqType } from '../enums/newsReqType';
+import { NewsCreateDto } from '../dtos/news-create-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -52,7 +53,15 @@ export class NewsService {
     );
   }
 
-  createNews() {
+  createNews(createDto: NewsCreateDto): Observable<NewsDetailDto> {
+    const createUri: string = this.baseUri + '/create';
 
+    const formData: FormData = new FormData();
+    formData.append('title', createDto.title);
+    formData.append('overviewText', createDto.overviewText);
+    formData.append('text', createDto.text);
+    formData.append('image', createDto.image);
+
+    return this.httpClient.post<NewsDetailDto>(createUri, formData);
   }
 }

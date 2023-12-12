@@ -61,6 +61,11 @@ files:
   public-disk-path: ./public-files/
   embedded-serve-url: /private-files/**
 
+pdf:
+  templates:
+    path: pdf/templates/
+    invoice: invoice.ftlh
+
 management:
   server:
     port: 8081

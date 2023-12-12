@@ -18,7 +18,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class UpdateUserDetailDto {
+public class UserUpdateDetailDto {
 
     @NotBlank(message = "Email must be set")
     @Email

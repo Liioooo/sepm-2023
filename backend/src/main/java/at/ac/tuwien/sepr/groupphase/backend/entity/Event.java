@@ -65,6 +65,6 @@ public class Event {
     private Hall hall;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "event")
-    private List<Ticket> tickets;
+    private List<Order> orders;
 
 }

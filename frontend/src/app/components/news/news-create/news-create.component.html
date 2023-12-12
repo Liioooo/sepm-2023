@@ -1,0 +1,19 @@
+<form (ngSubmit)="onSubmit()">
+  <div class="mb-3">
+    <label>Title</label>
+    <input type="text" class="form-control" [(ngModel)]="newsDto.title" name="title" required>
+  </div>
+  <div class="mb-3">
+    <label>Overview Text</label>
+    <textarea class="form-control" [(ngModel)]="newsDto.overviewText" name="overviewText" required></textarea>
+  </div>
+  <div class="mb-3">
+    <label>Text</label>
+    <textarea class="form-control" [(ngModel)]="newsDto.text" name="text" required></textarea>
+  </div>
+  <div class="mb-3">
+    <label>Upload Image</label>
+    <input type="file" (change)="onFileChanged($event)" accept="image/*" name="image" required>
+  </div>
+  <button type="submit" class="btn btn-primary">Create News</button>
+</form>
