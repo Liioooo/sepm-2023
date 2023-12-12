@@ -15,7 +15,9 @@ import java.util.List;
 public interface AdminMapper {
 
     List<UserListDto> userCollectionToUserListDtoCollection(Collection<ApplicationUser> users);
+
     List<EventListDto> eventCollectionToEventListDtoCollection(Collection<Event> events);
+
     List<NewsListDto> newsCollectionToNewsListDtoCollection(Collection<News> news);
 
 

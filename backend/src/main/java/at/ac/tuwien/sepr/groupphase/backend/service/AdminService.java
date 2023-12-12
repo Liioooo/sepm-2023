@@ -13,7 +13,7 @@ public interface AdminService {
 
 
     /**
-     * Find users that fit the search criteria
+     * Find users that fit the search criteria.
      *
      * @param search the search criteria
      * @return the collection of users
@@ -21,14 +21,16 @@ public interface AdminService {
     Page<ApplicationUser> getUsersBySearch(UserSearchDto search, Pageable pageable);
 
     /**
-     * Find events by search criteria
+     * Find events by search criteria.
+     *
      * @param search the search criteria
      * @return the collection of events
      */
     Page<Event> getEventsBySearch(EventSearchDto search, Pageable pageable);
 
     /**
-     * Find news by search criteria
+     * Find news by search criteria.
+     *
      * @param search the search criteria
      * @return the collection of news
      */

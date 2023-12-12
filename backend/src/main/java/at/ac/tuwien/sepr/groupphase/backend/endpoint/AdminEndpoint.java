@@ -50,7 +50,7 @@ public class AdminEndpoint {
     @Secured("ROLE_ADMIN")
     @GetMapping({"news"})
     @Operation(summary = "Get users, optionally filter by search criteria")
-    public PageDto<NewsListDto> getNews (NewsSearchDto search, Pageable pageable) {
+    public PageDto<NewsListDto> getNews(NewsSearchDto search, Pageable pageable) {
         return this.pageMapper.toPageDtoListMapper(
             adminService.getNewsBySearch(search, pageable), this.adminMapper::newsCollectionToNewsListDtoCollection);
     }
