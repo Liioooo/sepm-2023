@@ -1,0 +1,39 @@
+<form
+  [formGroup]="form"
+  class="search-form row row-gap-3 row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xxl-4"
+>
+  <div class="col">
+    <label for="news-title" class="form-label">Title</label>
+    <input
+      id="news-title"
+      class="form-control"
+      type="text"
+      formControlName="title"
+      placeholder="New Concert Hall"
+    >
+  </div>
+
+  <div class="col">
+    <label for="news-author" class="form-label">Author</label>
+    <input
+      id="news-author"
+      class="form-control"
+      type="text"
+      formControlName="title"
+      placeholder="User"
+    >
+  </div>
+
+  <div class="col">
+    <label for="news-date" class="form-label">Date of Publication</label>
+    <input
+      type="date"
+      id="news-date"
+      name="news-date"
+      placeholder="MM/DD/YYYY"
+      class="form-control"
+      [value]="formatDate(publishDate)"
+      >
+  </div>
+
+</form>

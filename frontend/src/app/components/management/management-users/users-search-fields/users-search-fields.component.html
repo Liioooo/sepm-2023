@@ -1,0 +1,20 @@
+<form
+  [formGroup]="form"
+  class="search-form row row-gap-3 row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xxl-4"
+>
+  <div class="col">
+    <label for="firstName" class="form-label">First Name</label>
+    <input id="firstName" class="form-control" type="text" formControlName="firstName" placeholder="Max">
+  </div>
+
+  <div class="col">
+    <label for="lastName" class="form-label">Last Name</label>
+    <input id="lastName" class="form-control" type="text" formControlName="lastName" placeholder="Mustermann">
+  </div>
+
+  <div class="col">
+    <label for="email" class="form-label">Email</label>
+    <input id="email" class="form-control" type="text" formControlName="email" placeholder="name@email.com">
+  </div>
+
+</form>

@@ -1,1 +1,51 @@
-<p>management-news works!</p>
+<div class="container">
+  <div class="mb-4">
+    <div class="col py-4">
+      <h2 class="fs-1 fw-bold">News</h2>
+    </div>
+
+    <!-- SEARCH -->
+    <app-news-search-fields
+      class="d-block mb-5"
+      (searchChange)="searchAttributes$.next($event)"
+    ></app-news-search-fields>
+
+    <table class="table table-sm">
+      <thead>
+      <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Date of Publication</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let news of news$ | async">
+          <td>{{ news.title }}</td>
+          <td>{{ news.author }}</td>
+          <td>{{ news.publishDate.toLocaleDateString() }}</td>
+          <td>
+            <!-- ACTIONS -->
+            <div class="btn-group">
+              <a class="btn btn-sm responsive-info-button"
+                 [routerLink]="['view', news.id]"
+                 aria-label="Show horse details">
+                <i class="bi bi-info-lg"></i>
+              </a>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="d-flex justify-content-center mt-4">
+      <ngb-pagination
+        [(page)]="pageableState.currentPage"
+        [pageSize]="pageableState.pageSize"
+        [collectionSize]="pageableState.totalElements"
+        (pageChange)="onPageChange($event)"
+      ></ngb-pagination>
+    </div>
+
+  </div>
+</div>

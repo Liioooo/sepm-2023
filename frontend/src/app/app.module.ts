@@ -35,6 +35,8 @@ import {
 import { EventDetailComponent } from './components/events/event-detail/event-detail.component';
 import { RequestPasswordResetComponent } from './components/request-password-reset/request-password-reset.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import { NewsSearchFieldsComponent } from './components/management/management-news/news-search-fields/news-search-fields.component';
+import { UsersSearchFieldsComponent } from './components/management/management-users/users-search-fields/users-search-fields.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +64,9 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
     LocationsComponent,
     LocationItemComponent,
     LocationSearchFieldsComponent,
-    EventDetailComponent
+    EventDetailComponent,
+    NewsSearchFieldsComponent,
+    UsersSearchFieldsComponent
   ],
   imports: [
     BrowserModule,
