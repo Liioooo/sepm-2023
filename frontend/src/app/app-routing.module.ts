@@ -63,7 +63,7 @@ const routes: Routes = [
   },
   { path: 'locations', component: LocationsComponent },
   { path: 'news', canActivate: [authGuard], component: NewsComponent },
-  { path: 'news/:id', canActivate: [authGuard], component: NewsDetailComponent },
+  { path: 'news/detail/:id', canActivate: [authGuard], component: NewsDetailComponent },
   { path: 'news/create', canActivate: [authGuard], component: NewsCreateComponent },
   { path: 'profile', canActivate: [authGuard], component: ProfileOverviewComponent },
   { path: 'profile/settings', canActivate: [authGuard], component: ProfileSettingsComponent },
