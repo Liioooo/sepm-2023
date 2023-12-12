@@ -18,6 +18,9 @@ import { EventDetailComponent } from './components/events/event-detail/event-det
 import { LocationsComponent } from './components/locations/locations.component';
 import { RequestPasswordResetComponent } from './components/request-password-reset/request-password-reset.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import {
+  EventOverviewComponent
+} from './components/management/management-events/event-overview/event-overview.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -35,6 +38,7 @@ const routes: Routes = [
   { path: 'management/events', canActivate: [adminGuard], component: ManagementEventsComponent },
   { path: 'management/news', canActivate: [adminGuard], component: ManagementNewsComponent },
   { path: 'management/users', canActivate: [adminGuard], component: ManagementUsersComponent },
+  { path: 'management/events/:id', canActivate: [adminGuard], component: EventOverviewComponent },
   { path: '**', component: NotFoundComponent }
 ];
 

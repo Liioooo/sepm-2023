@@ -4,6 +4,10 @@
       <h2 class="fs-1 fw-bold">Events</h2>
     </div>
 
+    <a class="btn btn-primary mb-3" routerLink="/create" aria-label="New Event">
+      <i class="bi bi-plus-lg"></i>
+      New Article
+    </a>
     <!-- SEARCH -->
     <app-event-search-fields
       class="d-block mb-5"
@@ -32,7 +36,7 @@
             <!-- ACTIONS -->
             <div class="btn-group">
               <a class="btn btn-sm responsive-info-button"
-                 [routerLink]="['view', event.id]"
+                 [routerLink]="[event.id]"
                  aria-label="Show horse details">
                 <i class="bi bi-info-lg"></i>
               </a>
