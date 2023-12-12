@@ -35,7 +35,7 @@
             <#if ticket.ticketCategory == "SEATING">
                 <tr>
                     <td>1</td>
-                    <td>Row ${ticket.tierNumber} Seat ${ticket.seatNumber}</td>
+                    <td>Row ${ticket.rowNumber} Seat ${ticket.seatNumber}</td>
                     <td>${event.seatPrice!'-'} €</td>
                     <td>20%</td>
                 </tr>

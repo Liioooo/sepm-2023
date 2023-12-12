@@ -20,7 +20,7 @@ public class TicketListDto {
 
     private TicketCategory ticketCategory;
 
-    private Long tierNumber;
+    private Long rowNumber;
 
     private Long seatNumber;
 

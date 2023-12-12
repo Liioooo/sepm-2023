@@ -2,10 +2,12 @@ package at.ac.tuwien.sepr.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventSearchDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.SeatDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepr.groupphase.backend.entity.PublicFile;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepr.groupphase.backend.repository.EventRepository;
+import at.ac.tuwien.sepr.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepr.groupphase.backend.service.EventService;
 import at.ac.tuwien.sepr.groupphase.backend.service.PublicFileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +23,13 @@ public class EventServiceImpl implements EventService {
 
     private final PublicFileService publicFileService;
 
+    private final TicketRepository ticketRepository;
+
     @Autowired
-    public EventServiceImpl(EventRepository eventRepository, PublicFileService publicFileService) {
+    public EventServiceImpl(EventRepository eventRepository, PublicFileService publicFileService, TicketRepository ticketRepository) {
         this.eventRepository = eventRepository;
         this.publicFileService = publicFileService;
+        this.ticketRepository = ticketRepository;
     }
 
     @Override
@@ -44,5 +49,15 @@ public class EventServiceImpl implements EventService {
     @Override
     public Event getEvent(long id) {
         return eventRepository.findById(id).orElseThrow(() -> new NotFoundException("The event was not found"));
+    }
+
+    @Override
+    public SeatDto[] getOccupiedSeats(long id) {
+        return ticketRepository.findOccupiedSeatsById(id).stream().map((seat -> new SeatDto(seat.getRowNumber(), seat.getSeatNumber()))).toArray(SeatDto[]::new);
+    }
+
+    @Override
+    public Integer getOccupiedStandings(long id) {
+        return ticketRepository.findValidStandingTicketsByEventId(id);
     }
 }

@@ -96,14 +96,14 @@ public class OrderServiceImpl implements OrderService {
 
         // Check if tickets are still available
         for (var ticket : Arrays.stream(orderCreateDto.getTickets()).filter(t -> t.getTicketCategory() == TicketCategory.SEATING).toList()) {
-            var existingTickets = ticketRepository.findValidSeatingTicketsByEventIdAndSeatNumberAndTierNumber(
-                orderCreateDto.getEventId(), ticket.getSeatNumber(), ticket.getTierNumber()
+            var existingTickets = ticketRepository.findValidSeatingTicketsByEventIdAndSeatNumberAndRowNumber(
+                orderCreateDto.getEventId(), ticket.getSeatNumber(), ticket.getRowNumber()
             );
 
             if (!existingTickets.isEmpty()) {
                 if (existingTickets.size() > 1) {
-                    LOGGER.error("Multiple valid tickets found for event id {}, seat number {} and tier number {}, this should never happen!",
-                        orderCreateDto.getEventId(), ticket.getSeatNumber(), ticket.getTierNumber());
+                    LOGGER.error("Multiple valid tickets found for event id {}, seat number {} and row number {}, this should never happen!",
+                        orderCreateDto.getEventId(), ticket.getSeatNumber(), ticket.getRowNumber());
                 }
 
                 throw new ConflictException("One ore more tickets have already been sold");
@@ -162,7 +162,7 @@ public class OrderServiceImpl implements OrderService {
 
         List<Ticket> tickets = new ArrayList<>(order.getTickets().stream().filter(t -> {
             if (t.getTicketCategory() == TicketCategory.SEATING) {
-                return Arrays.stream(redeemReservationDto.getTickets()).anyMatch(rt -> Objects.equals(rt.getSeatNumber(), t.getSeatNumber()) && Objects.equals(rt.getTierNumber(), t.getTierNumber()));
+                return Arrays.stream(redeemReservationDto.getTickets()).anyMatch(rt -> Objects.equals(rt.getSeatNumber(), t.getSeatNumber()) && Objects.equals(rt.getRowNumber(), t.getRowNumber()));
             }
             return false;
         }).toList());

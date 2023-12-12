@@ -1,4 +1,4 @@
-export interface SeatListDto {
+export interface SeatDto {
   rowNumber: number;
   seatNumber: number;
 }

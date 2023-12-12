@@ -24,5 +24,5 @@ public class TicketCreateDto {
     private Long seatNumber;
 
     @Min(0)
-    private Long tierNumber;
+    private Long rowNumber;
 }
