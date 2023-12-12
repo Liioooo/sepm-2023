@@ -34,4 +34,7 @@ public class EventDetailDto {
 
     private EventType type;
 
+    private SeatDto[] occupiedSeats;
+
+    private Integer occupiedStandings;
 }

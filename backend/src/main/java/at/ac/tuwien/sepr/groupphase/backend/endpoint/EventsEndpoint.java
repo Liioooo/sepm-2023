@@ -41,7 +41,10 @@ public class EventsEndpoint {
     @Operation(summary = "Get event by id")
     @Transactional
     public EventDetailDto getEvent(@PathVariable long id) {
-        return eventMapper.eventToEventDetailDto(eventService.getEvent(id));
+        var dto = eventMapper.eventToEventDetailDto(eventService.getEvent(id));
+        dto.setOccupiedSeats(eventService.getOccupiedSeats(id));
+        dto.setOccupiedStandings(eventService.getOccupiedStandings(id));
+        return dto;
     }
 
     @PermitAll
