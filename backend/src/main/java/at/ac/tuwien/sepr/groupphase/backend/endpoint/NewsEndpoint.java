@@ -53,7 +53,7 @@ public class NewsEndpoint {
 
     @Secured("ROLE_ADMIN")
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping()
+    @PostMapping("create")
     @Operation(summary = "Creates a new news-article")
     public void createNews(@Valid @ModelAttribute NewsCreateDto newsCreateDto) {
         newsService.createNews(newsCreateDto);

@@ -96,6 +96,4 @@ public class NewsServiceImpl implements NewsService {
         news.getReadBy().add(user);
         newsRepository.save(news);
     }
-
-
 }

@@ -61,6 +61,7 @@ public class NewsEndpointTest {
     private final String API_BASE = "/api/v1/news";
     private final String API_READ = API_BASE + "/read";
     private final String API_UNREAD = API_BASE + "/unread";
+    private final String API_CREATE = API_BASE + "/create";
 
     @Test
     @DirtiesContext
@@ -84,7 +85,7 @@ public class NewsEndpointTest {
         assertDoesNotThrow(() -> {
             // Read Test-News-1 to mark it as read
 
-            var result = this.mockMvc.perform(MockMvcRequestBuilders.multipart(API_BASE)
+            var result = this.mockMvc.perform(MockMvcRequestBuilders.multipart(API_CREATE)
                 .file(imageFile) // Attach the image file
                 .param("title", toCreate.getTitle()) // Set parameters from NewsCreateDto
                 .param("overviewText", toCreate.getOverviewText())
@@ -129,7 +130,7 @@ public class NewsEndpointTest {
         );
 
         try {
-            var result = this.mockMvc.perform(MockMvcRequestBuilders.post(API_BASE)
+            var result = this.mockMvc.perform(MockMvcRequestBuilders.post(API_CREATE)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writer().withDefaultPrettyPrinter().writeValueAsString(toCreate))
                 .with(user(username).roles("USER"))

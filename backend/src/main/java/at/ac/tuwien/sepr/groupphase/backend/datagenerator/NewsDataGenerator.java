@@ -18,10 +18,12 @@ public class NewsDataGenerator extends DataGenerator<News> {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final NewsRepository newsRepository;
     private final ApplicationUserDataGenerator userDataGenerator;
+    private final PublicFileDataGenerator publicFileDataGenerator;
 
-    public NewsDataGenerator(NewsRepository newsRepository, ApplicationUserDataGenerator userDataGenerator) {
+    public NewsDataGenerator(NewsRepository newsRepository, ApplicationUserDataGenerator userDataGenerator, PublicFileDataGenerator publicFileDataGenerator) {
         this.newsRepository = newsRepository;
         this.userDataGenerator = userDataGenerator;
+        this.publicFileDataGenerator = publicFileDataGenerator;
     }
 
     @Override

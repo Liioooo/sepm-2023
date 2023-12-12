@@ -53,7 +53,7 @@ export class NewsService {
     );
   }
 
-  createNews(createDto: NewsCreateDto): Observable<NewsDetailDto> {
+  createNews(createDto: NewsCreateDto) {
     const createUri: string = this.baseUri + '/create';
 
     const formData: FormData = new FormData();
@@ -61,6 +61,7 @@ export class NewsService {
     formData.append('overviewText', createDto.overviewText);
     formData.append('text', createDto.text);
     formData.append('image', createDto.image);
+
 
     return this.httpClient.post<NewsDetailDto>(createUri, formData);
   }
