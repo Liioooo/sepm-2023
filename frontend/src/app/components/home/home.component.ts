@@ -13,29 +13,29 @@ import { EventWithBoughtCountDto } from '../../dtos/event-with-bought-count-dto'
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  monthNames: string[] = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
-    'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
+
+  monthNames: string[] = [
+    'JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'
+  ];
+
   searchForm = this.formBuilder.group({
     type: 'CONCERT',
     month: this.monthNames[new Date().getMonth()]
   });
 
   currentMonth: number = new Date().getMonth();
-  public searchType: string;
-  public searchMonth: string;
+  searchMonth: string;
   top10: EventWithBoughtCountDto[];
 
-
-  noEvents: boolean = false;
-  top10ChartData: number[] = [];
-
-  constructor(private eventService: EventService, private formBuilder: FormBuilder,
-              private toastService: ToastService, private errorFormatterService: ErrorFormatterService) {
+  constructor(
+    private eventService: EventService,
+    private formBuilder: FormBuilder,
+    private toastService: ToastService,
+    private errorFormatterService: ErrorFormatterService
+  ) {
   }
 
   ngOnInit() {
-
-    this.searchType = this.searchForm.value.type.charAt(0) + this.searchForm.value.type.slice(1).toLowerCase();
     this.setSearchMonth();
     this.getTop10Events();
   }
@@ -46,15 +46,20 @@ export class HomeComponent implements OnInit {
 
   convertStringToNumber(): number {
     const wantedMonthNumber = this.monthNames.indexOf(this.searchForm.value.month);
-    if (this.currentMonth <= wantedMonthNumber) return wantedMonthNumber - this.currentMonth;
+    if (this.currentMonth <= wantedMonthNumber) {
+      return wantedMonthNumber - this.currentMonth;
+    }
     return 12 - (this.currentMonth - wantedMonthNumber);
   }
 
   setSearchMonth(): void {
     let month = this.searchForm.value.month;
     const wantedMonthNumber = this.monthNames.indexOf(this.searchForm.value.month);
-    if (this.currentMonth <= wantedMonthNumber) this.searchMonth = `${month.charAt(0) + month.slice(1).toLowerCase()} ${new Date().getFullYear()}`;
-    else this.searchMonth = `${month.charAt(0) + month.slice(1).toLowerCase()} ${new Date().getFullYear()+1}`;
+    if (this.currentMonth <= wantedMonthNumber) {
+      this.searchMonth = `${month.charAt(0) + month.slice(1).toLowerCase()} ${new Date().getFullYear()}`;
+    } else {
+      this.searchMonth = `${month.charAt(0) + month.slice(1).toLowerCase()} ${new Date().getFullYear() + 1}`;
+    }
   }
 
   private getTop10Events() {
