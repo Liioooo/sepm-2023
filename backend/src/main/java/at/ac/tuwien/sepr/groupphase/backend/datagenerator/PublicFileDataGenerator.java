@@ -6,18 +6,15 @@ import at.ac.tuwien.sepr.groupphase.backend.repository.PublicFileRepository;
 import at.ac.tuwien.sepr.groupphase.backend.service.PublicFileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.stereotype.Component;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.List;
 
+@Profile("generateData")
+@Component
 public class PublicFileDataGenerator extends DataGenerator<PublicFile> {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final PublicFileService publicFileService;
@@ -35,6 +32,7 @@ public class PublicFileDataGenerator extends DataGenerator<PublicFile> {
 
     @Override
     protected List<PublicFile> generate() {
+        /*
         if (publicFileRepository.count() > 0) {
             LOGGER.info("public file data already generated");
             return null;
@@ -74,5 +72,9 @@ public class PublicFileDataGenerator extends DataGenerator<PublicFile> {
     public String getImagePath(String imageName) throws IOException {
         Resource resource = resourceLoader.getResource("classpath:news_images/" + imageName);
         return resource.exists() ? resource.getURL().getPath() : null;
+        */
+        return null;
     }
+
+
 }
