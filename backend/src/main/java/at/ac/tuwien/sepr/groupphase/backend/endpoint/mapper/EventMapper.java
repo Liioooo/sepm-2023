@@ -8,15 +8,12 @@ import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepr.groupphase.backend.entity.interfaces.EventWithBoughtCount;
 import org.mapstruct.Mapper;
 
-import java.util.Collection;
-import java.util.List;
-
 @Mapper
 public interface EventMapper {
 
-    List<EventListDto> eventCollectionToEventListDtoCollection(Collection<Event> events);
+    EventListDto eventToEventListDto(Event event);
 
-    EventDetailDto toEventDetailDto(Event event);
+    EventDetailDto eventToEventDetailDto(Event event);
 
     List<EventWithBoughtCountDto> eventWithBoughtToEventWithBoughtDtoList(Collection<EventWithBoughtCount> events);
 

@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepr.groupphase.backend.endpoint;
 
-import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UpdateUserDetailDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.ApplicationUserMapper;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
@@ -42,8 +42,8 @@ public class MyUserEndpoint {
     @Secured("ROLE_USER")
     @PutMapping()
     @Operation(summary = "Update details for the currently logged in user")
-    public UserDetailDto updateUserDetails(@Valid @RequestBody UpdateUserDetailDto updateUserDetailDto) {
-        return applicationUserMapper.applicationUserToUserDetailDto(userService.updateAuthenticatedUser(updateUserDetailDto));
+    public UserDetailDto updateUserDetails(@Valid @RequestBody UserUpdateDetailDto userUpdateDetailDto) {
+        return applicationUserMapper.applicationUserToUserDetailDto(userService.updateAuthenticatedUser(userUpdateDetailDto));
     }
 
     @Secured("ROLE_USER")

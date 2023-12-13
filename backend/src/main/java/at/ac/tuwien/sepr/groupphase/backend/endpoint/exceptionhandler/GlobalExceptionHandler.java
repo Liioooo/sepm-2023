@@ -2,6 +2,7 @@ package at.ac.tuwien.sepr.groupphase.backend.endpoint.exceptionhandler;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.ApiErrorDto;
 import at.ac.tuwien.sepr.groupphase.backend.exception.ConflictException;
+import at.ac.tuwien.sepr.groupphase.backend.exception.InternalServerException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.PublicFileStorageException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.UnauthorizedException;
@@ -36,7 +37,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleNotFound(NotFoundException ex) {
         var error = new ApiErrorDto(HttpStatus.NOT_FOUND, ex.getMessage());
 
-        logError(error);
+        logError(error, ex);
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
@@ -44,7 +45,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleConflict(ConflictException ex) {
         var error = new ApiErrorDto(HttpStatus.CONFLICT, ex.getMessage());
 
-        logError(error);
+        logError(error, ex);
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
@@ -52,7 +53,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleBadCredentials(BadCredentialsException ex) {
         var error = new ApiErrorDto(HttpStatus.FORBIDDEN, ex.getMessage());
 
-        logError(error);
+        logError(error, ex);
         return new ResponseEntity<>(error, error.getHttpStatusCode());
     }
 
@@ -60,7 +61,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handlePublicFileStorageException(PublicFileStorageException ex) {
         var error = new ApiErrorDto(HttpStatus.INTERNAL_SERVER_ERROR, "File Storage Error: " + ex.getMessage());
 
-        logError(error);
+        logError(error, ex);
         return new ResponseEntity<>(error, error.getHttpStatusCode());
     }
 
@@ -68,8 +69,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleUnauthorized(UnauthorizedException ex) {
         var error = new ApiErrorDto(HttpStatus.UNAUTHORIZED, ex.getMessage());
 
-        logError(error);
+        logError(error, ex);
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(value = {InternalServerException.class})
+    protected ResponseEntity<Object> handleInternalServerException(InternalServerException ex) {
+        var error = new ApiErrorDto(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+
+        logError(error, ex);
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Override
@@ -82,12 +91,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             error.addSubError(fieldError.getField(), fieldError.getDefaultMessage());
         });
 
-        logError(error);
+        logError(error, ex);
         return new ResponseEntity<>(error, headers, status);
 
     }
 
-    private void logError(ApiErrorDto apiErrorDto) {
+    private void logError(ApiErrorDto apiErrorDto, Exception exception) {
         LOGGER.warn("Terminating request processing with status {} due to: {}", apiErrorDto.getHttpStatusCode().value(), apiErrorDto.getError());
+        LOGGER.error(exception.getMessage(), exception);
     }
 }

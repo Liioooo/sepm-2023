@@ -3,11 +3,13 @@ package at.ac.tuwien.sepr.groupphase.backend.service.impl;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventSearchDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventTop10SearchDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.SeatDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepr.groupphase.backend.entity.PublicFile;
 import at.ac.tuwien.sepr.groupphase.backend.entity.interfaces.EventWithBoughtCount;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepr.groupphase.backend.repository.EventRepository;
+import at.ac.tuwien.sepr.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepr.groupphase.backend.service.EventService;
 import at.ac.tuwien.sepr.groupphase.backend.service.PublicFileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +31,13 @@ public class EventServiceImpl implements EventService {
 
     private final PublicFileService publicFileService;
 
+    private final TicketRepository ticketRepository;
+
     @Autowired
-    public EventServiceImpl(EventRepository eventRepository, PublicFileService publicFileService) {
+    public EventServiceImpl(EventRepository eventRepository, PublicFileService publicFileService, TicketRepository ticketRepository) {
         this.eventRepository = eventRepository;
         this.publicFileService = publicFileService;
+        this.ticketRepository = ticketRepository;
     }
 
     @Override
@@ -55,6 +60,16 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public SeatDto[] getOccupiedSeats(long id) {
+        return ticketRepository.findOccupiedSeatsById(id).stream().map((seat -> new SeatDto(seat.getRowNumber(), seat.getSeatNumber()))).toArray(SeatDto[]::new);
+    }
+
+    @Override
+    public Integer getOccupiedStandings(long id) {
+        return ticketRepository.findValidStandingTicketsByEventId(id);
+    }
+
+    @Override
     public List<EventWithBoughtCount> getTopTenEvents(EventTop10SearchDto searchDto) {
         YearMonth yearMonth = YearMonth.from(LocalDate.now().plusMonths(searchDto.getMonth()));
         OffsetDateTime startDate = yearMonth.atDay(1).atTime(0, 0, 0).atOffset(ZoneOffset.UTC);
@@ -62,6 +77,3 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findTopTenEvent(startDate, endDate, searchDto.getEventType());
     }
 }
-
-
-

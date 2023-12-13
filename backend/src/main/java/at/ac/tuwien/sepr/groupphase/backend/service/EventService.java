@@ -3,6 +3,7 @@ package at.ac.tuwien.sepr.groupphase.backend.service;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventSearchDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventTop10SearchDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.SeatDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepr.groupphase.backend.entity.interfaces.EventWithBoughtCount;
 import org.springframework.data.domain.Page;
@@ -38,4 +39,8 @@ public interface EventService {
 
     List<EventWithBoughtCount> getTopTenEvents(EventTop10SearchDto searchDto);
 
+
+    SeatDto[] getOccupiedSeats(long id);
+
+    Integer getOccupiedStandings(long id);
 }

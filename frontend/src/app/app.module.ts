@@ -36,6 +36,11 @@ import { EventDetailComponent } from './components/events/event-detail/event-det
 import { RequestPasswordResetComponent } from './components/request-password-reset/request-password-reset.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { PiechartComponent } from './components/home/piechart/piechart.component';
+import { EventCheckoutComponent } from './components/events/event-checkout/event-checkout.component';
+import { OrderItemComponent } from './components/profile-overview/order-item/order-item.component';
+import {
+  ConfirmDeleteReservationModalComponent
+} from './components/modal/confirm-delete-reservation-modal/confirm-delete-reservation-modal.component';
 
 @NgModule({
   declarations: [
@@ -65,7 +70,11 @@ import { PiechartComponent } from './components/home/piechart/piechart.component
     LocationSearchFieldsComponent,
     EventDetailComponent,
     ConfirmDeleteProfileModalComponent,
-    PiechartComponent
+    PiechartComponent,
+    EventDetailComponent,
+    EventCheckoutComponent,
+    OrderItemComponent,
+    ConfirmDeleteReservationModalComponent
   ],
   imports: [
     BrowserModule,

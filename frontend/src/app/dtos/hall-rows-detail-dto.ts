@@ -1,10 +1,10 @@
 import { LocationDetailDto } from './location-detail-dto';
-import { TierListDto } from './tier-list-dto';
+import { RowListDto } from './row-list-dto';
 
-export interface HallTiersDetailDto {
+export interface HallRowsDetailDto {
   id: number;
   name: string;
   standingCount: number;
   location: LocationDetailDto;
-  tiers: TierListDto[];
+  rows: RowListDto[];
 }

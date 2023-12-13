@@ -2,7 +2,7 @@ package at.ac.tuwien.sepr.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EmailResetDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.ResetPasswordDto;
-import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UpdateUserDetailDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserLoginDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserRegisterDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.UserLocationMapper;
@@ -139,18 +139,18 @@ public class CustomUserDetailService implements UserService {
     }
 
     @Override
-    public ApplicationUser updateAuthenticatedUser(UpdateUserDetailDto updateUserDetailDto) {
+    public ApplicationUser updateAuthenticatedUser(UserUpdateDetailDto userUpdateDetailDto) {
         var applicationUser = getCurrentlyAuthenticatedUser().orElseThrow(() -> new NotFoundException("No user currently logged in"));
 
-        applicationUser.setEmail(updateUserDetailDto.getEmail());
-        applicationUser.setFirstName(updateUserDetailDto.getFirstName());
-        applicationUser.setLastName(updateUserDetailDto.getLastName());
+        applicationUser.setEmail(userUpdateDetailDto.getEmail());
+        applicationUser.setFirstName(userUpdateDetailDto.getFirstName());
+        applicationUser.setLastName(userUpdateDetailDto.getLastName());
 
-        if (updateUserDetailDto.getPassword() != null) {
-            applicationUser.setPassword(passwordEncoder.encode(updateUserDetailDto.getPassword()));
+        if (userUpdateDetailDto.getPassword() != null) {
+            applicationUser.setPassword(passwordEncoder.encode(userUpdateDetailDto.getPassword()));
         }
 
-        UserLocation location = userLocationMapper.userLocationDtoToUserLocation(updateUserDetailDto.getLocation());
+        UserLocation location = userLocationMapper.userLocationDtoToUserLocation(userUpdateDetailDto.getLocation());
         if (location == null) {
             applicationUser.setLocation(null);
         } else {
