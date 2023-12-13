@@ -38,6 +38,11 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
 import { NewsSearchFieldsComponent } from './components/management/management-news/news-search-fields/news-search-fields.component';
 import { UsersSearchFieldsComponent } from './components/management/management-users/users-search-fields/users-search-fields.component';
 import { EventOverviewComponent } from './components/management/management-events/event-overview/event-overview.component';
+import { EventCheckoutComponent } from './components/events/event-checkout/event-checkout.component';
+import { OrderItemComponent } from './components/profile-overview/order-item/order-item.component';
+import {
+  ConfirmDeleteReservationModalComponent
+} from './components/modal/confirm-delete-reservation-modal/confirm-delete-reservation-modal.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +71,9 @@ import { EventOverviewComponent } from './components/management/management-event
     LocationItemComponent,
     LocationSearchFieldsComponent,
     EventDetailComponent,
+    EventCheckoutComponent,
+    OrderItemComponent,
+    ConfirmDeleteReservationModalComponent,
     NewsSearchFieldsComponent,
     UsersSearchFieldsComponent,
     EventOverviewComponent

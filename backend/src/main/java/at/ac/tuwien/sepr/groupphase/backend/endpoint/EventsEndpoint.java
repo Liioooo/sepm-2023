@@ -41,15 +41,18 @@ public class EventsEndpoint {
     @Operation(summary = "Get event by id")
     @Transactional
     public EventDetailDto getEvent(@PathVariable long id) {
-        return eventMapper.toEventDetailDto(eventService.getEvent(id));
+        var dto = eventMapper.eventToEventDetailDto(eventService.getEvent(id));
+        dto.setOccupiedSeats(eventService.getOccupiedSeats(id));
+        dto.setOccupiedStandings(eventService.getOccupiedStandings(id));
+        return dto;
     }
 
     @PermitAll
     @GetMapping()
     @Operation(summary = "Get events, optionally filter by search criteria")
     public PageDto<EventListDto> getEvents(EventSearchDto search, Pageable pageable) {
-        return this.pageMapper.toPageDtoListMapper(
-            eventService.getEventsBySearch(search, pageable), this.eventMapper::eventCollectionToEventListDtoCollection
+        return this.pageMapper.toPageDto(
+            eventService.getEventsBySearch(search, pageable), this.eventMapper::eventToEventListDto
         );
     }
 

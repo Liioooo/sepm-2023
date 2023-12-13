@@ -65,7 +65,7 @@ public class ApplicationUserDataGenerator extends DataGenerator<ApplicationUser>
             ApplicationUser.builder()
                 .email("user1@email.com")
                 .firstName("User")
-                .lastName("user2")
+                .lastName("user1")
                 .password(passwordEncoder.encode("password"))
                 .role(UserRole.ROLE_USER)
                 .location(UserLocation.builder()

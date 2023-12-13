@@ -11,10 +11,16 @@ import lombok.ToString;
 @EqualsAndHashCode
 @AllArgsConstructor
 @ToString
-public class TierListDto {
+public class HallRowsDetailDto {
 
-    private Long number;
+    private Long id;
 
-    private Long numberOfSeats;
+    private String name;
+
+    private Long standingCount;
+
+    private LocationDetailDto location;
+
+    private RowListDto[] rows;
 
 }

@@ -5,8 +5,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.data.domain.Page;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.function.Function;
 
 @Mapper
@@ -15,12 +13,6 @@ public interface PageMapper {
     default <M, T> PageDto<M> toPageDto(Page<T> page, Function<T, M> mapper) {
         PageDto<M> pageDto = (PageDto<M>) toPageWithoutContent(page);
         pageDto.setContent(page.getContent().stream().map(mapper).toList());
-        return pageDto;
-    }
-
-    default <M, T> PageDto<M> toPageDtoListMapper(Page<T> page, Function<Collection<T>, List<M>> mapper) {
-        PageDto<M> pageDto = (PageDto<M>) toPageWithoutContent(page);
-        pageDto.setContent(mapper.apply(page.getContent()));
         return pageDto;
     }
 

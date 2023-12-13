@@ -18,16 +18,17 @@
         >
           Standing
         </div>
-        <div class="d-flex flex-row py-1" *ngFor="let tier of event.hall.tiers">
-          <div class="tier-number d-flex align-items-center text-description">{{ tier.number }}</div>
+        <div class="d-flex flex-row py-1" *ngFor="let row of event.hall.rows">
+          <div class="row-number d-flex align-items-center text-description">{{ row.number }}</div>
           <div class="flex-grow-1 d-flex justify-content-center align-items-center">
             <button
-              ngbPopover="Row {{ tier.number }}, Seat {{ seat + 1 }}"
+              [ngbPopover]="getPopoverText(row.number, seat + 1)"
               triggers="mouseenter:mouseleave"
               class="seat-button me-1"
-              (click)="toggleSeat(tier.number, seat + 1)"
-              [class]="'seat-button me-1 ' + (isSeatSelected(tier.number, seat + 1) ? 'bg-secondary' : '')"
-              *ngFor="let _ of [].constructor(tier.numberOfSeats); let seat = index"
+              (click)="toggleSeat(row.number, seat + 1)"
+              [disabled]="isOccupied(row.number, seat + 1)"
+              [class]="'seat-button me-1 ' + (isSeatSelected(row.number, seat + 1) ? 'bg-secondary' : '')"
+              *ngFor="let _ of [].constructor(row.numberOfSeats); let seat = index"
             ></button>
           </div>
         </div>
@@ -60,7 +61,7 @@
             </button>
             <span class="mx-2">{{ selectedStanding }}</span>
             <button class="amount-button d-flex align-items-center justify-content-center"
-                    (click)="incrementStanding(event)">
+                    (click)="incrementStanding(event)" [disabled]="selectedStanding >= getRemainingStandings(event)">
               <i class="bi bi-plus"></i>
             </button>
           </div>
@@ -73,13 +74,15 @@
           </div>
         </div>
         <hr>
-        <p class="text-description">
-          You can reserve the selected tickets for now and buy them until 30 minutes before this event starts. If not,
-          the reservation expires and is no longer valid.
-        </p>
-        <div class="text-center">
-          <a href="#">Reserve Tickets for now</a>
-        </div>
+        <ng-container *ngIf="isSelectNew">
+          <p class="text-description">
+            You can reserve the selected tickets for now and buy them until 30 minutes before this event starts. If not,
+            the reservation expires and is no longer valid.
+          </p>
+          <div class="text-center">
+            <a href="javascript:void(0)" (click)="reserveTickets()">Reserve Tickets for now</a>
+          </div>
+        </ng-container>
         <div class="text-center">
           <button class="btn btn-primary mt-4" (click)="buyTickets()">Buy Tickets</button>
         </div>

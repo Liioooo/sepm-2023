@@ -1,7 +1,7 @@
 package at.ac.tuwien.sepr.groupphase.backend.datagenerator;
 
-import at.ac.tuwien.sepr.groupphase.backend.entity.Tier;
-import at.ac.tuwien.sepr.groupphase.backend.repository.TierRepository;
+import at.ac.tuwien.sepr.groupphase.backend.entity.Row;
+import at.ac.tuwien.sepr.groupphase.backend.repository.RowRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -13,28 +13,28 @@ import java.util.List;
 
 @Profile("generateData")
 @Component
-public class TierDataGenerator extends DataGenerator<Tier> {
+public class RowDataGenerator extends DataGenerator<Row> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    private final TierRepository tierRepository;
+    private final RowRepository rowRepository;
 
     private final HallDataGenerator hallDataGenerator;
 
-    public TierDataGenerator(TierRepository tierRepository, HallDataGenerator hallDataGenerator) {
-        this.tierRepository = tierRepository;
+    public RowDataGenerator(RowRepository rowRepository, HallDataGenerator hallDataGenerator) {
+        this.rowRepository = rowRepository;
         this.hallDataGenerator = hallDataGenerator;
     }
 
     @Override
-    protected List<Tier> generate() {
-        if (tierRepository.count() > 0) {
-            LOGGER.info("tier data already generated");
+    protected List<Row> generate() {
+        if (rowRepository.count() > 0) {
+            LOGGER.info("row data already generated");
             return null;
         }
-        LOGGER.info("generating tiers");
+        LOGGER.info("generating rows");
 
-        Long[][] seatsPerTier = {
+        Long[][] seatsPerRow = {
             {20L, 20L, 20L, 20L, 20L},
             {20L, 20L, 10L, 10L, 10L},
             {20L, 15L, 11L, 10L},
@@ -42,20 +42,20 @@ public class TierDataGenerator extends DataGenerator<Tier> {
             {19L, 18L, 17L, 15L, 14L},
         };
 
-        final var tiers = new LinkedList<Tier>();
+        final var rows = new LinkedList<Row>();
 
-        for (int hallNumber = 0; hallNumber < seatsPerTier.length; hallNumber++) {
-            Long[] tier = seatsPerTier[hallNumber];
-            for (int rowNumber = 0; rowNumber < tier.length; rowNumber++) {
-                tiers.add(Tier.builder()
+        for (int hallNumber = 0; hallNumber < seatsPerRow.length; hallNumber++) {
+            Long[] row = seatsPerRow[hallNumber];
+            for (int rowNumber = 0; rowNumber < row.length; rowNumber++) {
+                rows.add(Row.builder()
                     .number((long) rowNumber + 1)
-                    .numberOfSeats(tier[rowNumber])
+                    .numberOfSeats(row[rowNumber])
                     .hall(hallDataGenerator.getTestData().get(hallNumber))
                     .build()
                 );
             }
         }
 
-        return tierRepository.saveAll(tiers);
+        return rowRepository.saveAll(rows);
     }
 }
