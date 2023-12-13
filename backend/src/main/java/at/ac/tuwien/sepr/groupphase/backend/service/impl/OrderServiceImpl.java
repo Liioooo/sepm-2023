@@ -60,7 +60,8 @@ public class OrderServiceImpl implements OrderService {
                             UserService userService,
                             EventRepository eventRepository,
                             PdfService pdfService,
-                            EmbeddedFileRepository embeddedFileRepository) {
+                            EmbeddedFileRepository embeddedFileRepository
+    ) {
         this.orderRepository = orderRepository;
         this.ticketRepository = ticketRepository;
         this.ticketMapper = ticketMapper;
@@ -91,7 +92,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public void createOrder(OrderCreateDto orderCreateDto) {
+    public synchronized void createOrder(OrderCreateDto orderCreateDto) {
         var user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
         var event = eventRepository.findById(orderCreateDto.getEventId()).orElseThrow(() -> new NotFoundException("Event not found"));
         var hall = event.getHall();
@@ -126,14 +127,14 @@ public class OrderServiceImpl implements OrderService {
         }
 
         // Save order and tickets
-        var order = orderRepository.save(orderMapper.orderCreateDtoToOrder(orderCreateDto, user));
+        var order = orderRepository.saveAndFlush(orderMapper.orderCreateDtoToOrder(orderCreateDto, user));
 
         var tickets = Arrays.stream(orderCreateDto.getTickets())
             .map(ticketMapper::createTicketDtoToTicket)
             .peek(ticket -> ticket.setOrder(order))
             .toList();
 
-        var dbTickets = ticketRepository.saveAll(tickets);
+        var dbTickets = ticketRepository.saveAllAndFlush(tickets);
 
         if (orderCreateDto.getOrderType() == OrderType.BUY) {
             createInvoicePdf(order, dbTickets, event);
@@ -142,7 +143,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public void redeemReservation(Long orderId, RedeemReservationDto redeemReservationDto) {
+    public synchronized void redeemReservation(Long orderId, RedeemReservationDto redeemReservationDto) {
         var user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
         var order = orderRepository.findOrderByIdAndUserId(orderId, user.getId()).orElseThrow(() -> new NotFoundException("Order not found"));
 
@@ -178,7 +179,7 @@ public class OrderServiceImpl implements OrderService {
         order.getTickets().addAll(tickets);
         order.setOrderType(OrderType.BUY);
         order.setOrderDate(OffsetDateTime.now());
-        orderRepository.save(order);
+        orderRepository.saveAndFlush(order);
 
         var event = eventRepository.findById(order.getEvent().getId()).orElseThrow(() -> new NotFoundException("Event not found"));
         createInvoicePdf(order, tickets, event);
@@ -201,8 +202,8 @@ public class OrderServiceImpl implements OrderService {
         try {
             var pdfFile = pdfService.createInvoicePdf(order, tickets, event);
             order.setReceipt(pdfFile);
-            orderRepository.save(order);
-            embeddedFileRepository.save(pdfFile);
+            orderRepository.saveAndFlush(order);
+            embeddedFileRepository.saveAndFlush(pdfFile);
         } catch (IOException | TemplateException e) {
             throw new InternalServerException("Could not generate invoice PDF.", e);
         }

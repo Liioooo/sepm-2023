@@ -46,6 +46,7 @@ public class Ticket {
     @Column()
     private Long seatNumber;
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Order order;
 
