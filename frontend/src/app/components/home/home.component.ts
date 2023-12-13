@@ -41,30 +41,7 @@ export class HomeComponent implements OnInit {
   }
 
   onSubmit() {
-    this.eventService.getTopEvents(
-      {
-        type: this.searchForm.value.type === '' ? 'CONCERT' : this.searchForm.value.type,
-        month: this.searchForm.value.month === '' ? 0 : this.convertStringToNumber()
-      }
-    ).subscribe({
-      next: (top10: EventWithBoughtCountDto[]) => {
-        console.log(this.searchForm.value.type);
-        console.log(this.searchForm.value.month);
-        this.searchType = this.searchForm.value.type.charAt(0) + this.searchForm.value.type.slice(1).toLowerCase();
-
-        this.setSearchMonth();
-
-        this.top10 = top10;
-        if (this.top10.length === 0) {
-          this.noEvents = true;
-        } else {
-          this.noEvents = false;
-        }
-      },
-      error: error => {
-        this.toastService.showError('Error searching for categories', this.errorFormatterService.format(error['error'] as ErrorResponseDto));
-      }
-    });
+    this.getTop10Events();
   }
 
   convertStringToNumber(): number {

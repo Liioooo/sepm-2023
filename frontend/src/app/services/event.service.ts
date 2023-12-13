@@ -57,9 +57,6 @@ export class EventService {
     const params = new HttpParams()
       .set('month', search.month)
       .set('eventType', search.type || '');
-
-    console.log('Loading the top 10 events with search query:', params.toString());
-
     const url = `${this.baseUri}/top10`;
     return this.httpClient.get<EventWithBoughtCountDto[]>(url, { params });
   }
