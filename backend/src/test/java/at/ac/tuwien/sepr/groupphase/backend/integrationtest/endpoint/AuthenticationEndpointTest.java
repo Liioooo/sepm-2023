@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepr.groupphase.backend.integrationtest;
+package at.ac.tuwien.sepr.groupphase.backend.integrationtest.endpoint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ActiveProfiles({"test", "generateData"})
 @AutoConfigureMockMvc
-public class AuthenticationEndpointTest {
+class AuthenticationEndpointTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -39,7 +39,7 @@ public class AuthenticationEndpointTest {
     private final String AUTHENTICATION_BASE = "/api/v1/authentication";
 
     @Test
-    public void loginTestAdmin_CorrectCredentials() throws Exception {
+    void loginTestAdmin_CorrectCredentials() throws Exception {
         var requestBody = new HashMap<String, Object>();
         requestBody.put("email", "admin@email.com");
         requestBody.put("password", "password");
@@ -59,7 +59,7 @@ public class AuthenticationEndpointTest {
     }
 
     @Test
-    public void loginTestAdmin_InvalidCredentials() throws Exception {
+    void loginTestAdmin_InvalidCredentials() throws Exception {
         var requestBody = new HashMap<String, Object>();
         requestBody.put("email", "admin@email.com");
         requestBody.put("password", "invalid");
@@ -76,7 +76,7 @@ public class AuthenticationEndpointTest {
     }
 
     @Test
-    public void loginTestNormalUser_CorrectCredentials() throws Exception {
+    void loginTestNormalUser_CorrectCredentials() throws Exception {
         var requestBody = new HashMap<String, Object>();
         requestBody.put("email", "user1@email.com");
         requestBody.put("password", "password");
@@ -96,7 +96,7 @@ public class AuthenticationEndpointTest {
     }
 
     @Test
-    public void loginTestNormalUser_InvalidCredentials() throws Exception {
+    void loginTestNormalUser_InvalidCredentials() throws Exception {
         var requestBody = new HashMap<String, Object>();
         requestBody.put("email", "user1@email.com");
         requestBody.put("password", "invalid");
@@ -113,7 +113,7 @@ public class AuthenticationEndpointTest {
     }
 
     @Test
-    public void loginTestNormalUser_NonExistentUser() throws Exception {
+    void loginTestNormalUser_NonExistentUser() throws Exception {
         var requestBody = new HashMap<String, Object>();
         requestBody.put("email", "xxxxxx@xx.com");
         requestBody.put("password", "password");
@@ -130,7 +130,7 @@ public class AuthenticationEndpointTest {
     }
 
     @Test
-    public void lockedAccountByAdminCanNotLogin() throws Exception {
+    void lockedAccountByAdminCanNotLogin() throws Exception {
         var requestBody = new HashMap<String, Object>();
         requestBody.put("email", "locked@email.com");
         requestBody.put("password", "password");
@@ -148,7 +148,7 @@ public class AuthenticationEndpointTest {
 
     @Test
     @DirtiesContext
-    public void normalAccountLockedAfter5Attempts() throws Exception {
+    void normalAccountLockedAfter5Attempts() throws Exception {
         var requestBody = new HashMap<String, Object>();
         requestBody.put("email", "user2@email.com");
         requestBody.put("password", "invalid");
@@ -179,7 +179,7 @@ public class AuthenticationEndpointTest {
 
     @Test
     @DirtiesContext
-    public void registerNewAccount() throws Exception {
+    void registerNewAccount() throws Exception {
         var requestBody = new HashMap<String, Object>();
         requestBody.put("email", "newAccount@email.com");
         requestBody.put("password", "password");

@@ -7,6 +7,7 @@ import at.ac.tuwien.sepr.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Ticket;
 import at.ac.tuwien.sepr.groupphase.backend.enums.TicketCategory;
 import at.ac.tuwien.sepr.groupphase.backend.service.PdfService;
+import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -14,6 +15,7 @@ import freemarker.template.TemplateException;
 import jakarta.validation.constraints.NotNull;
 import org.jsoup.Jsoup;
 import org.jsoup.helper.W3CDom;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
@@ -59,6 +61,10 @@ public class PdfServiceImpl implements PdfService {
             template.process(variables, stringWriter);
 
             PdfRendererBuilder builder = new PdfRendererBuilder();
+            builder.useFont(new ClassPathResource("pdf/templates/fonts/NotoSerif-Regular.ttf").getFile(), "NotoSerif", 400, BaseRendererBuilder.FontStyle.NORMAL, true);
+            builder.useFont(new ClassPathResource("pdf/templates/fonts/NotoSerif-Italic.ttf").getFile(), "NotoSerif", 400, BaseRendererBuilder.FontStyle.ITALIC, true);
+            builder.useFont(new ClassPathResource("pdf/templates/fonts/NotoSerif-Bold.ttf").getFile(), "NotoSerif", 700, BaseRendererBuilder.FontStyle.NORMAL, true);
+            builder.useFont(new ClassPathResource("pdf/templates/fonts/NotoSerif-BoldItalic.ttf").getFile(), "NotoSerif", 700, BaseRendererBuilder.FontStyle.ITALIC, true);
             builder.withW3cDocument(new W3CDom().fromJsoup(Jsoup.parse(stringWriter.toString(), "UTF-8")), "/");
             builder.toStream(byteOutputStream);
             builder.run();

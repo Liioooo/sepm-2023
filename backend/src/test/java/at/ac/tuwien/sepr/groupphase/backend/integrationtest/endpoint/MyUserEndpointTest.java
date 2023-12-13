@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepr.groupphase.backend.integrationtest;
+package at.ac.tuwien.sepr.groupphase.backend.integrationtest.endpoint;
 
 import at.ac.tuwien.sepr.groupphase.backend.repository.ApplicationUserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;

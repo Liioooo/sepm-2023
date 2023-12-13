@@ -113,12 +113,12 @@ export class EventCheckoutComponent implements OnInit {
   private generateTickets(): TicketCreateDto[] {
     let seats: TicketCreateDto[] = [];
     for (const [seat] of this.ticketService.selectedSeats) {
-      const [tierNumber, seatNumber] = seat.split(':').map(Number);
+      const [rowNumber, seatNumber] = seat.split(':').map(Number);
 
       seats.push({
         ticketCategory: TicketCategory.SEATING,
         seatNumber,
-        tierNumber
+        rowNumber
       });
     }
 

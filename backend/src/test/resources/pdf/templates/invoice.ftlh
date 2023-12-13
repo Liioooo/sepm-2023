@@ -2,7 +2,9 @@
 <head>
     <title>Document</title>
     <style>
-
+        * {
+            font-family: 'NotoSerif', serif;
+        }
     </style>
 </head>
 <body>
@@ -35,7 +37,7 @@
             <#if ticket.ticketCategory == "SEATING">
                 <tr>
                     <td>1</td>
-                    <td>Row ${ticket.tierNumber} Seat ${ticket.seatNumber}</td>
+                    <td>Row ${ticket.rowNumber} Seat ${ticket.seatNumber}</td>
                     <td>${event.seatPrice!'-'} €</td>
                     <td>20%</td>
                 </tr>
@@ -52,8 +54,8 @@
         </tbody>
     </table>
     <div>
-        Total before tax: ${totalPrice * 0.8} €<br>
-        VAT: ${totalPrice * 0.2} €<br>
+        Total before tax: ${totalPrice / 1.2} €<br>
+        VAT: ${totalPrice - totalPrice / 1.2} €<br>
         Total after tax: ${totalPrice} €
     </div>
 </main>

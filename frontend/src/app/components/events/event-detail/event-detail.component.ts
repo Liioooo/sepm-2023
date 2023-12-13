@@ -11,6 +11,7 @@ import { TicketCategory } from '../../../types/ticket-category';
 import { ErrorResponseDto } from '../../../dtos/error-response-dto';
 import { ToastService } from '../../../services/toast.service';
 import { ErrorFormatterService } from '../../../services/error-formatter.service';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-event-detail',
@@ -24,6 +25,8 @@ export class EventDetailComponent {
   selectedSeats: Map<String, boolean> = new Map<String, boolean>();
   selectedStanding: number = 0;
 
+  occupiedSeats: Map<String, boolean> = new Map<String, boolean>();
+
   selectedSeatsInReservation: Map<String, boolean> = new Map<String, boolean>();
   selectedStandingInReservation: number = 0;
 
@@ -36,7 +39,14 @@ export class EventDetailComponent {
     private toastService: ToastService,
     private errorFormatterService: ErrorFormatterService
   ) {
-    this.event$ = this.eventService.getEvent(Number(this.route.snapshot.paramMap.get('id')));
+    this.event$ = this.eventService.getEvent(Number(this.route.snapshot.paramMap.get('id'))).pipe(
+      tap(event => {
+        for (let seat of event.occupiedSeats) {
+          this.occupiedSeats.set(`${seat.rowNumber}:${seat.seatNumber}`, true);
+        }
+      })
+    );
+
     this.reservationId = Number(this.route.snapshot.paramMap.get('reservationId'));
     this.mode = this.route.snapshot.data.type ?? TicketSelectMode.SELECT_NEW;
 
@@ -50,7 +60,7 @@ export class EventDetailComponent {
 
           this.selectedSeats = new Map(order.tickets
             .filter(t => t.ticketCategory === TicketCategory.SEATING)
-            .map(t => [`${t.seatNumber}:${t.tierNumber}`, true]));
+            .map(t => [`${t.rowNumber}:${t.seatNumber}`, true]));
           this.selectedSeatsInReservation = new Map(this.selectedSeats);
 
           this.selectedStanding = order.tickets
@@ -78,23 +88,27 @@ export class EventDetailComponent {
     return this.selectedSeatsLength * event.seatPrice + this.selectedStanding * event.standingPrice;
   }
 
-  toggleSeat(tierNumber: number, seatNumber: number) {
-    if (this.selectedSeats.get(`${tierNumber}:${seatNumber}`)) {
-      this.selectedSeats.delete(`${tierNumber}:${seatNumber}`);
+  toggleSeat(rowNumber: number, seatNumber: number) {
+    if (this.selectedSeats.get(`${rowNumber}:${seatNumber}`)) {
+      this.selectedSeats.delete(`${rowNumber}:${seatNumber}`);
     } else {
-      if (this.isSelectReserved && !this.selectedSeatsInReservation.has(`${tierNumber}:${seatNumber}`)) {
+      if (this.isSelectReserved && !this.selectedSeatsInReservation.has(`${rowNumber}:${seatNumber}`)) {
         return;
       }
-      this.selectedSeats.set(`${tierNumber}:${seatNumber}`, true);
+      this.selectedSeats.set(`${rowNumber}:${seatNumber}`, true);
     }
   }
 
-  isSeatSelected(tierNumber: number, seatNumber: number) {
-    return this.selectedSeats.get(`${tierNumber}:${seatNumber}`) ?? false;
+  isSeatSelected(rowNumber: number, seatNumber: number) {
+    return this.selectedSeats.get(`${rowNumber}:${seatNumber}`) ?? false;
   }
 
   decrementStanding() {
     this.selectedStanding = Math.max(this.selectedStanding - 1, 0);
+  }
+
+  getRemainingStandings(event: EventDetailDto): number {
+    return event.hall.standingCount - event.occupiedStandings;
   }
 
   incrementStanding(event: EventDetailDto) {
@@ -103,8 +117,7 @@ export class EventDetailComponent {
       return;
     }
 
-    // TODO: max needs to respect already bought standing tickets
-    this.selectedStanding = Math.min(this.selectedStanding + 1, event.hall.standingCount);
+    this.selectedStanding = Math.min(this.selectedStanding + 1, this.getRemainingStandings(event));
   }
 
   buyTickets() {
@@ -129,5 +142,21 @@ export class EventDetailComponent {
 
   get isSelectReserved(): boolean {
     return this.mode === TicketSelectMode.SELECT_RESERVED;
+  }
+
+  isOccupied(rowNumber: number, seatNumber: number): boolean {
+    if (this.isSelectReserved) {
+      return !this.selectedSeatsInReservation.has(`${rowNumber}:${seatNumber}`);
+    } else {
+      return this.occupiedSeats.has(`${rowNumber}:${seatNumber}`);
+    }
+  }
+
+  getPopoverText(rowNumber: number, seatNumber: number): string {
+    if (this.isOccupied(rowNumber, seatNumber)) {
+      return this.isSelectReserved ? 'Not reserved' : 'Occupied';
+    } else {
+      return `Row ${rowNumber}, Seat ${seatNumber}`;
+    }
   }
 }

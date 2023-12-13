@@ -20,9 +20,9 @@ public class TicketCreateDto {
     @NotNull(message = "The ticket must have a category")
     private TicketCategory ticketCategory;
 
-    @Min(0)
+    @Min(1)
     private Long seatNumber;
 
-    @Min(0)
-    private Long tierNumber;
+    @Min(1)
+    private Long rowNumber;
 }

@@ -44,5 +44,5 @@ public class Hall {
     private Location location;
 
     @OneToMany(mappedBy = "hall")
-    private List<Tier> tiers;
+    private List<Row> rows;
 }

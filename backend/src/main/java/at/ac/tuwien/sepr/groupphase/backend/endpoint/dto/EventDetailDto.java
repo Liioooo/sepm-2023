@@ -30,8 +30,11 @@ public class EventDetailDto {
 
     private ArtistDetailDto artist;
 
-    private HallTiersDetailDto hall;
+    private HallRowsDetailDto hall;
 
     private EventType type;
 
+    private SeatDto[] occupiedSeats;
+
+    private Integer occupiedStandings;
 }

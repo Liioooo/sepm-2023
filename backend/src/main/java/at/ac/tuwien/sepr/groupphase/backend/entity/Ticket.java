@@ -28,7 +28,7 @@ import lombok.ToString;
 @ToString
 @Table(uniqueConstraints = {
     // A constraint with EVENT_ID won't work because there can be expired reservations for the same seat
-    @UniqueConstraint(name = "seatPos", columnNames = {"tierNumber", "seatNumber", "ORDER_ID"})
+    @UniqueConstraint(name = "seatPos", columnNames = {"rowNumber", "seatNumber", "ORDER_ID"})
 })
 public class Ticket {
 
@@ -41,11 +41,12 @@ public class Ticket {
     private TicketCategory ticketCategory;
 
     @Column()
-    private Long tierNumber;
+    private Long rowNumber;
 
     @Column()
     private Long seatNumber;
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Order order;
 

@@ -1,6 +1,6 @@
 @import "variables";
 
-.tier-number {
+.row-number {
   min-width: 2rem;
 }
 
@@ -10,6 +10,10 @@
   height: 1rem;
   border: 0;
   border-radius: 50%;
+
+  &:disabled {
+    background: map-get($theme-colors, "light");
+  }
 }
 
 .amount-button {

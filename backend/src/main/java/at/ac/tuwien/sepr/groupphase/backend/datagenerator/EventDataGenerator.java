@@ -98,7 +98,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .seatPrice(132.19f)
                 .standingPrice(130.42f)
                 .type(EventType.SPORTS)
-                .artist(artistDataGenerator.getTestData().get(46))
+                .artist(artistDataGenerator.getTestData().get(5))
                 .hall(hallDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
