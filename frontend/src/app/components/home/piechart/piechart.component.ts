@@ -13,7 +13,6 @@ export class PiechartComponent implements OnChanges {
   @Input() searchMonth: string = '';
   @Input() eventType: string = '';
   @Input() chartData: EventWithBoughtCountDto[] = [];
-  legendHTML: string = '';
   public chart?: Chart<'pie', number[], string>;
 
   constructor(private router: Router) {}
@@ -84,8 +83,7 @@ export class PiechartComponent implements OnChanges {
               title: () => 'Click here to get your ticket',
               label: (context: any) => {
                 const label = context.label || '';
-                const value = context.raw || 0;
-                return `${label}: ${value}`;
+                return `${label}`;
               }
             }
           }
