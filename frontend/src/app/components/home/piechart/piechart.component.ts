@@ -1,4 +1,6 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Router } from '@angular/router';
 import Chart from 'chart.js/auto';
 import { EventWithBoughtCountDto } from '../../../dtos/event-with-bought-count-dto';
 
@@ -10,25 +12,21 @@ import { EventWithBoughtCountDto } from '../../../dtos/event-with-bought-count-d
 export class PiechartComponent implements OnChanges {
   @Input() searchMonth: string = '';
   @Input() eventType: string = '';
-  @Input() chartData: EventWithBoughtCountDto[] = []; // Input for dynamic data
-  eventNames: string[] = [];
-  ticketCounts: number[] = [];
+  @Input() chartData: EventWithBoughtCountDto[] = [];
+  legendHTML: string = '';
   public chart?: Chart<'pie', number[], string>;
 
-  constructor() {}
+  constructor(private router: Router) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    //console.log(this.chartData);
     if (!this.chart) {
       this.createChart();
     }
     if (changes.chartData && !changes.chartData.firstChange) {
-      // Update the chart when the input data changes
       this.updateChart();
     }
 
     if (changes.searchMonth && !changes.searchMonth.firstChange) {
-      // Update the chart when the search month input changes
       this.updateChart();
     }
   }
@@ -54,7 +52,6 @@ export class PiechartComponent implements OnChanges {
             'rgb(233,77,82)'
           ],
           hoverOffset: 4
-
         }]
       },
       options: {
@@ -73,7 +70,6 @@ export class PiechartComponent implements OnChanges {
               bottom: 40
             }
           },
-
           legend: {
             display: true,
             labels: {
@@ -82,16 +78,32 @@ export class PiechartComponent implements OnChanges {
                 family: '\'Helvetica Neue\', \'Helvetica\', \'Arial\', sans-serif'
               }
             }
+          },
+          tooltip: {
+            callbacks: {
+              title: () => 'Click here to get your ticket',
+              label: (context: any) => {
+                const label = context.label || '';
+                const value = context.raw || 0;
+                return `${label}: ${value}`;
+              }
+            }
+          }
+        },
+        onClick: (event: any, elements: any[]) => {
+          if (elements.length > 0) {
+            const clickedIndex = elements[0].index;
+            const eventId = this.chartData[clickedIndex].event.id;
+            this.router.navigate(['/events', eventId]);
           }
         }
       }
     });
-    console.log(this.chart);
   }
 
   updateChart() {
-    this.chart.data.labels =  this.chartData.map(temp => temp.event.title);
-    this.chart.data.datasets[0].data = this.chartData.map(temp => temp.boughtCount+2); //TODO remove +2, only for testing purposes cause count = 0
+    this.chart.data.labels = this.chartData.map(temp => temp.event.title);
+    this.chart.data.datasets[0].data = this.chartData.map(temp => temp.boughtCount + 2); // TODO remove +2, only for testing purposes cause count = 0
     this.chart.options.plugins.title.text = 'Top 10 ' + this.eventType + ' in ' + this.searchMonth;
     this.chart.update();
   }

@@ -9,9 +9,8 @@ import { convertFromDatesInObject } from '../utils/convertFromDatesInObject';
 import { removeNullOrUndefinedProps } from '../utils/removeNullOrUndefinedProps';
 import { PageableRequest } from '../types/pageable-request';
 import { PageDto } from '../dtos/page-dto';
-import { EventListDto } from '../dtos/event-list-dto';
 import { TopTenEventSearchDto } from '../dtos/top-ten-event-search-dto';
-import {EventWithBoughtCountDto} from '../dtos/event-with-bought-count-dto';
+import { EventWithBoughtCountDto } from '../dtos/event-with-bought-count-dto';
 
 @Injectable({
   providedIn: 'root'
