@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper;
 
+import at.ac.tuwien.sepr.groupphase.backend.config.properties.FilesProperties;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.NewsDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.NewsListDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.PublicFileDto;
@@ -9,13 +10,16 @@ import at.ac.tuwien.sepr.groupphase.backend.entity.PublicFile;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 import java.util.List;
 
 @Mapper
 public interface NewsMapper {
+
     @Mapping(source = "author", target = "authorName", qualifiedByName = "mapAuthorName")
+    @Mapping(source = "image", target = "image", qualifiedByName = "mapImageDto")
     NewsDetailDto toNewsDetailDto(News news);
 
     @Mapping(source = "image", target = "image", qualifiedByName = "mapImageDto")
@@ -30,6 +34,9 @@ public interface NewsMapper {
 
     @Named("mapImageDto")
     static PublicFileDto mapPublicFileDto(PublicFile image) {
-        return new PublicFileDto(image.getPath());
+        if (image == null) {
+            return null;
+        }
+        return new PublicFileDto(image.getPublicUrl());
     }
 }

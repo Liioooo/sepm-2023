@@ -35,7 +35,7 @@ export class NewsCreateComponent {
   onSubmit() {
     this.newsService.createNews(this.newsDto).subscribe({
       next: () => {
-        this.toastService.showSuccess('Success', 'Order created successfully');
+        this.toastService.showSuccess('Success', 'News created successfully');
         //this.router.navigate(['/news']);
       },
       error: err => this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto))

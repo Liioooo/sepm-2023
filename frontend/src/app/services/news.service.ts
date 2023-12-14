@@ -9,6 +9,7 @@ import { PageDto } from '../dtos/page-dto';
 import { NewsListDto } from '../dtos/news-list-dto';
 import { NewsReqType } from '../enums/newsReqType';
 import { NewsCreateDto } from '../dtos/news-create-dto';
+import { convertPublicFileUrlToAbsoluteUrl } from '../utils/convertFromPublicFileUrlToAbsoluteUrl';
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +40,14 @@ export class NewsService {
         ...pageable
       }
     }).pipe(
-      map(convertToDatesInObject)
+      map(convertToDatesInObject),
+      map((page) => {
+        page.content = page.content.map((news) => {
+          news.image = convertPublicFileUrlToAbsoluteUrl(news.image, this.globals.backendBaseUri);
+          return news;
+        });
+        return page;
+      })
     );
   }
 
@@ -49,7 +57,11 @@ export class NewsService {
    */
   getNews(id: number): Observable<NewsDetailDto> {
     return this.httpClient.get<NewsDetailDto>(`${this.baseUri}/${id}`).pipe(
-      map(convertToDatesInObject)
+      map(convertToDatesInObject),
+      map((news) => {
+        news.image = convertPublicFileUrlToAbsoluteUrl(news.image, this.globals.backendBaseUri);
+        return news;
+      })
     );
   }
 
