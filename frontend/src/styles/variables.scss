@@ -1,0 +1,27 @@
+@import "../../node_modules/bootstrap/scss/functions";
+@import "../../node_modules/bootstrap/scss/mixins";
+@import "../../node_modules/bootstrap/scss/variables";
+
+$primary: #011568;
+$secondary: #e94d52;
+
+$theme-colors: map-merge($theme-colors, (
+  "primary": $primary,
+  "secondary": $secondary,
+  "danger": #e94d52,
+  "exit": #e74c3c,
+  "gray": $gray-500,
+  "description": $gray-700,
+  "light": $gray-200,
+  "success-200": #d1e7dd,
+  "success-800": #0a3622,
+  "warn-200": #fff3cd,
+  "warn-800": #664d03
+));
+
+$link-color: $primary;
+$link-hover-color: lighten($link-color, 20%);
+$link-decoration: none;
+
+$form-label-color: $gray-600;
+$input-placeholder-color: $gray-600;

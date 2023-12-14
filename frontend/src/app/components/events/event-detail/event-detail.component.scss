@@ -1,0 +1,39 @@
+@import "variables";
+
+.row-number {
+  min-width: 2rem;
+}
+
+.seat-button {
+  background: map-get($theme-colors, "gray");
+  width: 1rem;
+  height: 1rem;
+  border: 0;
+  border-radius: 50%;
+
+  &:disabled {
+    background: map-get($theme-colors, "light");
+  }
+}
+
+.amount-button {
+  &:disabled {
+    background: map-get($theme-colors, "gray");
+  }
+
+  color: $white;
+  background: $primary;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 50%;
+}
+
+.standing-area {
+  user-select: none;
+  cursor: pointer;
+}
+
+.ticket-control {
+  width: 6rem;
+}

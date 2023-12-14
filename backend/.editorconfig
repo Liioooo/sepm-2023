@@ -17,8 +17,8 @@ ij_visual_guides =
 ij_wrap_on_typing = false
 
 [*.java]
-indent_size = 2
-max_line_length = 160
+max_line_length = 240
+ij_java_indent_size = 4
 ij_continuation_indent_size = 4
 ij_java_align_consecutive_assignments = false
 ij_java_align_consecutive_variable_declarations = false
@@ -65,7 +65,7 @@ ij_java_blank_lines_around_method_in_interface = 1
 ij_java_blank_lines_before_class_end = 0
 ij_java_blank_lines_before_imports = 1
 ij_java_blank_lines_before_method_body = 0
-ij_java_blank_lines_before_package = 0
+ij_java_blank_lines_before_package = 1
 ij_java_block_brace_style = end_of_line
 ij_java_block_comment_add_space = false
 ij_java_block_comment_at_first_column = true
@@ -136,7 +136,7 @@ ij_java_for_statement_wrap = normal
 ij_java_generate_final_locals = false
 ij_java_generate_final_parameters = false
 ij_java_if_brace_force = always
-ij_java_imports_layout = *,|,javax.**,java.**,|,$*
+ij_java_imports_layout = *, |, javax.**, java.**, |, $*
 ij_java_indent_case_from_switch = true
 ij_java_insert_inner_class_imports = false
 ij_java_insert_override_annotation = true
@@ -190,6 +190,7 @@ ij_java_parentheses_expression_right_paren_on_new_line = false
 ij_java_place_assignment_sign_on_next_line = false
 ij_java_prefer_longer_names = true
 ij_java_prefer_parameters_wrap = false
+ij_java_record_components_wrap = normal
 ij_java_repeat_synchronized = true
 ij_java_replace_instanceof_and_cast = false
 ij_java_replace_null_check = true
@@ -320,4 +321,4 @@ ij_java_wrap_first_method_in_call_chain = false
 ij_java_wrap_long_lines = false
 
 [{*.yml, *.yaml, *.json, *.sql}]
-indent_size=2
+indent_size = 2

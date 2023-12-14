@@ -1,0 +1,16 @@
+<div class="card mb-3 mt-3 mx-auto">
+
+  <img [src]="newsItem.image.url" class="card-img-top max-img-size" alt="News-List Image" *ngIf="newsItem.image"/>
+
+  <div class="card-body">
+    <p class="card-text text-muted mb-1">{{ newsItem.publishDate.toLocaleDateString() }}</p>
+    <h5 class="card-title">{{ newsItem.title }}</h5>
+    <p class="card-text">{{ newsItem.overviewText | slice:0:128 }}</p>
+
+    <a class="btn btn-primary"
+       [routerLink]="['detail', newsItem.id]"
+       aria-label="view news">
+      read more
+    </a>
+  </div>
+</div>

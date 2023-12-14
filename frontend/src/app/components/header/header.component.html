@@ -1,19 +1,57 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
-  <a class="navbar-brand ml-lg-5" href="">SE PR Group Phase</a>
-  <button class="navbar-toggler ml-5" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link" *ngIf="authService.isLoggedIn()" routerLink="/message" routerLinkActive="active">Message</a>
-      </li>
-    </ul>
-    <ul class="navbar-nav mr-5">
-      <a class="nav-link" *ngIf="!authService.isLoggedIn()" routerLink="/login" routerLinkActive="active">Login</a>
-      <a class="nav-link" *ngIf="authService.isLoggedIn()" routerLink="/" (click)="authService.logoutUser()">Logout</a>
-    </ul>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/">
+      <img ngSrc="/assets/logo.png" alt="Ticketline Logo" width="260" height="60">
+    </a>
+    <button class="navbar-toggler" type="button" (click)="isNavbarCollapsed = !isNavbarCollapsed"
+            aria-controls="mainNavigation" [attr.aria-expanded]="!isNavbarCollapsed" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div [ngbCollapse]="isNavbarCollapsed" class="collapse navbar-collapse" id="mainNavigation">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item me-1 mt-2 mt-lg-0" *ngIf="userService.isLoggedIn()">
+          <a class="btn text-light" routerLink="/news" routerLinkActive="active">News</a>
+        </li>
+        <li class="nav-item me-1 mt-2 mt-lg-0">
+          <a class="btn text-light" routerLink="/events" routerLinkActive="active">Events</a>
+        </li>
+        <li class="nav-item me-1 mt-2 mt-lg-0">
+          <a class="btn text-light" routerLink="/locations" routerLinkActive="active">Locations</a>
+        </li>
+        <li class="nav-item me-1 mt-2 mt-lg-0" *ngIf="userService.getUserRole() === 'ADMIN'">
+          <div class="btn-group">
+            <a class="btn text-light" routerLink="/management" routerLinkActive="active">Management</a>
+            <div class="btn-group" ngbDropdown role="group" aria-label="Button group with nested dropdown"
+                 display="dynamic" placement="bottom-end">
+              <button type="button" class="btn text-light dropdown-toggle-split" ngbDropdownToggle></button>
+              <div class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+                <a routerLink="/management/events" ngbDropdownItem>Events</a>
+                <a routerLink="/management/news" ngbDropdownItem>News</a>
+                <a routerLink="/management/users" ngbDropdownItem>Users</a>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div class="d-flex flex-column flex-lg-row align-items-start">
+        <form class="d-flex search-form" [formGroup]="searchForm" (submit)="search()">
+          <div class="input-group me-2">
+            <input class="form-control" type="search" placeholder="Search for artists, events, &hellip;"
+                   aria-label="Search for artists, events, and more" formControlName="search"
+                   [value]="searchTerm$ | async">
+            <button class="btn btn-gray" type="submit">Search</button>
+          </div>
+        </form>
+        <a class="btn text-light mt-2 mt-lg-0" *ngIf="!userService.isLoggedIn()" routerLink="/login"
+           [class.active]="isLoginRegister">
+          login / register
+        </a>
+        <a class="btn text-light mt-2 mt-lg-0" *ngIf="userService.isLoggedIn()" routerLink="/profile"
+           routerLinkActive="active">
+          <i class="bi bi-person-circle"></i>
+          <span *ngIf="userDetails$ | async as user" class="ms-1">{{ user.firstName }} {{ user.lastName }}</span>
+        </a>
+      </div>
+    </div>
   </div>
 </nav>

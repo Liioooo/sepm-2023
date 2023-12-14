@@ -41,8 +41,7 @@
         "quotes": ["error", "single"],
         "indent": ["error", 2],
         "no-var": [ "error" ],
-        "no-unused-vars": [ "warn", { "vars": "local" } ],
-        "no-shadow": ["error", { "hoist": "functions" }],
+        "no-shadow": "off", // https://github.com/typescript-eslint/typescript-eslint/issues/2779
         "no-unneeded-ternary": "error",
         "no-empty": ["error", { "allowEmptyCatch": true}],
         "keyword-spacing": "error",

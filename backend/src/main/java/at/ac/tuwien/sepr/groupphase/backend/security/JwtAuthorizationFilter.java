@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepr.groupphase.backend.security;
 
 import at.ac.tuwien.sepr.groupphase.backend.config.properties.SecurityProperties;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.ApiErrorDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -17,6 +19,8 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,9 +33,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final SecurityProperties securityProperties;
+    private final ObjectMapper objectMapper;
 
-    public JwtAuthorizationFilter(SecurityProperties securityProperties) {
+    public JwtAuthorizationFilter(SecurityProperties securityProperties, ObjectMapper objectMapper) {
         this.securityProperties = securityProperties;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -45,7 +51,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         } catch (IllegalArgumentException | JwtException e) {
             LOGGER.debug("Invalid authorization attempt: {}", e.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Invalid authorization header or token");
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.getWriter().write(objectMapper.writeValueAsString(new ApiErrorDto(HttpStatus.UNAUTHORIZED, "Invalid authorization header or token")));
             return;
         }
         chain.doFilter(request, response);

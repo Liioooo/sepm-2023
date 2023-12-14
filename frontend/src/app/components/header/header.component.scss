@@ -1,0 +1,11 @@
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/mixins";
+
+.search-form {
+  width: 20em;
+
+  @include media-breakpoint-down("lg") {
+    width: 100%;
+  }
+}
