@@ -25,7 +25,8 @@ export class PiechartComponent implements OnChanges, OnDestroy {
     if (!this.chart) {
       this.createChart();
     }
-    if ((changes.chartData && !changes.chartData.firstChange) || (changes.searchMonth && !changes.searchMonth.firstChange)) {
+    if ((changes.chartData && !changes.chartData.firstChange) || (changes.searchMonth && !changes.searchMonth.firstChange)
+      || (changes.eventType && !changes.eventType.firstChange)) {
       this.updateChart();
     }
   }
@@ -74,6 +75,16 @@ export class PiechartComponent implements OnChanges, OnDestroy {
             },
             color: 'rgb(1,21,90)'
           },
+          subtitle: {
+            display: false,
+            text: '',
+            font: {
+              size: 18,
+              family: '\'Helvetica Neue\', \'Helvetica\', \'Arial\', sans-serif',
+              weight: 'bold'
+            },
+            color: 'rgb(1,21,90)'
+          },
           legend: {
             display: true,
             labels: {
@@ -108,6 +119,20 @@ export class PiechartComponent implements OnChanges, OnDestroy {
     this.chart.data.labels = this.chartData.map(temp => temp.event.title);
     this.chart.data.datasets[0].data = this.chartData.map(temp => temp.boughtCount);
     this.chart.options.plugins.title.text = 'Top 10 ' + this.eventType + 's in ' + this.searchMonth;
+    this.chart.options.plugins.subtitle.display = false;
+    const noEvents = this.chartData.length === 0;
+    let noTicketsBought = true;
+    for (let i = 0; i < this.chartData.length; i++) {
+      if (this.chartData[i].boughtCount !== 0) noTicketsBought = false;
+    }
+    if (noEvents) {
+      this.chart.options.plugins.subtitle.display = true;
+      this.chart.options.plugins.subtitle.text = 'Sorry! There are no events that match your search criteria.';
+    } else if (noTicketsBought) {
+      this.chart.options.plugins.subtitle.display = true;
+      this.chart.options.plugins.subtitle.text = 'No tickets for any ' + this.eventType + ' have been purchased in ' + this.searchMonth;
+      this.chart.data.labels = [];
+    }
     this.chart.update();
   }
 }

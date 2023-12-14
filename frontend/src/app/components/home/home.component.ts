@@ -26,6 +26,7 @@ export class HomeComponent implements OnInit {
   currentMonth: number = new Date().getMonth();
   searchMonth: string;
   top10: EventWithBoughtCountDto[];
+  searchType: string;
 
   constructor(
     private eventService: EventService,
@@ -38,10 +39,15 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this.setSearchMonth();
     this.getTop10Events();
+    this.searchType = this.searchForm.value.type.charAt(0) + this.searchForm.value.type.slice(1).toLowerCase();
   }
 
   onSubmit() {
+
     this.getTop10Events();
+    this.setSearchMonth();
+    this.searchType = this.searchForm.value.type.charAt(0) + this.searchForm.value.type.slice(1).toLowerCase();
+
   }
 
   convertStringToNumber(): number {
