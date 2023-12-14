@@ -25,7 +25,7 @@ export class ManagementNewsComponent {
     this.news$ = combineLatest([this.searchAttributes$, this.searchTerm$, this.onPageChangeDistinct$]).pipe(
       debounceTime(250),
       switchMap(([searchAttributes, search, page]) => {
-        return this.service.getNews({
+        return this.service.findNews({
           ...searchAttributes
         }, { page, size: 20 });
       }),

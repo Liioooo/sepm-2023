@@ -84,7 +84,7 @@ import { NewsCreateComponent } from './components/news/news-create/news-create.c
     EventCheckoutComponent,
     OrderItemComponent,
     ConfirmDeleteReservationModalComponent,
-    NewsCreateComponent
+    NewsCreateComponent,
     ConfirmDeleteReservationModalComponent,
     NewsSearchFieldsComponent,
     UsersSearchFieldsComponent,

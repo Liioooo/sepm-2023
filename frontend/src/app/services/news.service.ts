@@ -3,23 +3,16 @@ import { PageableRequest } from '../types/pageable-request';
 import { map, Observable } from 'rxjs';
 import { PageDto } from '../dtos/page-dto';
 import { convertToDatesInObject } from '../utils/convertToDatesInObject';
-import { removeNullOrUndefinedProps } from '../utils/removeNullOrUndefinedProps';
-import { NewsSearchDto } from '../dtos/news-search-dto';
 import { NewsDetailDto } from '../dtos/news-detail-dto';
 import { Globals } from '../global/globals';
 import { HttpClient } from '@angular/common/http';
 
-import { HttpClient } from '@angular/common/http';
-import { Globals } from '../global/globals';
-import { map, Observable } from 'rxjs';
-import { convertToDatesInObject } from '../utils/convertToDatesInObject';
-import { NewsDetailDto } from '../dtos/news-detail-dto';
-import { PageableRequest } from '../types/pageable-request';
-import { PageDto } from '../dtos/page-dto';
 import { NewsListDto } from '../dtos/news-list-dto';
 import { NewsReqType } from '../enums/newsReqType';
 import { NewsCreateDto } from '../dtos/news-create-dto';
 import { convertPublicFileUrlToAbsoluteUrl } from '../utils/convertFromPublicFileUrlToAbsoluteUrl';
+import { NewsSearchDto } from '../dtos/news-search-dto';
+import { removeNullOrUndefinedProps } from '../utils/removeNullOrUndefinedProps';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +20,8 @@ import { convertPublicFileUrlToAbsoluteUrl } from '../utils/convertFromPublicFil
 export class NewsService {
 
   private baseUri: string = this.globals.backendUri + '/news';
+  private newsBaseUri: string = this.globals.backendUri + '/management/news';
+
 
   constructor(
     private httpClient: HttpClient,
@@ -87,17 +82,13 @@ export class NewsService {
 
     return this.httpClient.post<NewsDetailDto>(createUri, formData);
   }
-  private usersBaseUri: string = this.globals.backendUri + '/management/news';
 
-  constructor(private httpClient: HttpClient, private globals: Globals) {
-  }
-
-  getNews(search: NewsSearchDto | null, pageable?: PageableRequest): Observable<PageDto<NewsDetailDto>> {
+  findNews(search: NewsSearchDto | null, pageable?: PageableRequest): Observable<PageDto<NewsDetailDto>> {
     const searchParams = search ? convertToDatesInObject(removeNullOrUndefinedProps(search as {
       [key: string]: string
     })) : {};
 
-    return this.httpClient.get<PageDto<NewsDetailDto>>(this.usersBaseUri, {
+    return this.httpClient.get<PageDto<NewsDetailDto>>(this.newsBaseUri, {
       params: {
         ...searchParams,
         ...pageable
