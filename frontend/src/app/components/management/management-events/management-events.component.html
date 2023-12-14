@@ -4,15 +4,18 @@
       <h2 class="fs-1 fw-bold">Events</h2>
     </div>
 
-    <a class="btn btn-primary mb-3" routerLink="/create" aria-label="New Event">
+    <div class="d-flex flex-row w-auto align-items-end">
+      <!-- SEARCH -->
+      <app-event-search-fields
+        class="d-block mb-5 me-5"
+        (searchChange)="searchAttributes$.next($event)"
+      ></app-event-search-fields>
+      <a class="btn btn-primary mb-5 text-nowrap" routerLink="create" aria-label="New Event">
       <i class="bi bi-plus-lg"></i>
-      New Article
+      New Event
     </a>
-    <!-- SEARCH -->
-    <app-event-search-fields
-      class="d-block mb-5"
-      (searchChange)="searchAttributes$.next($event)"
-    ></app-event-search-fields>
+    </div>
+
 
     <table class="table table-sm">
       <thead>
@@ -36,7 +39,7 @@
             <!-- ACTIONS -->
             <div class="btn-group">
               <a class="btn btn-sm responsive-info-button"
-                 [routerLink]="[event.id]"
+                 [routerLink]="['view', event.id]"
                  aria-label="Show horse details">
                 <i class="bi bi-info-lg"></i>
               </a>
