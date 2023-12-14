@@ -22,7 +22,6 @@ public class EventTop10SearchDto {
     @PositiveOrZero
     Integer month;
 
-    @NotNull
     EventType eventType;
 
 }
