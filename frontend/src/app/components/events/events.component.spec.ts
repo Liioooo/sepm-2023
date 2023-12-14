@@ -12,7 +12,7 @@ describe('EventsComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule, ReactiveFormsModule],
-      declarations: [ EventsComponent ]
+      declarations: [EventsComponent]
     }).compileComponents();
   }));
 

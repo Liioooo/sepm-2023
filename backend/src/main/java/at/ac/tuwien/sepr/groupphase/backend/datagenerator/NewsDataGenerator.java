@@ -18,10 +18,12 @@ public class NewsDataGenerator extends DataGenerator<News> {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final NewsRepository newsRepository;
     private final ApplicationUserDataGenerator userDataGenerator;
+    private final PublicFileDataGenerator publicFileDataGenerator;
 
-    public NewsDataGenerator(NewsRepository newsRepository, ApplicationUserDataGenerator userDataGenerator) {
+    public NewsDataGenerator(NewsRepository newsRepository, ApplicationUserDataGenerator userDataGenerator, PublicFileDataGenerator publicFileDataGenerator) {
         this.newsRepository = newsRepository;
         this.userDataGenerator = userDataGenerator;
+        this.publicFileDataGenerator = publicFileDataGenerator;
     }
 
     @Override
@@ -41,7 +43,7 @@ public class NewsDataGenerator extends DataGenerator<News> {
                 .build(),
             News.builder()
                 .title("News-Title-2")
-                .publishDate(OffsetDateTime.of(2023, 12, 9, 20, 0, 0, 0, ZoneOffset.UTC))
+                .publishDate(OffsetDateTime.of(2021, 2, 9, 20, 0, 0, 0, ZoneOffset.UTC))
                 .overviewText("This is an abstract for News-Title-2")
                 .text("This is text for News-Title-2")
                 .author(userDataGenerator.getTestData().get(0))
@@ -58,6 +60,27 @@ public class NewsDataGenerator extends DataGenerator<News> {
                 .publishDate(OffsetDateTime.of(2022, 1, 1, 15, 30, 0, 0, ZoneOffset.UTC))
                 .overviewText("This is an abstract for News-Title-4")
                 .text("This is text for News-Title-4")
+                .author(userDataGenerator.getTestData().get(0))
+                .build(),
+            News.builder()
+                .title("News-Title-5")
+                .publishDate(OffsetDateTime.of(2020, 10, 25, 20, 15, 0, 0, ZoneOffset.UTC))
+                .overviewText("This is an abstract for News-Title-5")
+                .text("This is text for News-Title-5")
+                .author(userDataGenerator.getTestData().get(0))
+                .build(),
+            News.builder()
+                .title("Long-News-Title-6")
+                .publishDate(OffsetDateTime.of(2020, 10, 25, 20, 15, 0, 0, ZoneOffset.UTC))
+                .overviewText(
+                    "This is an long abstract for Long-News-Title-6. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et"
+                        + " dolore magna aliquyam erat, sed diam voluptua. At vero eos et "
+                        + "accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lore")
+                .text(
+                    "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. "
+                        + "Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt u"
+                        + "t labore et dolore magna aliquyam"
+                        + " erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et e")
                 .author(userDataGenerator.getTestData().get(0))
                 .build()
         );

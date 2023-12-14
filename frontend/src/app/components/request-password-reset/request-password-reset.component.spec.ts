@@ -12,7 +12,7 @@ describe('RequestPasswordResetComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule, ReactiveFormsModule],
-      declarations: [ RequestPasswordResetComponent ]
+      declarations: [RequestPasswordResetComponent]
     }).compileComponents();
   }));
 

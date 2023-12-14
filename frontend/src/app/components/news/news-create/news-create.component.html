@@ -1,0 +1,40 @@
+<div class="container mt-5">
+  <form (ngSubmit)="onSubmit()" class="needs-validation" novalidate>
+    <div class="mb-3">
+      <label for="title" class="form-label">Title</label>
+      <input type="text" class="form-control" id="title" [(ngModel)]="newsDto.title" name="title" required>
+      <div class="invalid-feedback">
+        Please provide a title.
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="overviewText" class="form-label">Overview Text (Max 512 characters)</label>
+      <textarea class="form-control" id="overviewText" [(ngModel)]="newsDto.overviewText" name="overviewText"
+                maxlength="512" required></textarea>
+      <div class="invalid-feedback">
+        Please provide an overview text (Max 512 characters).
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="text" class="form-label">Text</label>
+      <textarea class="form-control" id="text" [(ngModel)]="newsDto.text" name="text" required></textarea>
+      <div class="invalid-feedback">
+        Please provide the article text.
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="image" class="form-label">Upload Image</label>
+      <input type="file" class="form-control" (change)="onFileChanged($event)" accept="image/*" id="image" name="image"
+             required>
+      <small *ngIf="newsDto.image" class="text-success">Image selected successfully!</small>
+      <div class="invalid-feedback">
+        Please upload an image.
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create News</button>
+  </form>
+</div>

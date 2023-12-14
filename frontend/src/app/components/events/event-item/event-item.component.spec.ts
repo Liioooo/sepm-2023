@@ -12,7 +12,7 @@ describe('EventItemComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule, ReactiveFormsModule],
-      declarations: [ EventItemComponent ]
+      declarations: [EventItemComponent]
     }).compileComponents();
   }));
 

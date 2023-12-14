@@ -1,9 +1,12 @@
 package at.ac.tuwien.sepr.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepr.groupphase.backend.config.properties.FilesProperties;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.NewsCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.NewsDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.NewsListDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.PageDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.NewsMapper;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.PageMapper;
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepr.groupphase.backend.entity.News;
 import at.ac.tuwien.sepr.groupphase.backend.entity.PublicFile;
@@ -13,6 +16,8 @@ import at.ac.tuwien.sepr.groupphase.backend.repository.NewsRepository;
 import at.ac.tuwien.sepr.groupphase.backend.service.NewsService;
 import at.ac.tuwien.sepr.groupphase.backend.service.PublicFileService;
 import at.ac.tuwien.sepr.groupphase.backend.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,13 +30,17 @@ public class NewsServiceImpl implements NewsService {
     private final PublicFileService publicFileService;
     private final UserService userService;
     private final NewsMapper newsMapper;
+    private final PageMapper pageMapper;
+    private final FilesProperties filesProperties;
 
-    public NewsServiceImpl(NewsRepository newsRepository, PublicFileService publicFileService, UserService userService,
-                           NewsMapper newsMapper) {
+    public NewsServiceImpl(NewsRepository newsRepository, PublicFileService publicFileService, UserService userService, NewsMapper newsMapper,
+                           PageMapper pageMapper, FilesProperties filesProperties) {
         this.newsRepository = newsRepository;
         this.publicFileService = publicFileService;
         this.userService = userService;
         this.newsMapper = newsMapper;
+        this.pageMapper = pageMapper;
+        this.filesProperties = filesProperties;
     }
 
     @Override
@@ -42,22 +51,36 @@ public class NewsServiceImpl implements NewsService {
         // Mark the selected news as read for the current user:
         markAsRead(selectedNews);
 
+        setPublicImagePathForSingleNews(selectedNews);
+
         return newsMapper.toNewsDetailDto(selectedNews);
     }
 
     @Override
     @Transactional
-    public List<NewsListDto> getAllUnreadNews() {
+    public PageDto<NewsListDto> getAllUnreadNews(Pageable pageable) {
         ApplicationUser user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
-        return newsRepository.findAllByReadByNotContains(user).stream().map(newsMapper::toNewsListDto).toList();
-    }
 
+        Page<News> newsPage = newsRepository.findAllByReadByNotContainsOrderByPublishDateDesc(user, pageable);
+        setPublicImagePathForAllNews(newsPage.getContent());
+
+        return pageMapper.toPageDto(
+            newsPage,
+            newsMapper::toNewsListDto
+        );
+    }
 
     @Override
     @Transactional
-    public List<NewsListDto> getAllReadNews() {
+    public PageDto<NewsListDto> getAllReadNews(Pageable pageable) {
         ApplicationUser user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
-        return user.getReadNews().stream().map(newsMapper::toNewsListDto).toList();
+
+        Page<News> newsPage = newsRepository.findAllByReadByContainsOrderByPublishDateDesc(user, pageable);
+        setPublicImagePathForAllNews(newsPage.getContent());
+        return pageMapper.toPageDto(
+            newsPage,
+            newsMapper::toNewsListDto
+        );
     }
 
     @Override
@@ -80,11 +103,28 @@ public class NewsServiceImpl implements NewsService {
         newsRepository.save(n);
     }
 
+    private void setPublicImagePathForAllNews(List<News> newsList) {
+        for (News news : newsList) {
+            if (news.getImage() == null) {
+                continue;
+            }
+            setPublicImagePathForSingleNews(news);
+        }
+    }
+
+    private void setPublicImagePathForSingleNews(News news) {
+        if (news.getImage() == null) {
+            return;
+        }
+        String baseUrl = this.filesProperties.getPublicServeUrl().replace("*", "");
+        String url = baseUrl + news.getImage().getPath();
+
+        news.getImage().setPublicUrl(url);
+    }
+
     private void markAsRead(News news) {
         ApplicationUser user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new NotFoundException("No user is currently logged in"));
         news.getReadBy().add(user);
         newsRepository.save(news);
     }
-
-
 }
