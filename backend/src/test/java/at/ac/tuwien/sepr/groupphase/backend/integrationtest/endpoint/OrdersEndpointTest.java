@@ -327,7 +327,7 @@ class OrdersEndpointTest {
                             .endDate(OffsetDateTime.of(2024, 8, 3, 23, 0, 0, 0, ZoneOffset.UTC))
                             .seatPrice(132.19f)
                             .standingPrice(130.42f)
-                            .type(EventType.SPORTS)
+                            .type(EventType.SPORT)
                             .artist(
                                 Artist.builder()
                                     .id(6L)
