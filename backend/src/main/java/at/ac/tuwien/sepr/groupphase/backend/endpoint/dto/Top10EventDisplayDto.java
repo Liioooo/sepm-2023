@@ -1,4 +1,5 @@
 package at.ac.tuwien.sepr.groupphase.backend.endpoint.dto;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
