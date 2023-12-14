@@ -73,9 +73,14 @@ public class NewsDataGenerator extends DataGenerator<News> {
                 .title("Long-News-Title-6")
                 .publishDate(OffsetDateTime.of(2020, 10, 25, 20, 15, 0, 0, ZoneOffset.UTC))
                 .overviewText(
-                    "This is an long abstract for Long-News-Title-6. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lore")
+                    "This is an long abstract for Long-News-Title-6. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et"
+                        + " dolore magna aliquyam erat, sed diam voluptua. At vero eos et "
+                        + "accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lore")
                 .text(
-                    "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et e")
+                    "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. "
+                        + "Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt u"
+                        + "t labore et dolore magna aliquyam"
+                        + " erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et e")
                 .author(userDataGenerator.getTestData().get(0))
                 .build()
         );
