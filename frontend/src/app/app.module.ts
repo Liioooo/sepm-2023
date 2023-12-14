@@ -43,6 +43,7 @@ import { OrderItemComponent } from './components/profile-overview/order-item/ord
 import {
   ConfirmDeleteReservationModalComponent
 } from './components/modal/confirm-delete-reservation-modal/confirm-delete-reservation-modal.component';
+import { EventCreateComponent } from './components/management/management-events/event-create/event-create.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +77,8 @@ import {
     ConfirmDeleteReservationModalComponent,
     NewsSearchFieldsComponent,
     UsersSearchFieldsComponent,
-    EventOverviewComponent
+    EventOverviewComponent,
+    EventCreateComponent
   ],
   imports: [
     BrowserModule,

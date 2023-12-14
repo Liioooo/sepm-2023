@@ -24,6 +24,7 @@ import { TicketSelectMode } from './types/ticket-select-mode';
 import {
   EventOverviewComponent
 } from './components/management/management-events/event-overview/event-overview.component';
+import { EventCreateComponent } from './components/management/management-events/event-create/event-create.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -70,7 +71,8 @@ const routes: Routes = [
   { path: 'management/events', canActivate: [adminGuard], component: ManagementEventsComponent },
   { path: 'management/news', canActivate: [adminGuard], component: ManagementNewsComponent },
   { path: 'management/users', canActivate: [adminGuard], component: ManagementUsersComponent },
-  { path: 'management/events/:id', canActivate: [adminGuard], component: EventOverviewComponent },
+  { path: 'management/events/view/:id', canActivate: [adminGuard], component: EventOverviewComponent },
+  { path: 'management/events/create', canActivate: [adminGuard], component: EventCreateComponent },
   { path: '**', component: NotFoundComponent }
 ];
 

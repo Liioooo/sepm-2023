@@ -9,6 +9,7 @@ import { convertFromDatesInObject } from '../utils/convertFromDatesInObject';
 import { removeNullOrUndefinedProps } from '../utils/removeNullOrUndefinedProps';
 import { PageableRequest } from '../types/pageable-request';
 import { PageDto } from '../dtos/page-dto';
+import { EventCreateComponent } from '../components/management/management-events/event-create/event-create.component';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,7 @@ import { PageDto } from '../dtos/page-dto';
 export class EventService {
 
   private baseUri: string = this.globals.backendUri + '/events';
+  private adminUri: string = this.globals.backendUri + '/management'
 
   constructor(private httpClient: HttpClient, private globals: Globals) {
   }
@@ -48,6 +50,17 @@ export class EventService {
   getEvent(id: number): Observable<EventDetailDto> {
     return this.httpClient.get<EventDetailDto>(`${this.baseUri}/${id}`).pipe(
       map(convertToDatesInObject)
+    );
+  }
+
+  /**
+   * Create new event
+   * @param event event to create
+   */
+  createEvent(event: EventDetailDto): Observable<EventDetailDto> {
+    return this.httpClient.post<EventDetailDto>(
+      `${this.adminUri}`,
+      event
     );
   }
 }
