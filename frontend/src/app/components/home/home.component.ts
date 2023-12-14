@@ -19,7 +19,7 @@ export class HomeComponent implements OnInit {
   ];
 
   searchForm = this.formBuilder.group({
-    type: 'SHOW',
+    type: 'ALL',
     month: this.monthNames[new Date().getMonth()]
   });
 
@@ -39,14 +39,13 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this.setSearchMonth();
     this.getTop10Events();
-    this.searchType = this.searchForm.value.type.charAt(0) + this.searchForm.value.type.slice(1).toLowerCase();
+    this.setSearchType();
   }
 
   onSubmit() {
     this.setSearchMonth();
     this.getTop10Events();
-    this.searchType = this.searchForm.value.type.charAt(0) + this.searchForm.value.type.slice(1).toLowerCase();
-
+    this.setSearchType();
   }
 
   convertStringToNumber(): number {
@@ -67,10 +66,18 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  setSearchType(): void {
+    if (this.searchForm.value.type === 'ALL') {
+      this.searchType = '';
+    } else {
+      this.searchType = this.searchForm.value.type.charAt(0) + this.searchForm.value.type.slice(1).toLowerCase() + 's';
+    }
+  }
+
   private getTop10Events() {
     this.eventService.getTopEvents(
       {
-        type: this.searchForm.value.type === '' ? 'SHOW' : this.searchForm.value.type,
+        type: this.searchForm.value.type === 'ALL' ? null : this.searchForm.value.type,
         month: this.searchForm.value.month === '' ? 0 : this.convertStringToNumber()
       }
     ).subscribe({

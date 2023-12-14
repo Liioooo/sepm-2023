@@ -122,7 +122,7 @@ export class PiechartComponent implements OnChanges, OnDestroy {
   updateChart() {
     this.chart.data.labels = this.chartData.map(temp => temp.event.title);
     this.chart.data.datasets[0].data = this.chartData.map(temp => temp.boughtCount);
-    this.chart.options.plugins.title.text = 'Top 10 ' + this.eventType + 's in ' + this.searchMonth;
+    this.chart.options.plugins.title.text = 'Top 10 ' + this.eventType + ' in ' + this.searchMonth;
     this.chart.options.plugins.subtitle.display = false;
 
     const noEvents = this.chartData.length === 0;
