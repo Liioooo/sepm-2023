@@ -19,7 +19,7 @@ export class HomeComponent implements OnInit {
   ];
 
   searchForm = this.formBuilder.group({
-    type: 'CONCERT',
+    type: 'SHOW',
     month: this.monthNames[new Date().getMonth()]
   });
 
@@ -65,7 +65,7 @@ export class HomeComponent implements OnInit {
   private getTop10Events() {
     this.eventService.getTopEvents(
       {
-        type: this.searchForm.value.type === '' ? 'CONCERT' : this.searchForm.value.type,
+        type: this.searchForm.value.type === '' ? 'SHOW' : this.searchForm.value.type,
         month: this.searchForm.value.month === '' ? 0 : this.convertStringToNumber()
       }
     ).subscribe({

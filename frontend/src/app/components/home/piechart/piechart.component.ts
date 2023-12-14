@@ -72,7 +72,7 @@ export class PiechartComponent implements OnChanges, OnDestroy {
               top: 40,
               bottom: 40
             },
-            color: '#000000'
+            color: 'rgb(1,21,90)'
           },
           legend: {
             display: true,
