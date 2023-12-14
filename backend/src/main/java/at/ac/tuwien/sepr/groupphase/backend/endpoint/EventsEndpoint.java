@@ -4,12 +4,16 @@ import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventListDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventSearchDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventTop10SearchDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventWithBoughtCountDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.PageDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.Top10EventDisplayDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.EventMapper;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.PageMapper;
 import at.ac.tuwien.sepr.groupphase.backend.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.security.PermitAll;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +23,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/events")
@@ -62,5 +68,13 @@ public class EventsEndpoint {
     public void createEvent(@ModelAttribute EventCreateDto eventCreateDto) {
         eventService.createEvent(eventCreateDto);
         // Just for testing file upload...
+    }
+
+    @PermitAll
+    @GetMapping(value = "/top10")
+    @Operation(summary = "Gets the top 10 events")
+    public List<EventWithBoughtCountDto> getTopEvents(@Valid EventTop10SearchDto searchDto) {
+        //logging
+        return eventMapper.eventWithBoughtToEventWithBoughtDtoList(eventService.getTopTenEvents(searchDto));
     }
 }

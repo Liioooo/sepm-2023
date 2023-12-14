@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Globals } from '../global/globals';
 import { EventSearchDto } from '../dtos/event-search-dto';
 import { EventDetailDto } from '../dtos/event-detail-dto';
@@ -9,6 +9,8 @@ import { convertFromDatesInObject } from '../utils/convertFromDatesInObject';
 import { removeNullOrUndefinedProps } from '../utils/removeNullOrUndefinedProps';
 import { PageableRequest } from '../types/pageable-request';
 import { PageDto } from '../dtos/page-dto';
+import { TopTenEventSearchDto } from '../dtos/top-ten-event-search-dto';
+import { EventWithBoughtCountDto } from '../dtos/event-with-bought-count-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -49,5 +51,13 @@ export class EventService {
     return this.httpClient.get<EventDetailDto>(`${this.baseUri}/${id}`).pipe(
       map(convertToDatesInObject)
     );
+  }
+
+  getTopEvents(search: TopTenEventSearchDto): Observable<EventWithBoughtCountDto[]> {
+    const params = new HttpParams()
+      .set('month', search.month)
+      .set('eventType', search.type || '');
+    const url = `${this.baseUri}/top10`;
+    return this.httpClient.get<EventWithBoughtCountDto[]>(url, { params });
   }
 }

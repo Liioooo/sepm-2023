@@ -37,6 +37,7 @@ import {
 import { EventDetailComponent } from './components/events/event-detail/event-detail.component';
 import { RequestPasswordResetComponent } from './components/request-password-reset/request-password-reset.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import { PiechartComponent } from './components/home/piechart/piechart.component';
 import { EventCheckoutComponent } from './components/events/event-checkout/event-checkout.component';
 import { OrderItemComponent } from './components/profile-overview/order-item/order-item.component';
 import {
@@ -72,6 +73,9 @@ import { NewsCreateComponent } from './components/news/news-create/news-create.c
     LocationsComponent,
     LocationItemComponent,
     LocationSearchFieldsComponent,
+    EventDetailComponent,
+    ConfirmDeleteProfileModalComponent,
+    PiechartComponent,
     EventDetailComponent,
     EventCheckoutComponent,
     OrderItemComponent,
