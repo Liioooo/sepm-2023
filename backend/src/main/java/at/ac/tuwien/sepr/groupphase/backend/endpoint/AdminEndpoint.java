@@ -35,24 +35,27 @@ public class AdminEndpoint {
     @GetMapping({"events"})
     @Operation(summary = "Get users, optionally filter by search criteria")
     public PageDto<EventListDto> getEvents(EventSearchDto search, Pageable pageable) {
-        return this.pageMapper.toPageDtoListMapper(
-            adminService.getEventsBySearch(search, pageable), this.adminMapper::eventCollectionToEventListDtoCollection);
+        return this.pageMapper.toPageDto(
+            adminService.getEventsBySearch(search, pageable), this.adminMapper::toEventListDto
+        );
     }
 
     @Secured("ROLE_ADMIN")
     @GetMapping({"users"})
     @Operation(summary = "Get users, optionally filter by search criteria")
     public PageDto<UserListDto> getUsers(UserSearchDto search, Pageable pageable) {
-        return this.pageMapper.toPageDtoListMapper(
-            adminService.getUsersBySearch(search, pageable), this.adminMapper::userCollectionToUserListDtoCollection);
+        return this.pageMapper.toPageDto(
+            adminService.getUsersBySearch(search, pageable), this.adminMapper::toUserListDto
+        );
     }
 
     @Secured("ROLE_ADMIN")
     @GetMapping({"news"})
     @Operation(summary = "Get users, optionally filter by search criteria")
     public PageDto<NewsListDto> getNews(NewsSearchDto search, Pageable pageable) {
-        return this.pageMapper.toPageDtoListMapper(
-            adminService.getNewsBySearch(search, pageable), this.adminMapper::newsCollectionToNewsListDtoCollection);
+        return this.pageMapper.toPageDto(
+            adminService.getNewsBySearch(search, pageable), this.adminMapper::toNewsListDto
+        );
     }
 
 

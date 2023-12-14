@@ -19,6 +19,7 @@ import java.time.OffsetDateTime;
 public class NewsListDto {
     private Long id;
     private String title;
+    private UserDetailDto author;
     private String overviewText;
     private OffsetDateTime publishDate;
     private PublicFile image;

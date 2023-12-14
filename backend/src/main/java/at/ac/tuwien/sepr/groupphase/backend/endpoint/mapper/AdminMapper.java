@@ -8,17 +8,13 @@ import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepr.groupphase.backend.entity.News;
 import org.mapstruct.Mapper;
 
-import java.util.Collection;
-import java.util.List;
-
 @Mapper
 public interface AdminMapper {
 
-    List<UserListDto> userCollectionToUserListDtoCollection(Collection<ApplicationUser> users);
+    UserListDto toUserListDto(ApplicationUser user);
 
-    List<EventListDto> eventCollectionToEventListDtoCollection(Collection<Event> events);
+    EventListDto toEventListDto(Event event);
 
-    List<NewsListDto> newsCollectionToNewsListDtoCollection(Collection<News> news);
-
+    NewsListDto toNewsListDto(News news);
 
 }
