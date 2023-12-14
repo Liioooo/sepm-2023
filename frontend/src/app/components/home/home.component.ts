@@ -43,9 +43,8 @@ export class HomeComponent implements OnInit {
   }
 
   onSubmit() {
-
-    this.getTop10Events();
     this.setSearchMonth();
+    this.getTop10Events();
     this.searchType = this.searchForm.value.type.charAt(0) + this.searchForm.value.type.slice(1).toLowerCase();
 
   }

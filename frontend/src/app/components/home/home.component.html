@@ -38,6 +38,7 @@
     </div>
     <div class="row">
       <app-piechart
+        *ngIf="top10"
         class="col-12"
         [searchMonth]="searchMonth"
         [eventType]="searchType"

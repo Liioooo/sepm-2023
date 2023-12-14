@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, NgZone, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import Chart from 'chart.js/auto';
 import { EventWithBoughtCountDto } from '../../../dtos/event-with-bought-count-dto';
@@ -18,17 +18,21 @@ export class PiechartComponent implements OnChanges, OnDestroy {
 
   public chart?: Chart<'pie', number[], string>;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private ngZone: NgZone) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (!this.chart) {
-      this.createChart();
-    }
-    if ((changes.chartData && !changes.chartData.firstChange) || (changes.searchMonth && !changes.searchMonth.firstChange)
-      || (changes.eventType && !changes.eventType.firstChange)) {
-      this.updateChart();
-    }
+    this.ngZone.runOutsideAngular(() => {
+      if (!this.chart) {
+        this.createChart();
+        this.updateChart();
+        return;
+      }
+      if ((changes.chartData && !changes.chartData.firstChange) || (changes.searchMonth && !changes.searchMonth.firstChange)
+        || (changes.eventType && !changes.eventType.firstChange)) {
+        this.updateChart();
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -120,11 +124,14 @@ export class PiechartComponent implements OnChanges, OnDestroy {
     this.chart.data.datasets[0].data = this.chartData.map(temp => temp.boughtCount);
     this.chart.options.plugins.title.text = 'Top 10 ' + this.eventType + 's in ' + this.searchMonth;
     this.chart.options.plugins.subtitle.display = false;
+
     const noEvents = this.chartData.length === 0;
     let noTicketsBought = true;
-    for (let i = 0; i < this.chartData.length; i++) {
-      if (this.chartData[i].boughtCount !== 0) noTicketsBought = false;
+
+    for (const element of this.chartData) {
+      if (element.boughtCount !== 0) noTicketsBought = false;
     }
+
     if (noEvents) {
       this.chart.options.plugins.subtitle.display = true;
       this.chart.options.plugins.subtitle.text = 'Sorry! There are no events that match your search criteria.';
