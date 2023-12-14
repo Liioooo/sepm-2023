@@ -1,1 +1,51 @@
-<p>Top 10 Events</p>
+<div class="container pt-4">
+  <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
+    <div class="row ">
+      <div class="col-1 d-flex align-items-center justify-content">
+        <h3 class="text-center">
+        </h3>
+      </div>
+      <div class="col-4 d-flex align-items-center justify-content">
+        <label for="event-type" class="form-label col-md-2">Event</label>
+        <select id="event-type" class="form-select" formControlName="type">
+          <option value="ALL">All</option>
+          <option value="CONCERT">Concert</option>
+          <option value="SHOW">Show</option>
+          <option value="FESTIVAL">Festival</option>
+          <option value="SPORT">Sport</option>
+          <option value="CULTURE">Culture</option>
+        </select>
+      </div>
+      <div class="col-4 d-flex align-items-center justify-content">
+        <label for="event-type" class="form-label col-md-2">Month</label>
+        <select id="event-month" class="form-select" formControlName="month">
+          <option value="JANUARY">January</option>
+          <option value="FEBRUARY">February</option>
+          <option value="MARCH">March</option>
+          <option value="APRIL">April</option>
+          <option value="MAY">May</option>
+          <option value="JUNE">June</option>
+          <option value="JULY">July</option>
+          <option value="AUGUST">August</option>
+          <option value="SEPTEMBER">September</option>
+          <option value="OCTOBER">October</option>
+          <option value="NOVEMBER">November</option>
+          <option value="DECEMBER">December</option>
+        </select>
+      </div>
+      <div class="col-3 d-flex align-items-center justify-content col-md-3">
+        <button type="submit" class="btn btn-primary">Search</button>
+      </div>
+    </div>
+    <div class="row">
+      <app-piechart
+        *ngIf="top10"
+        class="col-12"
+        [searchMonth]="searchMonth"
+        [eventType]="searchType"
+        [chartData]="top10"
+      ></app-piechart>
+    </div>
+  </form>
+</div>
+

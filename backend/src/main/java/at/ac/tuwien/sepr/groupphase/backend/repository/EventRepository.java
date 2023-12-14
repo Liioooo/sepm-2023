@@ -2,12 +2,17 @@ package at.ac.tuwien.sepr.groupphase.backend.repository;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventSearchDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
+import at.ac.tuwien.sepr.groupphase.backend.entity.interfaces.EventWithBoughtCount;
+import at.ac.tuwien.sepr.groupphase.backend.enums.EventType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.time.OffsetDateTime;
+import java.util.List;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
@@ -35,4 +40,12 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         + "  ORDER BY e.title ASC"
     )
     Page<Event> findBySearchCriteria(@Param("search") EventSearchDto search, Pageable pageable);
+
+    @Query("SELECT e as event, (SELECT COUNT(t) FROM Ticket t WHERE t.order.event = e AND t.order.cancellationDate IS NULL) AS boughtCount FROM Event e"
+        + " WHERE e.startDate <= (:endDate) AND e.endDate >= (:startDate) AND ((:type) IS NULL OR e.type = (:type))"
+        + " ORDER BY (SELECT COUNT(t) FROM Ticket t WHERE t.order.event = e AND t.order.cancellationDate IS NULL) DESC"
+        + " LIMIT 10"
+    )
+    List<EventWithBoughtCount> findTopTenEvent(@Param("startDate") OffsetDateTime startDate, @Param("endDate") OffsetDateTime endDate, @Param("type") EventType type);
+
 }
