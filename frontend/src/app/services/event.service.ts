@@ -9,7 +9,6 @@ import { convertFromDatesInObject } from '../utils/convertFromDatesInObject';
 import { removeNullOrUndefinedProps } from '../utils/removeNullOrUndefinedProps';
 import { PageableRequest } from '../types/pageable-request';
 import { PageDto } from '../dtos/page-dto';
-import { EventCreateComponent } from '../components/management/management-events/event-create/event-create.component';
 import { TopTenEventSearchDto } from '../dtos/top-ten-event-search-dto';
 import { EventWithBoughtCountDto } from '../dtos/event-with-bought-count-dto';
 
@@ -19,7 +18,7 @@ import { EventWithBoughtCountDto } from '../dtos/event-with-bought-count-dto';
 export class EventService {
 
   private baseUri: string = this.globals.backendUri + '/events';
-  private adminUri: string = this.globals.backendUri + '/management'
+  private adminUri: string = this.globals.backendUri + '/management';
 
   constructor(private httpClient: HttpClient, private globals: Globals) {
   }
