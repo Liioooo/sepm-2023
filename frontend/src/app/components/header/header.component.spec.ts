@@ -10,7 +10,7 @@ describe('HeaderComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      declarations: [ HeaderComponent ]
+      declarations: [HeaderComponent]
     }).compileComponents();
   }));
 

@@ -2,9 +2,11 @@ package at.ac.tuwien.sepr.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventSearchDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventTop10SearchDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.SeatDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepr.groupphase.backend.entity.PublicFile;
+import at.ac.tuwien.sepr.groupphase.backend.entity.interfaces.EventWithBoughtCount;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepr.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepr.groupphase.backend.repository.TicketRepository;
@@ -15,6 +17,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.YearMonth;
+import java.time.ZoneOffset;
+import java.util.List;
 
 @Service
 public class EventServiceImpl implements EventService {
@@ -59,5 +67,13 @@ public class EventServiceImpl implements EventService {
     @Override
     public Integer getOccupiedStandings(long id) {
         return ticketRepository.findValidStandingTicketsByEventId(id);
+    }
+
+    @Override
+    public List<EventWithBoughtCount> getTopTenEvents(EventTop10SearchDto searchDto) {
+        YearMonth yearMonth = YearMonth.from(LocalDate.now().plusMonths(searchDto.getMonth()));
+        OffsetDateTime startDate = yearMonth.atDay(1).atTime(0, 0, 0).atOffset(ZoneOffset.UTC);
+        OffsetDateTime endDate = yearMonth.atEndOfMonth().atTime(23, 59, 59).atOffset(ZoneOffset.UTC);
+        return eventRepository.findTopTenEvent(startDate, endDate, searchDto.getEventType());
     }
 }

@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepr.groupphase.backend.endpoint.dto;
 
-import at.ac.tuwien.sepr.groupphase.backend.entity.PublicFile;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -23,5 +22,5 @@ public class NewsDetailDto {
     private String overviewText;
     private OffsetDateTime publishDate;
     private String authorName;
-    private PublicFile image;
+    private PublicFileDto image;
 }

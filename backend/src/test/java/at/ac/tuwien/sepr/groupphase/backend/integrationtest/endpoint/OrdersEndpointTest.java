@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepr.groupphase.backend.integrationtest.endpoint;
 
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderListDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.RedeemReservationDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.TicketCreateDto;
@@ -46,8 +47,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -327,7 +327,7 @@ class OrdersEndpointTest {
                             .endDate(OffsetDateTime.of(2024, 8, 3, 23, 0, 0, 0, ZoneOffset.UTC))
                             .seatPrice(132.19f)
                             .standingPrice(130.42f)
-                            .type(EventType.SPORTS)
+                            .type(EventType.SPORT)
                             .artist(
                                 Artist.builder()
                                     .id(6L)
@@ -372,6 +372,40 @@ class OrdersEndpointTest {
                 )
             ).andExpectAll(
                 status().isForbidden()
+            );
+        });
+    }
+
+    @Test
+    @DirtiesContext
+    void buyTickets_isSuccessful() {
+        assertDoesNotThrow(() -> {
+            this.mockMvc.perform(post(API_BASE)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                            objectMapper.writeValueAsString(new OrderCreateDto(
+                                    new TicketCreateDto[] { new TicketCreateDto(TicketCategory.SEATING, 4L, 1L) },
+                                    4L,
+                                    OrderType.BUY
+                            ))
+                    )
+                    .with(user("user1@email.com").roles("USER"))
+            ).andExpectAll(
+                    status().isCreated()
+            );
+
+            Mockito.doReturn(Optional.of(user1)).when(userService).getCurrentlyAuthenticatedUser();
+            var order = orderService.getOrderById(11L);
+            assertAll(
+                    () -> assertThat(order.getTickets()).size().isEqualTo(1),
+                    () -> assertThat(order.getTickets().get(0))
+                            .extracting(Ticket::getTicketCategory, Ticket::getRowNumber, Ticket::getSeatNumber)
+                            .containsExactly(TicketCategory.SEATING, 1L, 4L),
+                    () -> assertThat(order.getOrderType()).isEqualTo(OrderType.BUY),
+                    () -> assertThat(order.getEvent().getId()).isEqualTo(4L),
+                    () -> assertThat(order.getOrderDate()).isNotNull(),
+                    () -> assertThat(order.getReceipt()).isNotNull()
             );
         });
     }

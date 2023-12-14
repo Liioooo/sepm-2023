@@ -221,6 +221,48 @@ public class ArtistDataGenerator extends DataGenerator<Artist> {
                 .build(),
             Artist.builder()
                 .fictionalName("utilize transparent schemas")
+                .build(),
+            Artist.builder()
+                .fictionalName("Felix Lobrecht") //66?
+                .build(),
+            Artist.builder()
+                .fictionalName("Felix Lobrecht und Tommy Schmitt")
+                .build(),
+            Artist.builder()
+                .fictionalName("Dagi Bee")
+                .build(),
+            Artist.builder()
+                .fictionalName("Luca und Sandra")
+                .build(),
+            Artist.builder()
+                .fictionalName("Rezo und Ju") // 70
+                .build(),
+            Artist.builder()
+                .fictionalName("Alex Peter")
+                .build(),
+            Artist.builder()
+                .fictionalName("Joe Rogan")
+                .build(),
+            Artist.builder()
+                .fictionalName("Matt and Abby")
+                .build(),
+            Artist.builder()
+                .fictionalName("Ana und Tim")
+                .build(),
+            Artist.builder()
+                .fictionalName("Jess and Gabriel")
+                .build(), // 74
+            Artist.builder()
+                .fictionalName("Julia und Joey")
+                .build(), // 75
+            Artist.builder()
+                .fictionalName("Wiener Musical Gruppe B")
+                .build(),
+            Artist.builder()
+                .fictionalName("UNKNOWN")
+                .build(),
+            Artist.builder()
+                .fictionalName("STS")
                 .build()
         );
 

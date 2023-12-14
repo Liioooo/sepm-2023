@@ -11,7 +11,7 @@ export class ModalService {
 
   constructor(private bootstrapModalService: NgbModal) {
   }
-  
+
   async showModal<I, O>(modalContentComponent: Type<ModalContent<I, O>>, inputForModal: I, options?: NgbModalOptions): Promise<O | typeof MODAL_DISMISSED> {
     const modal = this.bootstrapModalService.open(modalContentComponent, options);
     (modal.componentInstance as ModalContent<I, O>).input = inputForModal;
