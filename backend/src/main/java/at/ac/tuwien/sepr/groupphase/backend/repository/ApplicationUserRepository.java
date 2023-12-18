@@ -19,7 +19,8 @@ public interface ApplicationUserRepository extends JpaRepository<ApplicationUser
     @Query("SELECT u FROM ApplicationUser u WHERE "
         + "(:#{#search.firstName} IS NULL OR UPPER(u.firstName) LIKE UPPER(CONCAT('%', :#{#search.firstName}, '%'))) AND "
         + "(:#{#search.lastName} IS NULL OR UPPER(u.lastName) LIKE UPPER(CONCAT('%', :#{#search.lastName}, '%'))) AND "
-        + "(:#{#search.email} IS NULL OR UPPER(u.email) LIKE UPPER(CONCAT('%', :#{#search.email}, '%')))")
+        + "(:#{#search.email} IS NULL OR UPPER(u.email) LIKE UPPER(CONCAT('%', :#{#search.email}, '%'))) "
+        + "ORDER BY u.lastName, u.firstName ASC")
     Page<ApplicationUser> findUserBySearchCriteria(@Param("search") UserSearchDto search, Pageable pageable);
 
 }

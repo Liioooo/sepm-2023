@@ -23,7 +23,7 @@ public interface NewsRepository extends JpaRepository<News, Long> {
     @Query("SELECT n FROM News n WHERE "
         + "(:#{#search.title} IS NULL OR UPPER(n.title) LIKE UPPER(CONCAT('%', :#{#search.title}, '%'))) AND "
         + "(:#{#search.authorName} IS NULL OR (UPPER(n.author.firstName) LIKE UPPER(CONCAT('%', :#{#search.authorName}, '%')) OR "
-        + " UPPER(n.author.lastName) LIKE UPPER(CONCAT('%', :#{#search.authorName}, '%')))) AND "
-        + "(:#{#search.publishDate} IS NULL OR n.publishDate = :#{#search.publishDate})")
+        + " UPPER(n.author.lastName) LIKE UPPER(CONCAT('%', :#{#search.authorName}, '%')))) "
+        + "ORDER BY n.publishDate DESC")
     Page<News> findNewsBySearchCriteria(@Param("search") NewsSearchDto search, Pageable pageable);
 }
