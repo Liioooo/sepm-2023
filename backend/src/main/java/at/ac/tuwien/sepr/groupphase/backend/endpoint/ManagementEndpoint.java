@@ -7,9 +7,11 @@ import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.NewsSearchDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.PageDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserListDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserSearchDto;
-import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.AdminMapper;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.ApplicationUserMapper;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.EventMapper;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.NewsMapper;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.PageMapper;
-import at.ac.tuwien.sepr.groupphase.backend.service.AdminService;
+import at.ac.tuwien.sepr.groupphase.backend.service.ManagementService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.annotation.Secured;
@@ -20,14 +22,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "api/v1/management")
-public class AdminEndpoint {
-    private final AdminService adminService;
-    private final AdminMapper adminMapper;
+public class ManagementEndpoint {
+    private final ManagementService managementService;
+    private final ApplicationUserMapper applicationUserMapper;
+    private final EventMapper eventMapper;
+    private final NewsMapper newsMapper;
     private final PageMapper pageMapper;
 
-    public AdminEndpoint(AdminService adminService, AdminMapper adminMapper, PageMapper pageMapper) {
-        this.adminService = adminService;
-        this.adminMapper = adminMapper;
+    public ManagementEndpoint(ManagementService managementService, ApplicationUserMapper applicationUserMapper, EventMapper eventMapper, NewsMapper newsMapper, PageMapper pageMapper) {
+        this.managementService = managementService;
+        this.applicationUserMapper = applicationUserMapper;
+        this.eventMapper = eventMapper;
+        this.newsMapper = newsMapper;
         this.pageMapper = pageMapper;
     }
 
@@ -36,7 +42,7 @@ public class AdminEndpoint {
     @Operation(summary = "Get users, optionally filter by search criteria")
     public PageDto<EventListDto> getEvents(EventSearchDto search, Pageable pageable) {
         return this.pageMapper.toPageDto(
-            adminService.getEventsBySearch(search, pageable), this.adminMapper::toEventListDto
+            managementService.getEventsBySearch(search, pageable), this.eventMapper::eventToEventListDto
         );
     }
 
@@ -45,7 +51,7 @@ public class AdminEndpoint {
     @Operation(summary = "Get users, optionally filter by search criteria")
     public PageDto<UserListDto> getUsers(UserSearchDto search, Pageable pageable) {
         return this.pageMapper.toPageDto(
-            adminService.getUsersBySearch(search, pageable), this.adminMapper::toUserListDto
+            managementService.getUsersBySearch(search, pageable), this.applicationUserMapper::toUserListDto
         );
     }
 
@@ -54,7 +60,7 @@ public class AdminEndpoint {
     @Operation(summary = "Get users, optionally filter by search criteria")
     public PageDto<NewsListDto> getNews(NewsSearchDto search, Pageable pageable) {
         return this.pageMapper.toPageDto(
-            adminService.getNewsBySearch(search, pageable), this.adminMapper::toNewsListDto
+            managementService.getNewsBySearch(search, pageable), this.newsMapper::toNewsListDto
         );
     }
 

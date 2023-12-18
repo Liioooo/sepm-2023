@@ -9,19 +9,19 @@ import at.ac.tuwien.sepr.groupphase.backend.entity.News;
 import at.ac.tuwien.sepr.groupphase.backend.repository.ApplicationUserRepository;
 import at.ac.tuwien.sepr.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepr.groupphase.backend.repository.NewsRepository;
-import at.ac.tuwien.sepr.groupphase.backend.service.AdminService;
+import at.ac.tuwien.sepr.groupphase.backend.service.ManagementService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AdminServiceImpl implements AdminService {
+public class ManagementServiceImpl implements ManagementService {
 
     private final EventRepository eventRepository;
     private final NewsRepository newsRepository;
     private final ApplicationUserRepository applicationUserRepository;
 
-    public AdminServiceImpl(EventRepository eventRepository, NewsRepository newsRepository, ApplicationUserRepository applicationUserRepository) {
+    public ManagementServiceImpl(EventRepository eventRepository, NewsRepository newsRepository, ApplicationUserRepository applicationUserRepository) {
         this.eventRepository = eventRepository;
         this.newsRepository = newsRepository;
         this.applicationUserRepository = applicationUserRepository;

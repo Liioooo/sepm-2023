@@ -9,7 +9,7 @@ import at.ac.tuwien.sepr.groupphase.backend.entity.News;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface AdminService {
+public interface ManagementService {
 
 
     /**
