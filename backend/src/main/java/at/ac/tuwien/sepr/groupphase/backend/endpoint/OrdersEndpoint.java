@@ -89,7 +89,7 @@ public class OrdersEndpoint {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Update the tickets of an order, i.e. to cancel tickets of that order")
     public void updateOrderTickets(@PathVariable Long id, @Valid @RequestBody OrderUpdateTicketsDto orderUpdateTicketsDto, Authentication authentication) {
-        ApplicationUser currentUser = userService.getUserFromAuthentication(authentication).orElseThrow(() -> new NotFoundException("No user currently logged in"));
+        ApplicationUser currentUser = userService.getUserFromAuthentication(authentication);
         orderService.updateOrderTickets(id, orderUpdateTicketsDto, currentUser);
     }
 }

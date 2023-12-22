@@ -11,6 +11,7 @@ import at.ac.tuwien.sepr.groupphase.backend.entity.UserLocation;
 import at.ac.tuwien.sepr.groupphase.backend.enums.UserRole;
 import at.ac.tuwien.sepr.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepr.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepr.groupphase.backend.repository.ApplicationUserRepository;
 import at.ac.tuwien.sepr.groupphase.backend.security.JwtTokenizer;
 import at.ac.tuwien.sepr.groupphase.backend.security.JwtVerifier;
@@ -203,10 +204,14 @@ public class CustomUserDetailService implements UserService {
     }
 
     @Override
-    public Optional<ApplicationUser> getUserFromAuthentication(Authentication authentication) {
+    public ApplicationUser getUserFromAuthentication(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
-            return Optional.empty();
+            throw new UnauthorizedException("Not authenticated");
         }
-        return applicationUserRepository.findUserByEmail(authentication.getName());
+        try {
+            return loadUserByUsername(authentication.getName());
+        } catch (UsernameNotFoundException e) {
+            throw new NotFoundException("User not found");
+        }
     }
 }

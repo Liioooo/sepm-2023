@@ -6,6 +6,8 @@ import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserLoginDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserRegisterDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepr.groupphase.backend.exception.UnauthorizedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -34,7 +36,7 @@ public interface UserService extends UserDetailsService {
      * @param userLoginDto login credentials
      * @return the JWT, if successful
      * @throws org.springframework.security.authentication.BadCredentialsException if credentials are bad
-     * @throws at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException    if the user does not exist
+     * @throws NotFoundException                                                   if the user does not exist
      */
     String login(UserLoginDto userLoginDto);
 
@@ -96,6 +98,9 @@ public interface UserService extends UserDetailsService {
 
     /**
      * Get the ApplicationUser of the given Authentication.
+     *
+     * @throws NotFoundException     if no User with the authentication name exists
+     * @throws UnauthorizedException if the Authentication is not valid
      */
-    Optional<ApplicationUser> getUserFromAuthentication(Authentication authentication);
+    ApplicationUser getUserFromAuthentication(Authentication authentication);
 }
