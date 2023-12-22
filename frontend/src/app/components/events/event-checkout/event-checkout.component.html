@@ -44,8 +44,15 @@
         </p>
         <div class="text-center">
           <button *ngIf="isBuy" (click)="submitNewOrder(event)" class="btn btn-primary mt-4">Buy Tickets</button>
-          <button *ngIf="isReserve" (click)="submitNewOrder(event)" class="btn btn-primary mt-4">Reserve Tickets</button>
-          <button *ngIf="isBuyingReservation" (click)="submitReservationPurchase()" class="btn btn-primary mt-4">Buy Reserved Tickets</button>
+          <button *ngIf="isReserve" (click)="submitNewOrder(event)" class="btn btn-primary mt-4">
+            Reserve Tickets
+          </button>
+          <button *ngIf="isBuyingReservation" (click)="submitReservationPurchase()" class="btn btn-primary mt-4">
+            Buy Reserved Tickets
+          </button>
+          <button *ngIf="isUpdate" (click)="submitUpdateOrderTickets()" class="btn btn-primary mt-4">
+            Update Tickets
+          </button>
         </div>
       </div>
     </div>

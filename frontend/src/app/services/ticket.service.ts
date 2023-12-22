@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class TicketService {
 
+  private _selectedTickets: number[];
   private _selectedSeats: Map<String, boolean> = new Map<String, boolean>();
   private _selectedStanding: number = 0;
 
@@ -22,5 +23,13 @@ export class TicketService {
 
   get selectedStanding(): number {
     return this._selectedStanding;
+  }
+
+  get selectedTickets(): number[] {
+    return this._selectedTickets ?? [];
+  }
+
+  set selectedTickets(value: number[]) {
+    this._selectedTickets = value;
   }
 }

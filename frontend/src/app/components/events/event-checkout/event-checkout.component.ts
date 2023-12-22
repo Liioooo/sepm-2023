@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { EventDetailDto } from '../../../dtos/event-detail-dto';
 import { EventService } from '../../../services/event.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { TicketService } from '../../../services/ticket.service';
 import { OrderType } from '../../../types/order-type';
 import { OrderCreateDto } from '../../../dtos/order-create-dto';
@@ -14,6 +14,8 @@ import { ErrorResponseDto } from '../../../dtos/error-response-dto';
 import { ErrorFormatterService } from '../../../services/error-formatter.service';
 import { CheckoutMode } from '../../../types/checkout-mode';
 import { RedeemReservationDto } from '../../../dtos/redeem-reservation-dto';
+import { OrderUpdateTicketsDto } from '../../../dtos/order-update-tickets-dto';
+import { TicketOrderUpdateDto } from '../../../dtos/ticket-order-update-dto';
 
 @Component({
   selector: 'app-event-checkout',
@@ -23,7 +25,7 @@ import { RedeemReservationDto } from '../../../dtos/redeem-reservation-dto';
 export class EventCheckoutComponent implements OnInit {
   event$: Observable<EventDetailDto>;
   mode: CheckoutMode;
-  reservationId: number;
+  orderId: number;
 
   constructor(
     private eventService: EventService,
@@ -36,10 +38,25 @@ export class EventCheckoutComponent implements OnInit {
   ) {
   }
 
-  ngOnInit(): void {
-    this.event$ = this.eventService.getEvent(Number(this.route.snapshot.paramMap.get('id')));
-    this.reservationId = Number(this.route.snapshot.paramMap.get('reservationId'));
+  async ngOnInit(): Promise<void> {
+    this.orderId = Number(this.route.snapshot.paramMap.get('orderId'));
     this.mode = this.route.snapshot.data.type ?? CheckoutMode.BUY;
+    let eventId = Number(this.route.snapshot.paramMap.get('id'));
+
+    if (this.isUpdate) {
+      let order = await firstValueFrom(this.orderService.getOrder(this.orderId)).catch(
+        err => {
+          this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto));
+          this.router.navigate(['/profile']);
+        }
+      );
+
+      if (order) {
+        eventId = order.event.id;
+      }
+    }
+
+    this.event$ = this.eventService.getEvent(eventId);
   }
 
   get isBuy(): boolean {
@@ -52,6 +69,10 @@ export class EventCheckoutComponent implements OnInit {
 
   get isBuyingReservation(): boolean {
     return this.mode === CheckoutMode.BUY_RESERVATION;
+  }
+
+  get isUpdate(): boolean {
+    return this.mode === CheckoutMode.UPDATE;
   }
 
   get selectedSeats() {
@@ -101,7 +122,7 @@ export class EventCheckoutComponent implements OnInit {
       tickets: this.generateTickets()
     };
 
-    this.orderService.purchaseReservation(this.reservationId, redeemReservationDto).subscribe({
+    this.orderService.purchaseReservation(this.orderId, redeemReservationDto).subscribe({
       next: () => {
         this.toastService.showSuccess('Success', 'Reservation redeemed successfully');
         this.router.navigate(['/profile']);
@@ -128,5 +149,21 @@ export class EventCheckoutComponent implements OnInit {
         ticketCategory: TicketCategory.STANDING
       })
     ];
+  }
+
+  submitUpdateOrderTickets() {
+    const orderUpdateTicketsDto: OrderUpdateTicketsDto = {
+      tickets: this.ticketService.selectedTickets.map(id => <TicketOrderUpdateDto>{
+        id: id
+      })
+    };
+
+    this.orderService.updateOrder(this.orderId, orderUpdateTicketsDto).subscribe({
+      next: () => {
+        this.toastService.showSuccess('Success', 'Order updated successfully');
+        this.router.navigate(['/profile']);
+      },
+      error: err => this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto))
+    });
   }
 }
