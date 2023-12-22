@@ -41,9 +41,9 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     )
     Page<Event> findBySearchCriteria(@Param("search") EventSearchDto search, Pageable pageable);
 
-    @Query("SELECT e as event, (SELECT COUNT(t) FROM Ticket t WHERE t.order.event = e AND t.order.cancellationDate IS NULL) AS boughtCount FROM Event e"
+    @Query("SELECT e as event, (SELECT COUNT(t) FROM Ticket t WHERE t.order.event = e) AS boughtCount FROM Event e"
         + " WHERE e.startDate <= (:endDate) AND e.endDate >= (:startDate) AND ((:type) IS NULL OR e.type = (:type))"
-        + " ORDER BY (SELECT COUNT(t) FROM Ticket t WHERE t.order.event = e AND t.order.cancellationDate IS NULL) DESC"
+        + " ORDER BY (SELECT COUNT(t) FROM Ticket t WHERE t.order.event = e) DESC"
         + " LIMIT 10"
     )
     List<EventWithBoughtCount> findTopTenEvent(@Param("startDate") OffsetDateTime startDate, @Param("endDate") OffsetDateTime endDate, @Param("type") EventType type);

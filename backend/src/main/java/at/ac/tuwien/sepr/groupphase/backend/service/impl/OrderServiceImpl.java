@@ -151,10 +151,6 @@ public class OrderServiceImpl implements OrderService {
             throw new ConflictException("Order is not a reservation");
         }
 
-        if (order.getCancellationDate() != null) {
-            throw new ConflictException("Reservation has already been cancelled");
-        }
-
         if (order.getEvent().getStartDate().isBefore(OffsetDateTime.now().plusMinutes(30))) {
             throw new ConflictException("Reservation has expired");
         }
