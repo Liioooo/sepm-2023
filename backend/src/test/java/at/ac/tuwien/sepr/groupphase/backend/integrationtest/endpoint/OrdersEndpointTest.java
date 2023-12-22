@@ -37,6 +37,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -157,13 +158,19 @@ class OrdersEndpointTest {
 
             List<OrderListDto> orders = Arrays.asList(objectMapper.readValue(content, OrderListDto[].class));
 
-            assertThat(orders).containsExactlyInAnyOrder(
+            List<OrderListDto> expected = Stream.of(
                 orderMapper.orderToOrderListDto(orderDataGenerator.getTestData().get(0)),
                 orderMapper.orderToOrderListDto(orderDataGenerator.getTestData().get(1)),
                 orderMapper.orderToOrderListDto(orderDataGenerator.getTestData().get(2)),
                 orderMapper.orderToOrderListDto(orderDataGenerator.getTestData().get(3)),
                 orderMapper.orderToOrderListDto(orderDataGenerator.getTestData().get(4))
-            );
+            ).peek(orderListDto -> {
+                if (orderListDto.getCancellationReceipts() == null) {
+                    orderListDto.setCancellationReceipts(List.of());
+                }
+            }).toList();
+
+            assertThat(orders).containsExactlyInAnyOrder(expected.toArray(OrderListDto[]::new));
         });
     }
 
