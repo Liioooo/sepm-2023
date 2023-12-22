@@ -2,10 +2,11 @@ package at.ac.tuwien.sepr.groupphase.backend.service;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EmailResetDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.ResetPasswordDto;
-import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserLoginDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserRegisterDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -92,4 +93,9 @@ public interface UserService extends UserDetailsService {
      * @param resetPasswordDto a DTO with the reset token and the new password
      */
     void resetPassword(ResetPasswordDto resetPasswordDto);
+
+    /**
+     * Get the ApplicationUser of the given Authentication.
+     */
+    Optional<ApplicationUser> getUserFromAuthentication(Authentication authentication);
 }

@@ -2,9 +2,9 @@ package at.ac.tuwien.sepr.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EmailResetDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.ResetPasswordDto;
-import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserLoginDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserRegisterDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.UserLocationMapper;
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepr.groupphase.backend.entity.UserLocation;
@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -199,5 +200,13 @@ public class CustomUserDetailService implements UserService {
         user.setPassword(passwordEncoder.encode(resetPasswordDto.getNewPassword()));
 
         applicationUserRepository.save(user);
+    }
+
+    @Override
+    public Optional<ApplicationUser> getUserFromAuthentication(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return Optional.empty();
+        }
+        return applicationUserRepository.findUserByEmail(authentication.getName());
     }
 }
