@@ -16,6 +16,7 @@ import { CheckoutMode } from '../../../types/checkout-mode';
 import { RedeemReservationDto } from '../../../dtos/redeem-reservation-dto';
 import { OrderUpdateTicketsDto } from '../../../dtos/order-update-tickets-dto';
 import { TicketOrderUpdateDto } from '../../../dtos/ticket-order-update-dto';
+import { OrderDetailDto } from '../../../dtos/order-detail-dto';
 
 @Component({
   selector: 'app-event-checkout',
@@ -26,6 +27,7 @@ export class EventCheckoutComponent implements OnInit {
   event$: Observable<EventDetailDto>;
   mode: CheckoutMode;
   orderId: number;
+  order?: OrderDetailDto;
 
   constructor(
     private eventService: EventService,
@@ -52,6 +54,7 @@ export class EventCheckoutComponent implements OnInit {
       );
 
       if (order) {
+        this.order = order;
         eventId = order.event.id;
       }
     }
@@ -76,19 +79,33 @@ export class EventCheckoutComponent implements OnInit {
   }
 
   get selectedSeats() {
+    if (this.isUpdate) {
+      return this.order.tickets.filter(t => t.ticketCategory == TicketCategory.SEATING).length - this.ticketService.selectedSeats.size;
+    }
     return this.ticketService.selectedSeats.size;
   }
 
   get selectedStanding() {
+    if (this.isUpdate) {
+      return this.order.tickets.filter(t => t.ticketCategory == TicketCategory.STANDING).length - this.ticketService.selectedStanding;
+    }
     return this.ticketService.selectedStanding;
   }
 
   getStandingPrice(event: EventDetailDto) {
-    return this.selectedStanding * event.standingPrice;
+    const standingPrice = this.selectedStanding * event.standingPrice;
+    if (this.isUpdate) {
+      return -standingPrice;
+    }
+    return standingPrice;
   }
 
   getSeatingPrice(event: EventDetailDto) {
-    return this.selectedSeats * event.seatPrice;
+    const seatingPrice = this.selectedSeats * event.seatPrice;
+    if (this.isUpdate) {
+      return -seatingPrice;
+    }
+    return seatingPrice;
   }
 
   artistName(event: EventDetailDto): string {

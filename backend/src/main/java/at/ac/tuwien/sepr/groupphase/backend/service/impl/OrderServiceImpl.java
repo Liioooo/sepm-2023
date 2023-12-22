@@ -202,8 +202,8 @@ public class OrderServiceImpl implements OrderService {
     public void updateOrderTickets(Long orderId, OrderUpdateTicketsDto orderUpdateTicketsDto, @NotNull ApplicationUser currentUser) {
         var order = orderRepository.findOrderByIdAndUserId(orderId, currentUser.getId()).orElseThrow(() -> new NotFoundException("Order not found"));
 
-        if (!Objects.equals(order.getUser().getId(), currentUser.getId())) {
-            throw new NotFoundException("Order not found");
+        if (order.getEvent().getEndDate().isBefore(OffsetDateTime.now())) {
+            throw new ConflictException("Event is already in the past");
         }
 
         List<Ticket> tickets = new ArrayList<>(order.getTickets().stream().filter(t -> orderUpdateTicketsDto.getTickets().stream().anyMatch(orderUpdateTicket -> Objects.equals(orderUpdateTicket.getId(), t.getId()))).toList());
@@ -213,7 +213,9 @@ public class OrderServiceImpl implements OrderService {
         order.getTickets().clear();
         order.getTickets().addAll(tickets);
         orderRepository.save(order);
-        this.createCancellationInvoicePdf(order, cancelledTickets, order.getEvent());
+        if (order.getOrderType() == OrderType.BUY) {
+            this.createCancellationInvoicePdf(order, cancelledTickets, order.getEvent());
+        }
     }
 
     private void createInvoicePdf(Order order, List<Ticket> tickets, Event event) {
