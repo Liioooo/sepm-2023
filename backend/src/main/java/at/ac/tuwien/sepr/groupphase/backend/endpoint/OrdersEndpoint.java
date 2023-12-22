@@ -82,6 +82,8 @@ public class OrdersEndpoint {
     }
 
     /**
+     * Update the tickets of an order, i.e. to cancel tickets of that order.
+     *
      * @throws NotFoundException if there is no Authentication
      */
     @Secured("ROLE_USER")
