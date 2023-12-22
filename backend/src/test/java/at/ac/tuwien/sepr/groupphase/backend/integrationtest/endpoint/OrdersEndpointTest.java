@@ -3,8 +3,10 @@ package at.ac.tuwien.sepr.groupphase.backend.integrationtest.endpoint;
 import at.ac.tuwien.sepr.groupphase.backend.datagenerator.OrderDataGenerator;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderListDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderUpdateTicketsDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.RedeemReservationDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.TicketCreateDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.TicketOrderUpdateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.OrderMapper;
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Ticket;
@@ -37,6 +39,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -253,6 +256,63 @@ class OrdersEndpointTest {
                 .content(
                     objectMapper.writeValueAsString(new RedeemReservationDto(
                         new TicketCreateDto[] {new TicketCreateDto(TicketCategory.SEATING, 2L, 3L)}
+                    ))
+                )
+                .with(user("user2@email.com").roles("USER"))
+            ).andExpectAll(
+                status().isNotFound()
+            );
+        });
+    }
+
+    @Test
+    @DirtiesContext
+    void editOrder_whileLoggedInAsOwnerRemoveOneTicket_isSuccessful() {
+        assertDoesNotThrow(() -> {
+            this.mockMvc.perform(patch(API_BASE + "/" + 4 + "/tickets")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    objectMapper.writeValueAsString(new OrderUpdateTicketsDto(
+                        List.of(
+                            new TicketOrderUpdateDto(17L),
+                            new TicketOrderUpdateDto(18L),
+                            new TicketOrderUpdateDto(21L)
+                        )
+                    ))
+                )
+                .with(user("user1@email.com").roles("USER"))
+            ).andExpectAll(
+                status().isNoContent()
+            );
+
+            Mockito.doReturn(Optional.of(user1)).when(userService).getCurrentlyAuthenticatedUser();
+            var order = orderService.getOrderById(4L);
+            assertAll(
+                () -> assertThat(order.getTickets()).size().isEqualTo(3),
+                () -> assertThat(order.getTickets())
+                    .extracting(Ticket::getId, Ticket::getTicketCategory, Ticket::getRowNumber, Ticket::getSeatNumber, ticket -> ticket.getOrder().getId())
+                    .containsExactlyInAnyOrder(
+                        tuple(17L, TicketCategory.SEATING, 3L, 2L, 4L),
+                        tuple(18L, TicketCategory.SEATING, 3L, 3L, 4L),
+                        tuple(21L, TicketCategory.STANDING, null, null, 4L)
+                    )
+            );
+        });
+    }
+
+    @Test
+    @DirtiesContext
+    void editOrder_whileNotLoggedInAsNonOwner_isNotFound() {
+        assertDoesNotThrow(() -> {
+            this.mockMvc.perform(patch(API_BASE + "/" + 4 + "/tickets")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    objectMapper.writeValueAsString(new OrderUpdateTicketsDto(
+                        List.of(
+                            new TicketOrderUpdateDto(17L)
+                        )
                     ))
                 )
                 .with(user("user2@email.com").roles("USER"))
