@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
@@ -41,23 +42,57 @@ public class PdfServiceImpl implements PdfService {
 
     @Override
     public EmbeddedFile createInvoicePdf(@NotNull Order order, @NotNull List<Ticket> tickets, @NotNull Event event) throws IOException, TemplateException {
-        Template template = freemarkerConfiguration.getTemplate(freemarkerConfig.getTemplates().get("invoice"));
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("order", order);
+        variables.put("event", event);
+        variables.put("tickets", tickets);
+        variables.put("standingTicketsCount", tickets.stream().filter((ticket) -> ticket.getTicketCategory() == TicketCategory.STANDING).count());
+        variables.put("orderDate", order.getOrderDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+        variables.put("totalPrice", tickets.stream().map((ticket) -> {
+            if (ticket.getTicketCategory() == TicketCategory.STANDING) {
+                return event.getStandingPrice();
+            } else if (ticket.getTicketCategory() == TicketCategory.SEATING) {
+                return event.getSeatPrice();
+            }
+            return 0;
+        }).mapToDouble(Number::doubleValue).sum());
+        EmbeddedFile pdf = this.generatePdf("invoice", variables);
+        pdf.setAllowedViewer(order.getUser());
+        return pdf;
+    }
+
+    @Override
+    public EmbeddedFile createCancellationInvoicePdf(@NotNull Order order, @NotNull List<Ticket> tickets, @NotNull Event event) throws IOException, TemplateException {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("order", order);
+        variables.put("invoiceNumber", order.getId() + "/" + (order.getCancellationReceipts() == null ? 1 : order.getCancellationReceipts().size() + 1));
+        variables.put("event", event);
+        variables.put("tickets", tickets);
+        variables.put("standingTicketsCount", tickets.stream().filter((ticket) -> ticket.getTicketCategory() == TicketCategory.STANDING).count());
+        variables.put("orderDate", OffsetDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+        variables.put("totalPrice", tickets.stream().map((ticket) -> {
+            if (ticket.getTicketCategory() == TicketCategory.STANDING) {
+                return event.getStandingPrice();
+            } else if (ticket.getTicketCategory() == TicketCategory.SEATING) {
+                return event.getSeatPrice();
+            }
+            return 0;
+        }).mapToDouble(Number::doubleValue).sum());
+        EmbeddedFile pdf = this.generatePdf("cancellation_invoice", variables);
+        pdf.setAllowedViewer(order.getUser());
+        return pdf;
+    }
+
+    @Override
+    public EmbeddedFile createTicketPdf(Ticket ticket) {
+        // TODO: Create
+        return null;
+    }
+
+    private <K, V> EmbeddedFile generatePdf(String templateName, Map<K, V> variables) throws IOException, TemplateException {
+        Template template = freemarkerConfiguration.getTemplate(freemarkerConfig.getTemplates().get(templateName));
         try (Writer stringWriter = new StringWriter();
              ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream()) {
-            Map<String, Object> variables = new HashMap<>();
-            variables.put("order", order);
-            variables.put("event", event);
-            variables.put("tickets", tickets);
-            variables.put("standingTicketsCount", tickets.stream().filter((ticket) -> ticket.getTicketCategory() == TicketCategory.STANDING).count());
-            variables.put("orderDate", order.getOrderDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
-            variables.put("totalPrice", tickets.stream().map((ticket) -> {
-                if (ticket.getTicketCategory() == TicketCategory.STANDING) {
-                    return event.getStandingPrice();
-                } else if (ticket.getTicketCategory() == TicketCategory.SEATING) {
-                    return event.getSeatPrice();
-                }
-                return 0;
-            }).mapToDouble(Number::doubleValue).sum());
             template.process(variables, stringWriter);
 
             PdfRendererBuilder builder = new PdfRendererBuilder();
@@ -71,21 +106,8 @@ public class PdfServiceImpl implements PdfService {
 
             EmbeddedFile embeddedFile = new EmbeddedFile();
             embeddedFile.setData(byteOutputStream.toByteArray());
-            embeddedFile.setAllowedViewer(order.getUser());
             embeddedFile.setMimeType(MediaType.APPLICATION_PDF_VALUE);
             return embeddedFile;
         }
-    }
-
-    @Override
-    public EmbeddedFile createCancellationInvoicePdf(Order order) {
-        // TODO: Create
-        return null;
-    }
-
-    @Override
-    public EmbeddedFile createTicketPdf(Ticket ticket) {
-        // TODO: Create
-        return null;
     }
 }

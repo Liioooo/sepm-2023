@@ -19,6 +19,7 @@
 .amount-button {
   &:disabled {
     background: map-get($theme-colors, "gray");
+    color: $body-color;
   }
 
   color: $white;

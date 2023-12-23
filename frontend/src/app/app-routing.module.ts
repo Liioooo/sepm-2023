@@ -50,16 +50,28 @@ const routes: Routes = [
     data: { type: CheckoutMode.RESERVE }
   },
   {
-    path: 'events/:id/buy-reservation/:reservationId',
+    path: 'events/:id/buy-reservation/:orderId',
     canActivate: [authGuard],
     component: EventDetailComponent,
     data: { type: TicketSelectMode.SELECT_RESERVED }
   },
   {
-    path: 'events/:id/buy-reservation/:reservationId/confirm',
+    path: 'events/:id/buy-reservation/:orderId/confirm',
     canActivate: [authGuard],
     component: EventCheckoutComponent,
     data: { type: CheckoutMode.BUY_RESERVATION }
+  },
+  {
+    path: 'orders/:orderId/edit-tickets',
+    canActivate: [authGuard],
+    component: EventDetailComponent,
+    data: { type: TicketSelectMode.UPDATE }
+  },
+  {
+    path: 'orders/:orderId/edit-tickets/confirm',
+    canActivate: [authGuard],
+    component: EventCheckoutComponent,
+    data: { type: CheckoutMode.UPDATE }
   },
   { path: 'locations', component: LocationsComponent },
   { path: 'news', canActivate: [authGuard], component: NewsComponent },

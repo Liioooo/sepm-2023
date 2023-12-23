@@ -1,9 +1,11 @@
 package at.ac.tuwien.sepr.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderCreateDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderUpdateTicketsDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.RedeemReservationDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.OrderMapper;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.TicketMapper;
+import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Ticket;
@@ -21,6 +23,7 @@ import at.ac.tuwien.sepr.groupphase.backend.service.OrderService;
 import at.ac.tuwien.sepr.groupphase.backend.service.PdfService;
 import at.ac.tuwien.sepr.groupphase.backend.service.UserService;
 import freemarker.template.TemplateException;
+import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -151,10 +154,6 @@ public class OrderServiceImpl implements OrderService {
             throw new ConflictException("Order is not a reservation");
         }
 
-        if (order.getCancellationDate() != null) {
-            throw new ConflictException("Reservation has already been cancelled");
-        }
-
         if (order.getEvent().getStartDate().isBefore(OffsetDateTime.now().plusMinutes(30))) {
             throw new ConflictException("Reservation has expired");
         }
@@ -198,6 +197,27 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.delete(order);
     }
 
+    @Override
+    @Transactional
+    public void updateOrderTickets(Long orderId, OrderUpdateTicketsDto orderUpdateTicketsDto, @NotNull ApplicationUser currentUser) {
+        var order = orderRepository.findOrderByIdAndUserId(orderId, currentUser.getId()).orElseThrow(() -> new NotFoundException("Order not found"));
+
+        if (order.getEvent().getEndDate().isBefore(OffsetDateTime.now())) {
+            throw new ConflictException("Event is already in the past");
+        }
+
+        List<Ticket> tickets = new ArrayList<>(order.getTickets().stream().filter(t -> orderUpdateTicketsDto.getTickets().stream().anyMatch(orderUpdateTicket -> Objects.equals(orderUpdateTicket.getId(), t.getId()))).toList());
+        List<Ticket> cancelledTickets = new ArrayList<>(order.getTickets());
+        cancelledTickets.removeAll(tickets);
+
+        order.getTickets().clear();
+        order.getTickets().addAll(tickets);
+        orderRepository.save(order);
+        if (order.getOrderType() == OrderType.BUY) {
+            this.createCancellationInvoicePdf(order, cancelledTickets, order.getEvent());
+        }
+    }
+
     private void createInvoicePdf(Order order, List<Ticket> tickets, Event event) {
         try {
             var pdfFile = pdfService.createInvoicePdf(order, tickets, event);
@@ -206,6 +226,17 @@ public class OrderServiceImpl implements OrderService {
             embeddedFileRepository.saveAndFlush(pdfFile);
         } catch (IOException | TemplateException e) {
             throw new InternalServerException("Could not generate invoice PDF.", e);
+        }
+    }
+
+    private void createCancellationInvoicePdf(Order order, List<Ticket> tickets, Event event) {
+        try {
+            var pdfFile = pdfService.createCancellationInvoicePdf(order, tickets, event);
+            order.getCancellationReceipts().add(pdfFile);
+            orderRepository.saveAndFlush(order);
+            embeddedFileRepository.saveAndFlush(pdfFile);
+        } catch (IOException | TemplateException e) {
+            throw new InternalServerException("Could not generate cancellation invoice PDF.", e);
         }
     }
 }

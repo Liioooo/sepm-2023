@@ -88,4 +88,18 @@ public class PdfServiceTest {
             });
         });
     }
+
+    @Test
+    void createCancellationInvoicePdf_withValidOrder_createsCorrectEmbeddedFile() {
+        assertDoesNotThrow(() -> {
+            EmbeddedFile embeddedFile = pdfService.createCancellationInvoicePdf(order, List.of(), event);
+            assertAll(() -> {
+                assertNotNull(embeddedFile);
+                assertThat(embeddedFile.getMimeType()).isEqualTo(MediaType.APPLICATION_PDF_VALUE);
+                assertThat(embeddedFile.getAllowedViewer()).usingRecursiveComparison().isEqualTo(user);
+                // File signature of PDFs is 0x255044462D, see https://en.wikipedia.org/wiki/List_of_file_signatures
+                assertThat(embeddedFile.getData()).startsWith(0x25, 0x50, 0x44, 0x46, 0x2D);
+            });
+        });
+    }
 }
