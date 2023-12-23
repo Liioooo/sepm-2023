@@ -78,6 +78,10 @@ export class EventCheckoutComponent implements OnInit {
     return this.mode === CheckoutMode.UPDATE;
   }
 
+  get isOrderReservation(): boolean {
+    return this.order?.orderType === OrderType.RESERVE;
+  }
+
   get selectedSeats() {
     if (this.isUpdate) {
       return this.order.tickets.filter(t => t.ticketCategory == TicketCategory.SEATING).length - this.ticketService.selectedSeats.size;

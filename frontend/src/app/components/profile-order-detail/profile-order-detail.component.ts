@@ -11,10 +11,7 @@ import { TicketCategory } from '../../types/ticket-category';
 import { OrderType } from '../../types/order-type';
 import { EmbeddedFileDto } from '../../dtos/embedded-file-dto';
 import { EmbeddedFileService } from '../../services/embedded-file.service';
-import {
-  ConfirmDeleteReservationModalComponent
-} from '../modal/confirm-delete-reservation-modal/confirm-delete-reservation-modal.component';
-import { MODAL_DISMISSED, ModalService } from '../../services/modal.service';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'app-profile-order-detail',
@@ -85,16 +82,6 @@ export class ProfileOrderDetailComponent implements OnInit {
 
   downloadFile(file: EmbeddedFileDto) {
     this.embeddedFileService.openEmbeddedFile(file);
-  }
-
-  async deleteReservation() {
-    const shouldDelete = await this.modalService.showModal(ConfirmDeleteReservationModalComponent, this.order.event.title);
-
-    if (shouldDelete === false || shouldDelete === MODAL_DISMISSED) {
-      return;
-    }
-
-    await this.router.navigate(['/profile']);
   }
 
 }

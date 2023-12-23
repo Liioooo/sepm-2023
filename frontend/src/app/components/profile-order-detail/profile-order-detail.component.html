@@ -31,10 +31,7 @@
       </button>
       <a *ngIf="isReservation && !isExpired" [routerLink]="['/events', order.event.id, 'buy-reservation', order.id]"
          class="btn btn-outline-primary">Buy Now</a>
-      <button *ngIf="isReservation" (click)="deleteReservation()" type="button"
-              class="btn btn-danger text-white">Delete Reservation
-      </button>
-      <a *ngIf="!isReservation && !isPast" [routerLink]="['/', 'orders', order.id, 'edit-tickets']"
+      <a *ngIf="!isPast" [routerLink]="['/', 'orders', order.id, 'edit-tickets']"
          class="btn btn-danger text-white">Update Tickets</a>
     </div>
     <h2 class="fs-2 fw-bold">Tickets</h2>

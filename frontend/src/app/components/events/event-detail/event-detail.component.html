@@ -83,10 +83,16 @@
             <a href="javascript:void(0)" (click)="reserveTickets()">Reserve Tickets for now</a>
           </div>
         </ng-container>
-        <ng-container *ngIf="isUpdate">
+        <ng-container *ngIf="isUpdate && !isReservation">
           <p class="text-description">
             You can remove tickets you don't want anymore. After updating the order, you will get back the money listed
             at "Total" and you will get a cancellation receipt for this order.
+          </p>
+        </ng-container>
+        <ng-container *ngIf="isUpdate && isReservation">
+          <p class="text-description">
+            You can remove tickets you don't want anymore. After updating the order, the reservation will only contain
+            the selected tickets.
           </p>
         </ng-container>
         <div class="text-center">
