@@ -9,7 +9,6 @@ export interface OrderDetailDto {
   tickets: TicketListDto[];
   orderType: OrderType;
   orderDate: Date;
-  pdfTickets: EmbeddedFileDto;
   receipt: EmbeddedFileDto;
   cancellationReceipts: EmbeddedFileDto[];
 }

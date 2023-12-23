@@ -12,6 +12,7 @@ import { ToastService } from '../../../services/toast.service';
 import { ErrorFormatterService } from '../../../services/error-formatter.service';
 import { tap } from 'rxjs/operators';
 import { OrderDetailDto } from '../../../dtos/order-detail-dto';
+import { OrderType } from '../../../types/order-type';
 
 @Component({
   selector: 'app-event-detail',
@@ -30,7 +31,7 @@ export class EventDetailComponent implements OnInit {
   selectedSeatsInOrder: Map<String, boolean> = new Map<String, boolean>();
   selectedStandingInOrder: number = 0;
 
-  order: void | OrderDetailDto;
+  order: undefined | OrderDetailDto;
 
   constructor(
     private eventService: EventService,
@@ -55,7 +56,7 @@ export class EventDetailComponent implements OnInit {
           this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto));
           this.router.navigate(['/profile']);
         }
-      );
+      ) as OrderDetailDto;
 
       if (this.order) {
         this.selectedSeats = new Map(this.order.tickets
@@ -208,5 +209,9 @@ export class EventDetailComponent implements OnInit {
     } else {
       return `Row ${rowNumber}, Seat ${seatNumber}`;
     }
+  }
+
+  get isReservation() {
+    return this.order.orderType === OrderType.RESERVE;
   }
 }

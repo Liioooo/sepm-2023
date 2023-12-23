@@ -24,12 +24,28 @@
         </div>
       </div>
     </div>
-    <div class="col p-5">
-      <h2 class="fs-1 fw-bold mb-5">My tickets</h2>
-      <div class="d-flex flex-column gap-3">
-        <app-order-item *ngFor="let order of $orders | async" [order]="order"
-                        (deleteReservationEvent)="deleteReservation($event)"></app-order-item>
-      </div>
+    <div class="col p pt-5 pt-lg-0 px-lg-5">
+      <h2 class="fs-1 fw-bold mb-3">My Orders</h2>
+      <ul ngbNav #nav="ngbNav" [(activeId)]="activeTab" class="nav-tabs">
+        <li [ngbNavItem]="1">
+          <button ngbNavLink>Upcoming</button>
+          <ng-template ngbNavContent>
+            <div class="d-flex flex-column gap-3">
+              <app-order-item *ngFor="let order of $upcomingOrders | async" [order]="order"></app-order-item>
+            </div>
+          </ng-template>
+        </li>
+        <li [ngbNavItem]="2">
+          <button ngbNavLink>Past</button>
+          <ng-template ngbNavContent>
+            <div class="d-flex flex-column gap-3">
+              <app-order-item *ngFor="let order of $pastOrders | async" [order]="order"></app-order-item>
+            </div>
+          </ng-template>
+        </li>
+      </ul>
+      <div [ngbNavOutlet]="nav" class="mt-2"></div>
+
     </div>
   </div>
 </div>

@@ -42,8 +42,11 @@
           You can reserve the selected tickets for now and buy them until 30 minutes before this event starts. If not,
           the reservation expires and is no longer valid.
         </p>
-        <p class="text-description" *ngIf="isUpdate">
+        <p class="text-description" *ngIf="isUpdate && !isOrderReservation">
           You will get back the money listed at "Total" and you will get a cancellation receipt for this order.
+        </p>
+        <p class="text-description" *ngIf="isUpdate && isOrderReservation">
+          You will have to pay the shown amount less when buying the tickets from the reservation.
         </p>
         <div class="text-center">
           <button *ngIf="isBuy" (click)="submitNewOrder(event)" class="btn btn-primary mt-4">Buy Tickets</button>

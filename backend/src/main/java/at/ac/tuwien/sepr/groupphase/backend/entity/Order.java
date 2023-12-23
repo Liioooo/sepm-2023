@@ -55,9 +55,6 @@ public class Order {
     private ApplicationUser user;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    private EmbeddedFile pdfTickets;
-
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private EmbeddedFile receipt;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)

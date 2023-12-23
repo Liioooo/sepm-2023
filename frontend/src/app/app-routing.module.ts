@@ -23,6 +23,7 @@ import { TicketSelectMode } from './types/ticket-select-mode';
 import { NewsDetailComponent } from './components/news/news-detail/news-detail.component';
 import { NewsComponent } from './components/news/news.component';
 import { NewsCreateComponent } from './components/news/news-create/news-create.component';
+import { ProfileOrderDetailComponent } from './components/profile-order-detail/profile-order-detail.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -78,6 +79,7 @@ const routes: Routes = [
   { path: 'news/detail/:id', canActivate: [authGuard], component: NewsDetailComponent },
   { path: 'news/create', canActivate: [authGuard], component: NewsCreateComponent },
   { path: 'profile', canActivate: [authGuard], component: ProfileOverviewComponent },
+  { path: 'profile/order-details/:orderId', canActivate: [authGuard], component: ProfileOrderDetailComponent },
   { path: 'profile/settings', canActivate: [authGuard], component: ProfileSettingsComponent },
   { path: 'management', canActivate: [adminGuard], component: ManagementComponent },
   { path: 'management/events', canActivate: [adminGuard], component: ManagementEventsComponent },

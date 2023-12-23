@@ -40,10 +40,8 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
 import { PiechartComponent } from './components/home/piechart/piechart.component';
 import { EventCheckoutComponent } from './components/events/event-checkout/event-checkout.component';
 import { OrderItemComponent } from './components/profile-overview/order-item/order-item.component';
-import {
-  ConfirmDeleteReservationModalComponent
-} from './components/modal/confirm-delete-reservation-modal/confirm-delete-reservation-modal.component';
 import { NewsCreateComponent } from './components/news/news-create/news-create.component';
+import { ProfileOrderDetailComponent } from './components/profile-order-detail/profile-order-detail.component';
 
 @NgModule({
   declarations: [
@@ -79,8 +77,8 @@ import { NewsCreateComponent } from './components/news/news-create/news-create.c
     EventDetailComponent,
     EventCheckoutComponent,
     OrderItemComponent,
-    ConfirmDeleteReservationModalComponent,
-    NewsCreateComponent
+    NewsCreateComponent,
+    ProfileOrderDetailComponent
   ],
   imports: [
     BrowserModule,
