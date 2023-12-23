@@ -24,4 +24,6 @@ public class TicketListDto {
 
     private Long seatNumber;
 
+    private EmbeddedFileDto pdfTicket;
+
 }

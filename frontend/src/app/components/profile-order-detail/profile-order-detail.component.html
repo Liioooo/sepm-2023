@@ -55,7 +55,7 @@
         <td>{{ ticket.seatNumber ?? '-' }}</td>
         <td>{{ getPrice(ticket.ticketCategory) | currency:'EUR' }}</td>
         <td class="text-end">
-          <a class="btn btn-outline-dark" routerLink="/ticket/{{ ticket.id }}">
+          <a class="btn btn-outline-dark" (click)="downloadFile(ticket.pdfTicket)">
             <i class="bi bi-download"></i>
             Download Ticket
           </a>
@@ -69,7 +69,7 @@
         <a *ngFor="let receipt of order.cancellationReceipts; index as i" class="btn btn-outline-dark"
            (click)="downloadFile(receipt)">
           <i class="bi bi-download"></i>
-          Download Reciept {{ i + 1 }}
+          Download Receipt {{ i + 1 }}
         </a>
       </div>
     </ng-container>
