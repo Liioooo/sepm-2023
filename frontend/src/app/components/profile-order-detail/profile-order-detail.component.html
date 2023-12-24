@@ -32,7 +32,7 @@
       <a *ngIf="isReservation && !isExpired" [routerLink]="['/events', order.event.id, 'buy-reservation', order.id]"
          class="btn btn-outline-primary">Buy Now</a>
       <a *ngIf="!isPast" [routerLink]="['/', 'orders', order.id, 'edit-tickets']"
-         class="btn btn-danger">Update Tickets</a>
+         class="btn btn-danger">Cancel Tickets</a>
     </div>
     <h2 class="fs-2 fw-bold">Tickets</h2>
     <table class="table table-striped align-middle" *ngIf="order.tickets.length > 0">
