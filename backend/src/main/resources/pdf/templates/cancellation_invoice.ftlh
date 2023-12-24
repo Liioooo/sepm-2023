@@ -5,9 +5,39 @@
         * {
             font-family: 'NotoSerif', serif;
         }
+
+        @page {
+            margin: 50px;
+
+            @top-left {
+                content: element(header);
+            }
+
+            @bottom-center {
+                content: 'Page ' counter(page) ' of ' counter(pages);
+            }
+        }
+
+        .table {
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin: 2rem 0;
+            width: 100%;
+        }
+
+        .table th, .table td {
+            padding: 0.5em;
+        }
+
+        .table th {
+            border-bottom: 1px solid black;
+        }
     </style>
 </head>
 <body>
+<div class="header" style="position: running(header);">
+    <img src="images/logo.png" height="50" alt="Ticketline Logo">
+</div>
 <main>
     <h1>Cancellation Invoice</h1>
     <div>
@@ -25,12 +55,14 @@
         Invoice No.:${invoiceNumber} <br>
         Date: ${orderDate}
     </div>
-    <table style="border-collapse: separate; border-spacing: 13pt;">
+    <table class="table">
         <thead>
-        <th>Count</th>
-        <th>Description</th>
-        <th>Total Price</th>
-        <th>VAT</th>
+        <tr>
+            <th>Count</th>
+            <th>Description</th>
+            <th>Total Price</th>
+            <th>VAT</th>
+        </tr>
         </thead>
         <tbody>
         <#list tickets as ticket>
@@ -38,7 +70,7 @@
                 <tr>
                     <td>1</td>
                     <td>Row ${ticket.rowNumber} Seat ${ticket.seatNumber}</td>
-                    <td>${event.seatPrice!'-'} €</td>
+                    <td>${-event.seatPrice!'-'} €</td>
                     <td>20%</td>
                 </tr>
             </#if>
@@ -47,7 +79,7 @@
             <tr>
                 <td>${standingTicketsCount}</td>
                 <td>Standing tickets</td>
-                <td>${(standingTicketsCount * event.standingPrice)!'-'} €</td>
+                <td>${(standingTicketsCount * -event.standingPrice)!'-'} €</td>
                 <td>20%</td>
             </tr>
         </#if>
