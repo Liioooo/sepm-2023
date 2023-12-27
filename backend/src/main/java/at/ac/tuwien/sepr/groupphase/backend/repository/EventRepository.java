@@ -36,8 +36,9 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         + "  UPPER(e.artist.fictionalName) LIKE UPPER(CONCAT('%', :#{#search.search}, '%')) OR "
         + "  UPPER(e.artist.firstname) LIKE UPPER(CONCAT('%', :#{#search.search}, '%')) OR "
         + "  UPPER(e.artist.lastname) LIKE UPPER(CONCAT('%', :#{#search.search}, '%')) OR "
-        + "  UPPER(e.title) LIKE UPPER(CONCAT('%', :#{#search.search}, '%'))))"
-        + "  ORDER BY e.title ASC"
+        + "  UPPER(e.title) LIKE UPPER(CONCAT('%', :#{#search.search}, '%')))) AND "
+        + " e.startDate >= CURRENT_TIMESTAMP" +
+        " ORDER BY e.title ASC"
     )
     Page<Event> findBySearchCriteria(@Param("search") EventSearchDto search, Pageable pageable);
 

@@ -100,6 +100,10 @@ public class OrderServiceImpl implements OrderService {
         var event = eventRepository.findById(orderCreateDto.getEventId()).orElseThrow(() -> new NotFoundException("Event not found"));
         var hall = event.getHall();
 
+        if (event.getStartDate().isBefore(OffsetDateTime.now())) {
+            throw new ConflictException("Cannot buy tickets for an event that has already started");
+        }
+
         // Check if tickets are still available
         for (var ticket : Arrays.stream(orderCreateDto.getTickets()).filter(t -> t.getTicketCategory() == TicketCategory.SEATING).toList()) {
             if (ticket.getRowNumber() > hall.getRows().size() || ticket.getSeatNumber() > hall.getRows().get((int) (ticket.getRowNumber() - 1)).getNumberOfSeats()) {
