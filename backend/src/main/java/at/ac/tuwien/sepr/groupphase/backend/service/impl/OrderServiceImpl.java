@@ -199,7 +199,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void updateOrderTickets(Long orderId, OrderUpdateTicketsDto orderUpdateTicketsDto, @NotNull ApplicationUser currentUser) {
+    public Order updateOrderTickets(Long orderId, OrderUpdateTicketsDto orderUpdateTicketsDto, @NotNull ApplicationUser currentUser) {
         var order = orderRepository.findOrderByIdAndUserId(orderId, currentUser.getId()).orElseThrow(() -> new NotFoundException("Order not found"));
 
         if (order.getEvent().getEndDate().isBefore(OffsetDateTime.now())) {
@@ -216,6 +216,7 @@ public class OrderServiceImpl implements OrderService {
         if (order.getOrderType() == OrderType.BUY) {
             this.createCancellationInvoicePdf(order, cancelledTickets, order.getEvent());
         }
+        return order;
     }
 
     private void createInvoicePdf(Order order, List<Ticket> tickets, Event event) {

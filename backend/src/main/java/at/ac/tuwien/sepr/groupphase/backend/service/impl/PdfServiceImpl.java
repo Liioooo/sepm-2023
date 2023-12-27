@@ -70,7 +70,7 @@ public class PdfServiceImpl implements PdfService {
         variables.put("tickets", tickets);
         variables.put("standingTicketsCount", tickets.stream().filter((ticket) -> ticket.getTicketCategory() == TicketCategory.STANDING).count());
         variables.put("orderDate", OffsetDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
-        variables.put("totalPrice", tickets.stream().map((ticket) -> {
+        variables.put("totalPrice", -tickets.stream().map((ticket) -> {
             if (ticket.getTicketCategory() == TicketCategory.STANDING) {
                 return event.getStandingPrice();
             } else if (ticket.getTicketCategory() == TicketCategory.SEATING) {
@@ -100,7 +100,13 @@ public class PdfServiceImpl implements PdfService {
             builder.useFont(new ClassPathResource("pdf/templates/fonts/NotoSerif-Italic.ttf").getFile(), "NotoSerif", 400, BaseRendererBuilder.FontStyle.ITALIC, true);
             builder.useFont(new ClassPathResource("pdf/templates/fonts/NotoSerif-Bold.ttf").getFile(), "NotoSerif", 700, BaseRendererBuilder.FontStyle.NORMAL, true);
             builder.useFont(new ClassPathResource("pdf/templates/fonts/NotoSerif-BoldItalic.ttf").getFile(), "NotoSerif", 700, BaseRendererBuilder.FontStyle.ITALIC, true);
-            builder.withW3cDocument(new W3CDom().fromJsoup(Jsoup.parse(stringWriter.toString(), "UTF-8")), "/");
+
+            builder.withW3cDocument(
+                new W3CDom().fromJsoup(Jsoup.parse(stringWriter.toString(), "UTF-8")),
+                freemarkerConfig.getTemplates().containsKey("path")
+                    ? new ClassPathResource(freemarkerConfig.getTemplates().get("path")).getFile().toURI().toURL().toString()
+                    : "/"
+            );
             builder.toStream(byteOutputStream);
             builder.run();
 

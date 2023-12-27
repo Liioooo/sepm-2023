@@ -54,7 +54,8 @@ public interface OrderService {
      * @param orderId               the id of the Order
      * @param orderUpdateTicketsDto The updated selection of tickets of the order
      * @param currentUser           The currently authenticated user, must not be null
+     * @return The updated order
      * @throws NotFoundException if the order of orderUpdateTicketsDto is not found in the database or currentUser does not own the order
      */
-    void updateOrderTickets(Long orderId, OrderUpdateTicketsDto orderUpdateTicketsDto, @NotNull ApplicationUser currentUser);
+    Order updateOrderTickets(Long orderId, OrderUpdateTicketsDto orderUpdateTicketsDto, @NotNull ApplicationUser currentUser);
 }

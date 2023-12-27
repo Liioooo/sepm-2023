@@ -82,11 +82,11 @@ export class EventDetailComponent implements OnInit {
   }
 
   get actionTitle() {
-    return this.isUpdate ? 'Update Tickets' : 'Select Tickets';
+    return this.isUpdate ? 'Cancel Tickets' : 'Select Tickets';
   }
 
   get actionButtonText() {
-    return this.isUpdate ? 'Update Tickets' : 'Buy Tickets';
+    return this.isUpdate ? 'Cancel Tickets' : 'Buy Tickets';
   }
 
   artistName(event: EventDetailDto): string {
