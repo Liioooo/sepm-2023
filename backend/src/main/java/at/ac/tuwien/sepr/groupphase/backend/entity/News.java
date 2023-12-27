@@ -37,7 +37,7 @@ public class News {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false, length = 512)
+    @Column(nullable = false, length = 1024)
     private String overviewText;
 
     @Column(nullable = false, columnDefinition = "TEXT")
