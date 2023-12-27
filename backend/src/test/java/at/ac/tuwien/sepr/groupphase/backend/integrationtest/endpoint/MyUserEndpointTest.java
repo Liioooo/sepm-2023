@@ -35,6 +35,7 @@ class MyUserEndpointTest {
     ApplicationUserRepository applicationUserRepository;
 
     private final String API_BASE = "/api/v1/my-user";
+    private final String API_NEWS = "/api/v1/news";
 
     @Test
     void deleteUser_whileNotLoggedIn_isForbidden() {
@@ -82,7 +83,7 @@ class MyUserEndpointTest {
     void deleteUser_whileLoggedInAsKnownUser_afterReadingNews_isSuccessful(String username) {
         assertDoesNotThrow(() -> {
             // Read Test-News-1 to mark it as read
-            this.mockMvc.perform(MockMvcRequestBuilders.get(API_BASE + "/1")
+            this.mockMvc.perform(MockMvcRequestBuilders.get(API_NEWS + "/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .with(user(username).roles("USER"))
             ).andExpectAll(
