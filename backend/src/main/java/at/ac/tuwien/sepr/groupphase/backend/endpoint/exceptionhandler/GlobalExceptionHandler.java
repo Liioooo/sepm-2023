@@ -17,6 +17,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.lang.invoke.MethodHandles;
@@ -79,6 +80,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         logError(error, ex);
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(value = {MaxUploadSizeExceededException.class})
+    protected ResponseEntity<Object> handleMaxUploadSizeExceededException(InternalServerException ex) {
+        var error = new ApiErrorDto(HttpStatus.PAYLOAD_TOO_LARGE, ex.getMessage());
+
+        logError(error, ex);
+        return new ResponseEntity<>(error, HttpStatus.PAYLOAD_TOO_LARGE);
     }
 
     @Override

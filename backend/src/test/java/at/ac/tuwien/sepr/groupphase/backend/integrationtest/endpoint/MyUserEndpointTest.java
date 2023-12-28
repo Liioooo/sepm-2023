@@ -77,7 +77,8 @@ class MyUserEndpointTest {
         });
     }
 
-    @Test
+    @ParameterizedTest()
+    @ValueSource(strings = {"user1@email.com", "admin@email.com",})
     @DirtiesContext
     void deleteUser_whileLoggedInAsKnownUser_afterReadingNews_isSuccessful(String username) {
         assertDoesNotThrow(() -> {
@@ -86,7 +87,7 @@ class MyUserEndpointTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .with(user(username).roles("USER"))
             ).andExpectAll(
-                status().is(200)
+                status().isOk()
             );
 
             this.mockMvc.perform(delete(API_BASE)
