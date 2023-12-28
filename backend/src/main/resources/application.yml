@@ -44,6 +44,10 @@ spring:
     multipart:
       max-file-size: 10MB
 
+server:
+  tomcat:
+    max-swallow-size: -1
+
 security:
   auth:
     header: Authorization
@@ -106,3 +110,4 @@ spring:
     timeout-per-shutdown-phase: 30s
 server:
   shutdown: graceful
+

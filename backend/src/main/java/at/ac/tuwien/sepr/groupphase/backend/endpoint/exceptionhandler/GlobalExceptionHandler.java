@@ -82,8 +82,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+
     @ExceptionHandler(value = {MaxUploadSizeExceededException.class})
-    protected ResponseEntity<Object> handleMaxUploadSizeExceededException(InternalServerException ex) {
+    protected ResponseEntity<Object> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
         var error = new ApiErrorDto(HttpStatus.PAYLOAD_TOO_LARGE, ex.getMessage());
 
         logError(error, ex);
