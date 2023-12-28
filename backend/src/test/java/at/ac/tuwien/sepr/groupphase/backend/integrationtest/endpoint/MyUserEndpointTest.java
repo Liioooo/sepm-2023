@@ -78,7 +78,6 @@ class MyUserEndpointTest {
     }
 
     @Test
-    @ValueSource(strings = {"user1@email.com", "user2@email.com", "admin@email.com", "locked@email.com"})
     @DirtiesContext
     void deleteUser_whileLoggedInAsKnownUser_afterReadingNews_isSuccessful(String username) {
         assertDoesNotThrow(() -> {

@@ -10,9 +10,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-import java.util.Collection;
-import java.util.List;
-
 @Mapper
 public interface NewsMapper {
 
@@ -22,8 +19,6 @@ public interface NewsMapper {
 
     @Mapping(source = "image", target = "image", qualifiedByName = "mapImageDto")
     NewsListDto toNewsListDto(News news);
-
-    List<NewsListDto> newsCollectionToNewsListDtoCollection(Collection<News> news);
 
     @Named("mapAuthorName")
     static String mapAuthorName(ApplicationUser author) {

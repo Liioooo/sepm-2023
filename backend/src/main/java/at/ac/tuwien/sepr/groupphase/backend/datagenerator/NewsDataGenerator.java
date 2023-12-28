@@ -40,6 +40,7 @@ public class NewsDataGenerator extends DataGenerator<News> {
                 .overviewText("This is an abstract for News-Title-1")
                 .text("This is text for News-Title-1")
                 .author(userDataGenerator.getTestData().get(0))
+                .image(publicFileDataGenerator.getTestData().get(0))
                 .build(),
             News.builder()
                 .title("News-Title-2")
@@ -47,6 +48,7 @@ public class NewsDataGenerator extends DataGenerator<News> {
                 .overviewText("This is an abstract for News-Title-2")
                 .text("This is text for News-Title-2")
                 .author(userDataGenerator.getTestData().get(0))
+                .image(publicFileDataGenerator.getTestData().get(0))
                 .build(),
             News.builder()
                 .title("News-Title-3")
@@ -54,6 +56,7 @@ public class NewsDataGenerator extends DataGenerator<News> {
                 .overviewText("This is an abstract for News-Title-3")
                 .text("This is text for News-Title-3")
                 .author(userDataGenerator.getTestData().get(0))
+                .image(publicFileDataGenerator.getTestData().get(0))
                 .build(),
             News.builder()
                 .title("News-Title-4")
@@ -61,6 +64,7 @@ public class NewsDataGenerator extends DataGenerator<News> {
                 .overviewText("This is an abstract for News-Title-4")
                 .text("This is text for News-Title-4")
                 .author(userDataGenerator.getTestData().get(0))
+                .image(publicFileDataGenerator.getTestData().get(1))
                 .build(),
             News.builder()
                 .title("News-Title-5")
@@ -68,6 +72,7 @@ public class NewsDataGenerator extends DataGenerator<News> {
                 .overviewText("This is an abstract for News-Title-5")
                 .text("This is text for News-Title-5")
                 .author(userDataGenerator.getTestData().get(0))
+                .image(publicFileDataGenerator.getTestData().get(1))
                 .build(),
             News.builder()
                 .title("Long-News-Title-6")
@@ -82,6 +87,7 @@ public class NewsDataGenerator extends DataGenerator<News> {
                         + "t labore et dolore magna aliquyam"
                         + " erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et e")
                 .author(userDataGenerator.getTestData().get(0))
+                .image(publicFileDataGenerator.getTestData().get(1))
                 .build()
         );
 

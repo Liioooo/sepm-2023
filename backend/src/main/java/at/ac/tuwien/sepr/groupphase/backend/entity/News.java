@@ -10,7 +10,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -57,6 +56,6 @@ public class News {
     )
     private Set<ApplicationUser> readBy;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private PublicFile image;
 }
