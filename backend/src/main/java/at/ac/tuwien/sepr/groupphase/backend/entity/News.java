@@ -10,7 +10,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,10 +33,10 @@ public class News {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String title;
 
-    @Column(nullable = false, length = 512)
+    @Column(nullable = false, length = 1024)
     private String overviewText;
 
     @Column(nullable = false, columnDefinition = "TEXT")
@@ -57,6 +56,6 @@ public class News {
     )
     private Set<ApplicationUser> readBy;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private PublicFile image;
 }

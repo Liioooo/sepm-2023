@@ -40,6 +40,13 @@ spring:
       pageable:
         default-page-size: 20
         max-page-size: 20
+  servlet:
+    multipart:
+      max-file-size: 10MB
+
+server:
+  tomcat:
+    max-swallow-size: -1
 
 security:
   auth:
@@ -103,3 +110,4 @@ spring:
     timeout-per-shutdown-phase: 30s
 server:
   shutdown: graceful
+

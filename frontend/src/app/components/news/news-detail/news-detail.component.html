@@ -6,7 +6,7 @@
     </a>
     <h1 class="mt-3">{{ newsDetail.title }}</h1>
     <div class="mb-3">
-      {{ newsDetail.publishDate.toLocaleDateString()}} by {{ newsDetail.authorName }}
+      {{ newsDetail.publishDate.toLocaleDateString()}} by {{ newsDetail.authorName || "[deleted]"}}
     </div>
 
     <div>

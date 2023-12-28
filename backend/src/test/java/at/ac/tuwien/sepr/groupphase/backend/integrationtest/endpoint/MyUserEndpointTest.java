@@ -14,6 +14,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -34,6 +35,7 @@ class MyUserEndpointTest {
     ApplicationUserRepository applicationUserRepository;
 
     private final String API_BASE = "/api/v1/my-user";
+    private final String API_NEWS = "/api/v1/news";
 
     @Test
     void deleteUser_whileNotLoggedIn_isForbidden() {
@@ -74,4 +76,30 @@ class MyUserEndpointTest {
             assertThat(applicationUserRepository.findUserByEmail(username).isEmpty()).isTrue();
         });
     }
+
+    @ParameterizedTest()
+    @ValueSource(strings = {"user1@email.com", "admin@email.com",})
+    @DirtiesContext
+    void deleteUser_whileLoggedInAsKnownUser_afterReadingNews_isSuccessful(String username) {
+        assertDoesNotThrow(() -> {
+            // Read Test-News-1 to mark it as read
+            this.mockMvc.perform(MockMvcRequestBuilders.get(API_NEWS + "/1")
+                .accept(MediaType.APPLICATION_JSON)
+                .with(user(username).roles("USER"))
+            ).andExpectAll(
+                status().isOk()
+            );
+
+            this.mockMvc.perform(delete(API_BASE)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(user(username).roles("USER"))
+            ).andExpectAll(
+                status().isNoContent()
+            );
+
+            assertThat(applicationUserRepository.findUserByEmail(username).isEmpty()).isTrue();
+        });
+    }
+
+
 }
