@@ -27,7 +27,7 @@ public abstract class DataGenerator<T> {
 
     protected abstract List<T> generate();
 
-    protected List<T> getTestData() {
+    public List<T> getTestData() {
         if (!isGenerated) {
             testData = generate();
             isGenerated = true;

@@ -5,41 +5,11 @@
         * {
             font-family: 'NotoSerif', serif;
         }
-
-        @page {
-            margin: 50px;
-
-            @top-left {
-                content: element(header);
-            }
-
-            @bottom-center {
-                content: 'Page ' counter(page) ' of ' counter(pages);
-            }
-        }
-
-        .table {
-            border-collapse: collapse;
-            border-spacing: 0;
-            margin: 2rem 0;
-            width: 100%;
-        }
-
-        .table th, .table td {
-            padding: 0.5em;
-        }
-
-        .table th {
-            border-bottom: 1px solid black;
-        }
     </style>
 </head>
 <body>
-<div class="header" style="position: running(header);">
-    <img src="images/logo.png" height="50" alt="Ticketline Logo">
-</div>
 <main>
-    <h1>Invoice</h1>
+    <h1>Cancellation Invoice</h1>
     <div>
         Ticketline <br>
         Karlsplatz 13, 1040 Wien <br>
@@ -52,17 +22,15 @@
         ${order.user.location.country}
     </div>
     <div>
-        Invoice No.:${order.id} <br>
+        Invoice No.:${invoiceNumber} <br>
         Date: ${orderDate}
     </div>
-    <table class="table">
+    <table style="border-collapse: separate; border-spacing: 13pt;">
         <thead>
-        <tr>
-            <th>Count</th>
-            <th>Description</th>
-            <th>Total Price</th>
-            <th>VAT</th>
-        </tr>
+        <th>Count</th>
+        <th>Description</th>
+        <th>Total Price</th>
+        <th>VAT</th>
         </thead>
         <tbody>
         <#list tickets as ticket>

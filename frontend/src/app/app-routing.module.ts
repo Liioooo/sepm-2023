@@ -23,6 +23,7 @@ import { TicketSelectMode } from './types/ticket-select-mode';
 import { NewsDetailComponent } from './components/news/news-detail/news-detail.component';
 import { NewsComponent } from './components/news/news.component';
 import { NewsCreateComponent } from './components/news/news-create/news-create.component';
+import { ProfileOrderDetailComponent } from './components/profile-order-detail/profile-order-detail.component';
 import {
   EventOverviewComponent
 } from './components/management/management-events/event-overview/event-overview.component';
@@ -54,22 +55,35 @@ const routes: Routes = [
     data: { type: CheckoutMode.RESERVE }
   },
   {
-    path: 'events/:id/buy-reservation/:reservationId',
+    path: 'events/:id/buy-reservation/:orderId',
     canActivate: [authGuard],
     component: EventDetailComponent,
     data: { type: TicketSelectMode.SELECT_RESERVED }
   },
   {
-    path: 'events/:id/buy-reservation/:reservationId/confirm',
+    path: 'events/:id/buy-reservation/:orderId/confirm',
     canActivate: [authGuard],
     component: EventCheckoutComponent,
     data: { type: CheckoutMode.BUY_RESERVATION }
+  },
+  {
+    path: 'orders/:orderId/edit-tickets',
+    canActivate: [authGuard],
+    component: EventDetailComponent,
+    data: { type: TicketSelectMode.UPDATE }
+  },
+  {
+    path: 'orders/:orderId/edit-tickets/confirm',
+    canActivate: [authGuard],
+    component: EventCheckoutComponent,
+    data: { type: CheckoutMode.UPDATE }
   },
   { path: 'locations', component: LocationsComponent },
   { path: 'news', canActivate: [authGuard], component: NewsComponent },
   { path: 'news/detail/:id', canActivate: [authGuard], component: NewsDetailComponent },
   { path: 'news/create', canActivate: [authGuard], component: NewsCreateComponent },
   { path: 'profile', canActivate: [authGuard], component: ProfileOverviewComponent },
+  { path: 'profile/order-details/:orderId', canActivate: [authGuard], component: ProfileOrderDetailComponent },
   { path: 'profile/settings', canActivate: [authGuard], component: ProfileSettingsComponent },
   { path: 'management', canActivate: [adminGuard], component: ManagementComponent },
   { path: 'management/events', canActivate: [adminGuard], component: ManagementEventsComponent },

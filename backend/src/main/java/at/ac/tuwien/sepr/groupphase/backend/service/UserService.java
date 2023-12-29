@@ -2,10 +2,13 @@ package at.ac.tuwien.sepr.groupphase.backend.service;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EmailResetDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.ResetPasswordDto;
-import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserLoginDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserRegisterDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepr.groupphase.backend.exception.UnauthorizedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -33,7 +36,7 @@ public interface UserService extends UserDetailsService {
      * @param userLoginDto login credentials
      * @return the JWT, if successful
      * @throws org.springframework.security.authentication.BadCredentialsException if credentials are bad
-     * @throws at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException    if the user does not exist
+     * @throws NotFoundException                                                   if the user does not exist
      */
     String login(UserLoginDto userLoginDto);
 
@@ -92,4 +95,12 @@ public interface UserService extends UserDetailsService {
      * @param resetPasswordDto a DTO with the reset token and the new password
      */
     void resetPassword(ResetPasswordDto resetPasswordDto);
+
+    /**
+     * Get the ApplicationUser of the given Authentication.
+     *
+     * @throws NotFoundException     if no User with the authentication name exists
+     * @throws UnauthorizedException if the Authentication is not valid
+     */
+    ApplicationUser getUserFromAuthentication(Authentication authentication);
 }

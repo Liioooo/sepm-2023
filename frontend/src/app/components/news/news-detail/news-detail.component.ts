@@ -25,11 +25,6 @@ export class NewsDetailComponent implements OnInit {
 
   loadNewsDetailDto() {
     this.newsDetail$ = this.newsService.getNews(Number(this.route.snapshot.paramMap.get('id')));
-    this.newsDetail$.subscribe(newsDetail => {
-      if (newsDetail.authorName === null || newsDetail.authorName.length >= 0) {
-        newsDetail.authorName = '[deleted]';
-      }
-    });
   }
 
 }

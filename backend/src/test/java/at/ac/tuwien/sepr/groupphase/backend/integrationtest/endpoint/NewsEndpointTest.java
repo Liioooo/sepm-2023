@@ -61,7 +61,6 @@ public class NewsEndpointTest {
     private final String API_BASE = "/api/v1/news";
     private final String API_READ = API_BASE + "/read";
     private final String API_UNREAD = API_BASE + "/unread";
-    private final String API_CREATE = API_BASE + "/create";
 
     @Test
     @DirtiesContext
@@ -85,7 +84,7 @@ public class NewsEndpointTest {
         assertDoesNotThrow(() -> {
             // Read Test-News-1 to mark it as read
 
-            var result = this.mockMvc.perform(MockMvcRequestBuilders.multipart(API_CREATE)
+            var result = this.mockMvc.perform(MockMvcRequestBuilders.multipart(API_BASE)
                 .file(imageFile) // Attach the image file
                 .param("title", toCreate.getTitle()) // Set parameters from NewsCreateDto
                 .param("overviewText", toCreate.getOverviewText())
@@ -129,10 +128,12 @@ public class NewsEndpointTest {
             null
         );
 
+        // new MockMultipartFile("m", "image.jpg", MediaType.IMAGE_JPEG_VALUE, new byte[] {}
+
         try {
-            var result = this.mockMvc.perform(MockMvcRequestBuilders.post(API_CREATE)
+            var result = this.mockMvc.perform(MockMvcRequestBuilders.post(API_BASE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writer().withDefaultPrettyPrinter().writeValueAsString(toCreate))
+                .flashAttr("newsCreateDto", toCreate)
                 .with(user(username).roles("USER"))
             ).andExpect(
                 status().isForbidden()
@@ -154,7 +155,7 @@ public class NewsEndpointTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .with(user(username).roles("USER"))
             ).andExpectAll(
-                status().is(200)
+                status().isOk()
             ).andReturn().getResponse().getContentAsByteArray();
 
             NewsDetailDto news = objectMapper.readerFor(NewsDetailDto.class).<NewsDetailDto>readValues(result).next();
@@ -256,7 +257,7 @@ public class NewsEndpointTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .with(user(username).roles("USER"))
             ).andExpectAll(
-                status().is(200)
+                status().isOk()
             );
 
             // Read Test-News-2 to mark it as read
@@ -264,7 +265,7 @@ public class NewsEndpointTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .with(user(username).roles("USER"))
             ).andExpectAll(
-                status().is(200)
+                status().isOk()
             );
 
             // Get the actual List of read News

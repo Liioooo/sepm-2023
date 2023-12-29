@@ -39,7 +39,7 @@
     <img src="images/logo.png" height="50" alt="Ticketline Logo">
 </div>
 <main>
-    <h1>Invoice</h1>
+    <h1>Cancellation Invoice</h1>
     <div>
         Ticketline <br>
         Karlsplatz 13, 1040 Wien <br>
@@ -52,7 +52,7 @@
         ${order.user.location.country}
     </div>
     <div>
-        Invoice No.:${order.id} <br>
+        Invoice No.:${invoiceNumber} <br>
         Date: ${orderDate}
     </div>
     <table class="table">
@@ -70,7 +70,7 @@
                 <tr>
                     <td>1</td>
                     <td>Row ${ticket.rowNumber} Seat ${ticket.seatNumber}</td>
-                    <td>${event.seatPrice!'-'} €</td>
+                    <td>${-event.seatPrice!'-'} €</td>
                     <td>20%</td>
                 </tr>
             </#if>
@@ -79,7 +79,7 @@
             <tr>
                 <td>${standingTicketsCount}</td>
                 <td>Standing tickets</td>
-                <td>${(standingTicketsCount * event.standingPrice)!'-'} €</td>
+                <td>${(standingTicketsCount * -event.standingPrice)!'-'} €</td>
                 <td>20%</td>
             </tr>
         </#if>

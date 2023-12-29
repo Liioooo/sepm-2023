@@ -7,6 +7,7 @@ import { OrderListDto } from '../dtos/order-list-dto';
 import { convertToDatesInObject } from '../utils/convertToDatesInObject';
 import { OrderDetailDto } from '../dtos/order-detail-dto';
 import { RedeemReservationDto } from '../dtos/redeem-reservation-dto';
+import { OrderUpdateTicketsDto } from '../dtos/order-update-tickets-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -63,4 +64,7 @@ export class OrderService {
     return this.httpClient.delete<void>(`${this.baseUri}/${orderId}`);
   }
 
+  updateOrder(orderId: number, orderUpdateTicketsDto: OrderUpdateTicketsDto): Observable<void> {
+    return this.httpClient.patch<void>(`${this.baseUri}/${orderId}/tickets`, orderUpdateTicketsDto);
+  }
 }

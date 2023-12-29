@@ -71,7 +71,7 @@ export class NewsService {
   }
 
   createNews(createDto: NewsCreateDto) {
-    const createUri: string = this.baseUri + '/create';
+    const createUri: string = this.baseUri;
 
     const formData: FormData = new FormData();
     formData.append('title', createDto.title);

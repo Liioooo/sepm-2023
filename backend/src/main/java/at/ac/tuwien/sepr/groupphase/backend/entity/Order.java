@@ -45,9 +45,6 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderType orderType;
 
-    @Column(nullable = true)
-    private OffsetDateTime cancellationDate;
-
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Event event;
 
@@ -58,12 +55,9 @@ public class Order {
     private ApplicationUser user;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    private EmbeddedFile pdfTickets;
-
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private EmbeddedFile receipt;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    private EmbeddedFile cancellationReceipt;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EmbeddedFile> cancellationReceipts;
 
 }
