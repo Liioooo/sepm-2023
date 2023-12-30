@@ -57,7 +57,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         + "(:#{#search.duration} IS NULL OR ("
         + "  e.endDate - e.startDate >= :#{#search.getDurationAsDuration()?.minusHours(1)} AND"
         + "  e.endDate - e.startDate <= :#{#search.getDurationAsDuration()?.plusHours(1)}))")
-    Page<Event> findEventBySearchCriteria(@Param("search") EventSearchDto search, Pageable pageable);
+    Page<Event> findBySearchCriteriaWithoutGlobalSearch(@Param("search") EventSearchDto search, Pageable pageable);
 
 
     @Query("SELECT e as event, (SELECT COUNT(t) FROM Ticket t WHERE t.order.event = e) AS boughtCount FROM Event e"
