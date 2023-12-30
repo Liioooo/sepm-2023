@@ -20,25 +20,8 @@ public interface NewsRepository extends JpaRepository<News, Long> {
 
     Collection<News> findAllByTitleContains(String title);
 
-    /*
-    @Query("SELECT n FROM News n WHERE "
-        + "(:#{#search.title} IS NULL OR UPPER(n.title) LIKE UPPER(CONCAT('%', :#{#search.title}, '%'))) AND "
-        + "(n.author IS NOT NULL AND ("
-        + "   (:#{#search.authorName} IS NULL) OR "
-        + "   (UPPER(n.author.firstName) LIKE UPPER(CONCAT('%', :#{#search.authorName}, '%')) OR "
-        + "    UPPER(n.author.lastName) LIKE UPPER(CONCAT('%', :#{#search.authorName}, '%')))"
-        + " )) "
-        + "ORDER BY n.publishDate DESC")
-
-
-    @Query("SELECT n FROM News n WHERE "
-        + "(:#{#search.title} IS NULL OR UPPER(n.title) LIKE UPPER(CONCAT('%', :#{#search.title}, '%'))) AND "
-        + "(:#{#search.authorName} IS NULL OR (UPPER(n.author.firstName) LIKE UPPER(CONCAT('%', :#{#search.authorName}, '%')) OR "
-        + " UPPER(n.author.lastName) LIKE UPPER(CONCAT('%', :#{#search.authorName}, '%')))) "
-        + "ORDER BY n.publishDate DESC")
-
-     */
-    @Query("SELECT n FROM News n WHERE "
+    @Query("SELECT n FROM News n "
+        + "LEFT JOIN n.author u WHERE"
         + "(:#{#search.title} IS NULL OR UPPER(n.title) LIKE UPPER(CONCAT('%', :#{#search.title}, '%'))) AND "
         + "(:#{#search.authorName} IS NULL OR "
         + "(COALESCE(UPPER(n.author.firstName), '') LIKE UPPER(CONCAT('%', :#{#search.authorName}, '%')) OR "

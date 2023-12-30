@@ -21,5 +21,4 @@ public class NewsSearchDto {
 
     @Size(max = 255)
     private String authorName;
-
 }

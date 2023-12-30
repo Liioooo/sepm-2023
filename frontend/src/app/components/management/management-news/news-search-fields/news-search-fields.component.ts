@@ -13,7 +13,7 @@ export class NewsSearchFieldsComponent {
 
   public form: FormGroup = new FormGroup({
     title: new FormControl(''),
-    author: new FormControl('')
+    authorName: new FormControl('')
   });
 
   @Output() searchChange = new EventEmitter<NewsSearchDto>();
