@@ -15,10 +15,10 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class NewsListDto {
+public class NewsListManagementDto {
     private Long id;
     private String title;
-    private String overviewText;
+    private String authorFirstName;
+    private String authorLastName;
     private OffsetDateTime publishDate;
-    private PublicFileDto image;
 }

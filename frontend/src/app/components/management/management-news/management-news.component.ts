@@ -3,9 +3,9 @@ import { DEFAULT_PAGEABLE_STATE, PageableState } from '../../../types/pageable-r
 import { BehaviorSubject, combineLatest, debounceTime, distinctUntilChanged, map, Observable, switchMap } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { tap } from 'rxjs/operators';
-import { NewsDetailDto } from '../../../dtos/news-detail-dto';
 import { NewsSearchDto } from '../../../dtos/news-search-dto';
 import { NewsService } from '../../../services/news.service';
+import { NewsListManagementDto } from '../../../dtos/news-list-management-dto';
 
 @Component({
   selector: 'app-management-news',
@@ -14,7 +14,7 @@ import { NewsService } from '../../../services/news.service';
 })
 export class ManagementNewsComponent {
   public pageableState: PageableState = DEFAULT_PAGEABLE_STATE;
-  public news$: Observable<NewsDetailDto[]>;
+  public news$: Observable<NewsListManagementDto[]>;
   public searchAttributes$ = new BehaviorSubject<NewsSearchDto>({});
   private onPageChange$ = new BehaviorSubject<number>(0);
 
@@ -55,5 +55,13 @@ export class ManagementNewsComponent {
 
   onPageChange(newPage: number) {
     this.onPageChange$.next(newPage - 1);
+  }
+
+  public authorName(news: NewsListManagementDto): string {
+    if (!news.authorLastName || !news.authorFirstName) {
+      return '[deleted]';
+    }
+
+    return `${news.authorFirstName} ${news.authorLastName}`;
   }
 }

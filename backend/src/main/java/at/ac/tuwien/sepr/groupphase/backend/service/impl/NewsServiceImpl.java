@@ -2,6 +2,7 @@ package at.ac.tuwien.sepr.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepr.groupphase.backend.config.properties.FilesProperties;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.NewsCreateDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.NewsSearchDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepr.groupphase.backend.entity.News;
 import at.ac.tuwien.sepr.groupphase.backend.entity.PublicFile;
@@ -88,6 +89,12 @@ public class NewsServiceImpl implements NewsService {
 
         newsRepository.save(n);
     }
+
+    @Override
+    public Page<News> getNewsBySearch(NewsSearchDto search, Pageable pageable) {
+        return this.newsRepository.findNewsBySearchCriteria(search, pageable);
+    }
+
 
     private void setPublicImagePathForAllNews(List<News> newsList) {
         for (News news : newsList) {

@@ -13,6 +13,7 @@ import { NewsCreateDto } from '../dtos/news-create-dto';
 import { convertPublicFileUrlToAbsoluteUrl } from '../utils/convertFromPublicFileUrlToAbsoluteUrl';
 import { NewsSearchDto } from '../dtos/news-search-dto';
 import { removeNullOrUndefinedProps } from '../utils/removeNullOrUndefinedProps';
+import { NewsListManagementDto } from '../dtos/news-list-management-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -83,12 +84,12 @@ export class NewsService {
     return this.httpClient.post<NewsDetailDto>(createUri, formData);
   }
 
-  findNews(search: NewsSearchDto | null, pageable?: PageableRequest): Observable<PageDto<NewsDetailDto>> {
+  findNews(search: NewsSearchDto | null, pageable?: PageableRequest): Observable<PageDto<NewsListManagementDto>> {
     const searchParams = search ? convertToDatesInObject(removeNullOrUndefinedProps(search as {
       [key: string]: string
     })) : {};
 
-    return this.httpClient.get<PageDto<NewsDetailDto>>(this.newsBaseUri, {
+    return this.httpClient.get<PageDto<NewsListManagementDto>>(this.newsBaseUri, {
       params: {
         ...searchParams,
         ...pageable

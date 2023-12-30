@@ -1,11 +1,9 @@
 package at.ac.tuwien.sepr.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventSearchDto;
-import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.NewsSearchDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserSearchDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
-import at.ac.tuwien.sepr.groupphase.backend.entity.News;
 import at.ac.tuwien.sepr.groupphase.backend.repository.ApplicationUserRepository;
 import at.ac.tuwien.sepr.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepr.groupphase.backend.repository.NewsRepository;
@@ -37,8 +35,4 @@ public class ManagementServiceImpl implements ManagementService {
         return this.eventRepository.findEventBySearchCriteria(search, pageable);
     }
 
-    @Override
-    public Page<News> getNewsBySearch(NewsSearchDto search, Pageable pageable) {
-        return this.newsRepository.findNewsBySearchCriteria(search, pageable);
-    }
 }
