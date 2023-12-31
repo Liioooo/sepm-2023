@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { DEFAULT_PAGEABLE_STATE, PageableState } from '../../../types/pageable-request';
 import { BehaviorSubject, combineLatest, debounceTime, distinctUntilChanged, map, Observable, switchMap } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
 import { UserDetailDto } from '../../../dtos/user-detail-dto';
 import { UserSearchDto } from '../../../dtos/user-search-dto';
 import { tap } from 'rxjs/operators';
@@ -19,12 +18,11 @@ export class ManagementUsersComponent {
   private onPageChange$ = new BehaviorSubject<number>(0);
 
   constructor(
-    private service: UserService,
-    private route: ActivatedRoute
+    private service: UserService
   ) {
-    this.users$ = combineLatest([this.searchAttributes$, this.searchTerm$, this.onPageChangeDistinct$]).pipe(
+    this.users$ = combineLatest([this.searchAttributes$, this.onPageChangeDistinct$]).pipe(
       debounceTime(250),
-      switchMap(([searchAttributes, search, page]) => {
+      switchMap(([searchAttributes, page]) => {
         return this.service.getUsers({
           ...searchAttributes
         }, { page, size: 20 });
@@ -38,12 +36,6 @@ export class ManagementUsersComponent {
         };
       }),
       map(page => page.content)
-    );
-  }
-
-  get searchTerm$(): Observable<string> {
-    return this.route.queryParams.pipe(
-      map(params => params.search)
     );
   }
 
