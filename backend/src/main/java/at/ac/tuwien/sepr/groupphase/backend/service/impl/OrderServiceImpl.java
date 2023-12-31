@@ -96,9 +96,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public synchronized void createOrder(OrderCreateDto orderCreateDto) {
-        var user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
         var event = eventRepository.findById(orderCreateDto.getEventId()).orElseThrow(() -> new NotFoundException("Event not found"));
         var hall = event.getHall();
+
+        if (event.getStartDate().isBefore(OffsetDateTime.now())) {
+            throw new ConflictException("Cannot buy tickets for an event that has already started");
+        }
 
         // Check if tickets are still available
         for (var ticket : Arrays.stream(orderCreateDto.getTickets()).filter(t -> t.getTicketCategory() == TicketCategory.SEATING).toList()) {
@@ -130,6 +133,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         // Save order and tickets
+        var user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
         var order = orderRepository.saveAndFlush(orderMapper.orderCreateDtoToOrder(orderCreateDto, user));
 
         var tickets = Arrays.stream(orderCreateDto.getTickets())
