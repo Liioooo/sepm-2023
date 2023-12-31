@@ -56,7 +56,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         + "(:#{#search.type?.name()} IS NULL OR e.type = :#{#search.type}) AND"
         + "(:#{#search.duration} IS NULL OR ("
         + "  e.endDate - e.startDate >= :#{#search.getDurationAsDuration()?.minusHours(1)} AND"
-        + "  e.endDate - e.startDate <= :#{#search.getDurationAsDuration()?.plusHours(1)}))")
+        + "  e.endDate - e.startDate <= :#{#search.getDurationAsDuration()?.plusHours(1)}))"
+        + "  ORDER BY e.title ASC")
     Page<Event> findBySearchCriteriaWithoutGlobalSearch(@Param("search") EventSearchDto search, Pageable pageable);
 
 
