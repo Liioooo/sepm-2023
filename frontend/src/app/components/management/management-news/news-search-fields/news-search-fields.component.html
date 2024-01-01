@@ -1,0 +1,31 @@
+<form
+  [formGroup]="form"
+  class="search-form"
+>
+
+  <div class="row">
+    <div class="col">
+      <label for="news-title" class="form-label">Title</label>
+      <input
+        id="news-title"
+        class="form-control"
+        type="text"
+        formControlName="title"
+        placeholder="xyz"
+      >
+    </div>
+
+    <div class="col">
+      <label for="news-author" class="form-label">Author</label>
+      <input
+        id="news-author"
+        class="form-control"
+        type="text"
+        formControlName="authorName"
+        placeholder="Max Mustermann"
+      >
+    </div>
+  </div>
+
+
+</form>

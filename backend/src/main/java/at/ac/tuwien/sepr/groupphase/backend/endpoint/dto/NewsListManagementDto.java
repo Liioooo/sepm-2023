@@ -7,21 +7,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.OffsetDateTime;
+
 @Getter
 @Setter
-@NoArgsConstructor
 @EqualsAndHashCode
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
-public class UserDetailDto {
-
+public class NewsListManagementDto {
     private Long id;
-
-    private String email;
-
-    private String firstName;
-
-    private String lastName;
-
-    private UserLocationDto location;
+    private String title;
+    private String authorFirstName;
+    private String authorLastName;
+    private OffsetDateTime publishDate;
 }

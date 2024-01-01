@@ -1,27 +1,24 @@
 package at.ac.tuwien.sepr.groupphase.backend.endpoint.dto;
 
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @EqualsAndHashCode
 @AllArgsConstructor
 @ToString
-public class UserDetailDto {
-
-    private Long id;
-
+public class UserSearchDto {
+    @Size(max = 255)
     private String email;
 
+    @Size(max = 255)
     private String firstName;
 
+    @Size(max = 255)
     private String lastName;
-
-    private UserLocationDto location;
 }

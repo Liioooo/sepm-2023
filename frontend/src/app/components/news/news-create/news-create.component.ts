@@ -36,9 +36,12 @@ export class NewsCreateComponent {
     this.newsService.createNews(this.newsDto).subscribe({
       next: () => {
         this.toastService.showSuccess('Success', 'News created successfully');
-        //this.router.navigate(['/news']);
+        this.router.navigate(['/management/news']);
       },
-      error: err => this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto))
+      error: err => {
+        this.toastService
+          .showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto));
+      }
     });
   }
 }

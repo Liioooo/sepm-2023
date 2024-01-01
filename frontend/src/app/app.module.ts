@@ -37,9 +37,19 @@ import {
 import { EventDetailComponent } from './components/events/event-detail/event-detail.component';
 import { RequestPasswordResetComponent } from './components/request-password-reset/request-password-reset.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import {
+  NewsSearchFieldsComponent
+} from './components/management/management-news/news-search-fields/news-search-fields.component';
+import {
+  UsersSearchFieldsComponent
+} from './components/management/management-users/users-search-fields/users-search-fields.component';
+import {
+  EventOverviewComponent
+} from './components/management/management-events/event-overview/event-overview.component';
 import { PiechartComponent } from './components/home/piechart/piechart.component';
 import { EventCheckoutComponent } from './components/events/event-checkout/event-checkout.component';
 import { OrderItemComponent } from './components/profile-overview/order-item/order-item.component';
+import { EventCreateComponent } from './components/management/management-events/event-create/event-create.component';
 import { NewsCreateComponent } from './components/news/news-create/news-create.component';
 import { ProfileOrderDetailComponent } from './components/profile-order-detail/profile-order-detail.component';
 
@@ -72,13 +82,17 @@ import { ProfileOrderDetailComponent } from './components/profile-order-detail/p
     LocationItemComponent,
     LocationSearchFieldsComponent,
     EventDetailComponent,
-    ConfirmDeleteProfileModalComponent,
     PiechartComponent,
     EventDetailComponent,
     EventCheckoutComponent,
     OrderItemComponent,
     NewsCreateComponent,
-    ProfileOrderDetailComponent
+    ProfileOrderDetailComponent,
+    NewsCreateComponent,
+    NewsSearchFieldsComponent,
+    UsersSearchFieldsComponent,
+    EventOverviewComponent,
+    EventCreateComponent
   ],
   imports: [
     BrowserModule,

@@ -18,6 +18,7 @@ import { EventWithBoughtCountDto } from '../dtos/event-with-bought-count-dto';
 export class EventService {
 
   private baseUri: string = this.globals.backendUri + '/events';
+  private adminUri: string = this.globals.backendUri + '/management';
 
   constructor(private httpClient: HttpClient, private globals: Globals) {
   }
@@ -50,6 +51,17 @@ export class EventService {
   getEvent(id: number): Observable<EventDetailDto> {
     return this.httpClient.get<EventDetailDto>(`${this.baseUri}/${id}`).pipe(
       map(convertToDatesInObject)
+    );
+  }
+
+  /**
+   * Create new event
+   * @param event event to create
+   */
+  createEvent(event: EventDetailDto): Observable<EventDetailDto> {
+    return this.httpClient.post<EventDetailDto>(
+      `${this.adminUri}`,
+      event
     );
   }
 

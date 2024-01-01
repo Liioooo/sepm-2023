@@ -1,15 +1,19 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Globals } from '../global/globals';
+import { PageableRequest } from '../types/pageable-request';
 import { map, Observable } from 'rxjs';
+import { PageDto } from '../dtos/page-dto';
 import { convertToDatesInObject } from '../utils/convertToDatesInObject';
 import { NewsDetailDto } from '../dtos/news-detail-dto';
-import { PageableRequest } from '../types/pageable-request';
-import { PageDto } from '../dtos/page-dto';
+import { Globals } from '../global/globals';
+import { HttpClient } from '@angular/common/http';
+
 import { NewsListDto } from '../dtos/news-list-dto';
 import { NewsReqType } from '../enums/newsReqType';
 import { NewsCreateDto } from '../dtos/news-create-dto';
 import { convertPublicFileUrlToAbsoluteUrl } from '../utils/convertFromPublicFileUrlToAbsoluteUrl';
+import { NewsSearchDto } from '../dtos/news-search-dto';
+import { removeNullOrUndefinedProps } from '../utils/removeNullOrUndefinedProps';
+import { NewsListManagementDto } from '../dtos/news-list-management-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +21,8 @@ import { convertPublicFileUrlToAbsoluteUrl } from '../utils/convertFromPublicFil
 export class NewsService {
 
   private baseUri: string = this.globals.backendUri + '/news';
+  private newsBaseUri: string = this.globals.backendUri + '/management/news';
+
 
   constructor(
     private httpClient: HttpClient,
@@ -77,4 +83,20 @@ export class NewsService {
 
     return this.httpClient.post<NewsDetailDto>(createUri, formData);
   }
+
+  findNews(search: NewsSearchDto | null, pageable?: PageableRequest): Observable<PageDto<NewsListManagementDto>> {
+    const searchParams = search ? convertToDatesInObject(removeNullOrUndefinedProps(search as {
+      [key: string]: string
+    })) : {};
+
+    return this.httpClient.get<PageDto<NewsListManagementDto>>(this.newsBaseUri, {
+      params: {
+        ...searchParams,
+        ...pageable
+      }
+    }).pipe(
+      map(convertToDatesInObject)
+    );
+  }
+
 }

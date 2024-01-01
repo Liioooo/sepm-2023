@@ -60,7 +60,7 @@ public class NewsEndpoint {
 
     @Secured("ROLE_USER")
     @GetMapping({"read"})
-    @Operation(summary = "Get a all non read News")
+    @Operation(summary = "Get a all read News")
     public PageDto<NewsListDto> getAllReadNews(Pageable pageable) {
         Page<News> newsPage = newsService.getAllReadNews(pageable);
 
