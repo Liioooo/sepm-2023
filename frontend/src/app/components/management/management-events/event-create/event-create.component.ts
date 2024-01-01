@@ -5,6 +5,8 @@ import { Observable } from 'rxjs';
 import { ToastService } from '../../../../services/toast.service';
 import { Router } from '@angular/router';
 import { EventService } from '../../../../services/event.service';
+import { ErrorResponseDto } from '../../../../dtos/error-response-dto';
+import { ErrorFormatterService } from '../../../../services/error-formatter.service';
 
 @Component({
   selector: 'app-event-create',
@@ -15,7 +17,11 @@ export class EventCreateComponent {
 
   public event: EventDetailDto;
 
-  constructor(private notification: ToastService, private router: Router, private service: EventService) {
+  constructor(
+    private notification: ToastService,
+    private router: Router,
+    private service: EventService,
+    private errorFormatterService: ErrorFormatterService) {
   }
 
   public onSubmit(form: NgForm): void {
@@ -26,6 +32,10 @@ export class EventCreateComponent {
         next: data => {
           this.notification.showSuccess('Success', 'Event successfully created');
           this.router.navigate(['/management/events']);
+        },
+        error: err => {
+          this.notification
+            .showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto));
         }
       });
     }

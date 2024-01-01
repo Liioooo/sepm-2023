@@ -3,6 +3,8 @@ import { EventDetailDto } from '../../../../dtos/event-detail-dto';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastService } from '../../../../services/toast.service';
 import { EventService } from '../../../../services/event.service';
+import { ErrorResponseDto } from '../../../../dtos/error-response-dto';
+import { ErrorFormatterService } from '../../../../services/error-formatter.service';
 
 @Component({
   selector: 'app-event-overview',
@@ -16,7 +18,8 @@ export class EventOverviewComponent {
     private route: ActivatedRoute,
     private router: Router,
     private notification: ToastService,
-    private service: EventService
+    private service: EventService,
+    private errorFormatterService: ErrorFormatterService
   ) {
     this.route.data.subscribe(
       data => {
@@ -28,9 +31,14 @@ export class EventOverviewComponent {
           this.service.getEvent(id).subscribe({
             next: event => {
               this.event = event;
+            },
+            error: err => {
+              this.notification
+                .showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto));
             }
           });
         }
       });
+
   }
 }
