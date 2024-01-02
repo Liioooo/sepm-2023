@@ -92,7 +92,7 @@ import { ProfileOrderDetailComponent } from './components/profile-order-detail/p
     NewsSearchFieldsComponent,
     UsersSearchFieldsComponent,
     EventOverviewComponent,
-    EventCreateComponent,
+    EventCreateComponent
   ],
   imports: [
     BrowserModule,

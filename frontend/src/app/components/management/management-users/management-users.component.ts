@@ -60,7 +60,7 @@ export class ManagementUsersComponent {
   }
 
   clickMethod(name: string, email: string  ) {
-    if(confirm('Are you sure to request a password change for '+ name + '?')) {
+    if (confirm('Are you sure to request a password change for '+ name + '?')) {
       const emailResetDto: EmailResetDto = { email: email };
       this.sendEmail(emailResetDto);
     }
