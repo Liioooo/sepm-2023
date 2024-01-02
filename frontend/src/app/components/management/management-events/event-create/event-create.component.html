@@ -4,7 +4,7 @@
       <h2 class="fs-1 fw-bold">Create new Event</h2>
     </div>
 
-    <form #form="ngForm" (ngSubmit)="onSubmit(form)">
+    <form (ngSubmit)="onSubmit()" class="needs-validation" novalidate>
       <div class="row">
         <div class="mb-2 col-lg-6">
           <div class="row">
@@ -13,7 +13,7 @@
               type="text"
               id="eventTitle"
               name="eventTitle"
-              placeholder="event xyz"
+              placeholder="Event Name"
               class="form-control"
               [(ngModel)]="event.title"
               required>
@@ -23,33 +23,17 @@
           </div>
 
           <div class="row mt-3">
-            <label for="eventArtist" class="col-form-label text-muted col-md-2 col-lg-4">Artist</label>
-            <input
-              type="text"
-              id="eventArtist"
-              name="eventArtist"
-              placeholder="artist xyz"
-              class="form-control"
-              [(ngModel)]="event.artist"
-              required>
-            <div class="invalid-feedback">
-              Artist is required
-            </div>
+            <label class="col-form-label text-muted col-md-2 col-lg-4">Artist</label>
+            <select class="form-select" aria-label="Select Artist" #selectArtist (change)="onArtistSelected(selectArtist.value)">
+              <option *ngFor="let artist of artists">{{ artist.fictionalName}}{{ artist.firstname }} {{ artist.lastname }}</option>
+            </select>
           </div>
 
           <div class="row mt-3">
-            <label for="eventLocation" class="col-form-label text-muted col-md-2 col-lg-4">Hall</label>
-            <input
-              type="text"
-              id="eventLocation"
-              name="eventLocation"
-              placeholder="street xyz"
-              class="form-control"
-              [(ngModel)]="event.hall.name"
-              required>
-            <div class="invalid-feedback">
-              Hall is required
-            </div>
+            <label class="col-form-label text-muted col-md-2 col-lg-4">Hall</label>
+            <select class="form-select" aria-label="Select Hall" #selectHall (change)="onHallSelected(selectHall.value)">
+              <option *ngFor="let hall of halls">{{ hall.name }}, {{ hall.location.title }}</option>
+            </select>
           </div>
 
           <div class="row mt-3">
@@ -83,11 +67,10 @@
               Seating Price is required
             </div>
           </div>
-
         </div>
 
         <div class="mb-2 col-lg-6">
-          <div class="row">
+          <div class="row mx-2">
             <label for="startDate" class="col-form-label text-muted col-md-2 col-lg-4">Start Time</label>
             <input
               type="date"
@@ -95,13 +78,14 @@
               name="eventStartDate"
               placeholder="yyyy-mm-dd"
               class="form-control"
+              [(ngModel)]="event.startDate"
               required>
             <div class="invalid-feedback">
               Start Time is required
             </div>
           </div>
 
-          <div class="row mt-3">
+          <div class="row mt-3 mx-2">
             <label for="endDate" class="col-form-label text-muted col-md-2 col-lg-4">End Time</label>
             <input
               type="date"
@@ -109,25 +93,30 @@
               name="eventEndDate"
               placeholder="yyyy-mm-dd"
               class="form-control"
+              [(ngModel)]="event.endDate"
               required>
             <div class="invalid-feedback">
               End Time is required
             </div>
           </div>
 
-          <div class="row mt-3">
+          <div class="row mt-3 mx-2">
             <label for="eventImage" class="col-form-label text-muted col-md-2 col-lg-4">Upload Image</label>
             <input
               type="file"
               id="eventImage"
               name="eventImage"
               class="form-control"
-              alt="image for event">
+              alt="image for event"
+              (change)="onFileChanged($event)"
+              accept="image/*">
+            <small *ngIf="event.image" class="text-success">Image selected successfully!</small>
+
           </div>
 
         </div>
         <div class="mt-4 d-flex flex-row end-0">
-          <button type="button"
+          <button type="submit"
                   class="btn btn-primary">
             Create Event
           </button>

@@ -11,6 +11,8 @@ import { PageableRequest } from '../types/pageable-request';
 import { PageDto } from '../dtos/page-dto';
 import { TopTenEventSearchDto } from '../dtos/top-ten-event-search-dto';
 import { EventWithBoughtCountDto } from '../dtos/event-with-bought-count-dto';
+import { EventCreateDto } from '../dtos/event-create-dto';
+import { ArtistDetailDto } from '../dtos/artist-detail-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -58,11 +60,18 @@ export class EventService {
    * Create new event
    * @param event event to create
    */
-  createEvent(event: EventDetailDto): Observable<EventDetailDto> {
-    return this.httpClient.post<EventDetailDto>(
-      `${this.adminUri}`,
+  createEvent(event: EventCreateDto): Observable<EventCreateDto> {
+    return this.httpClient.post<EventCreateDto>(
+      `${this.baseUri}`,
       event
     );
+  }
+
+  /**
+   * Get all artists from backend
+   */
+  getAllArtists(): Observable<ArtistDetailDto[]> {
+    return this.httpClient.get<ArtistDetailDto[]>(`${this.adminUri}/artists`);
   }
 
   getTopEvents(search: TopTenEventSearchDto): Observable<EventWithBoughtCountDto[]> {

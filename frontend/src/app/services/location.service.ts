@@ -8,6 +8,7 @@ import { LocationSearchDto } from '../dtos/location-search-dto';
 import { LocationDetailDto } from '../dtos/location-detail-dto';
 import { PageDto } from '../dtos/page-dto';
 import { PageableRequest } from '../types/pageable-request';
+import { HallRowsDetailDto } from '../dtos/hall-rows-detail-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ import { PageableRequest } from '../types/pageable-request';
 export class LocationsService {
 
   private baseUri: string = this.globals.backendUri + '/locations';
+  private adminUri: string = this.globals.backendUri + '/management';
 
   constructor(private httpClient: HttpClient, private globals: Globals) {
   }
@@ -45,6 +47,13 @@ export class LocationsService {
    */
   getLocationById(id: number): Observable<LocationDetailDto> {
     return this.httpClient.get<LocationDetailDto>(`${this.baseUri}/${id}`);
+  }
+
+  /**
+   * Get all halls from backend
+   */
+  getAllHalls(): Observable<HallRowsDetailDto[]> {
+    return this.httpClient.get<HallRowsDetailDto[]>(`${this.adminUri}/halls`);
   }
 
 }
