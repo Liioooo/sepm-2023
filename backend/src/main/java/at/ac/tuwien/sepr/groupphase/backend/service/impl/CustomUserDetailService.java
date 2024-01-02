@@ -242,11 +242,4 @@ public class CustomUserDetailService implements UserService {
         }
     }
 
-
-
-    public UserDetails loadUserByEmail(String email) throws UsernameNotFoundException {
-        return applicationUserRepository.findUserByEmail(email)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
-    }
-
 }

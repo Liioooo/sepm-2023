@@ -110,8 +110,6 @@ public interface UserService extends UserDetailsService {
     ApplicationUser getUserFromAuthentication(Authentication authentication);
 
     void adminSendPasswordResetEmail(@Valid @RequestBody EmailResetDto emailResetDto);
-    UserDetails loadUserByEmail(String email) throws UsernameNotFoundException;
-
 
 
     /**
