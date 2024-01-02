@@ -214,4 +214,31 @@ public class CustomUserDetailService implements UserService {
             throw new NotFoundException("User not found");
         }
     }
+
+    public void adminSendPasswordResetEmail(EmailResetDto emailResetDto) {
+        var mailBody = "<h1>Reset your password</h1>\n"
+            + "<p>Please click the following link to reset your password: "
+            + "<a href=\"http://localhost:4200/#/reset-password?token=%s\">Reset Password</a></p>";
+
+        try {
+            var user = loadUserByUsername(emailResetDto.getEmail());
+
+            var token = jwtTokenizer.getPasswordResetToken(user.getId());
+            this.emailService.sendSimpleMail(
+                emailResetDto.getEmail(),
+                "Password Reset",
+                mailBody.formatted(token)
+            );
+        } catch (UsernameNotFoundException e) {
+            LOGGER.info("User with email {} not found", emailResetDto.getEmail());
+        }
+    }
+
+
+
+    public UserDetails loadUserByEmail(String email) throws UsernameNotFoundException {
+        return applicationUserRepository.findUserByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+    }
+
 }
