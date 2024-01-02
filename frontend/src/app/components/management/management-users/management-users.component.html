@@ -1,1 +1,50 @@
-<p>management-users works!</p>
+<div class="container">
+  <div class="mb-4">
+    <div class="col py-4">
+      <h2 class="fs-1 fw-bold">Users</h2>
+    </div>
+
+    <!-- SEARCH -->
+    <app-users-search-fields
+      class="d-block mb-5"
+      (searchChange)="searchAttributes$.next($event)"
+    ></app-users-search-fields>
+
+    <!-- EVENT LIST -->
+    <table class="table table-sm">
+      <thead>
+      <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let user of users$ | async">
+        <td>{{ user.firstName }}</td>
+        <td>{{ user.lastName }}</td>
+        <td>{{ user.email }}</td>
+        <td>
+          <!-- ACTIONS -->
+          <div class="btn-group">
+            <a class="btn btn-sm responsive-info-button"
+               aria-label="Disable User">
+              <i class="bi bi-ban danger"></i>
+            </a>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div class="d-flex justify-content-center mt-4">
+      <ngb-pagination
+        [(page)]="pageableState.currentPage"
+        [pageSize]="pageableState.pageSize"
+        [collectionSize]="pageableState.totalElements"
+        (pageChange)="onPageChange($event)"
+      ></ngb-pagination>
+    </div>
+  </div>
+</div>

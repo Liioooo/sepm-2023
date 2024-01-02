@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { EventDetailDto } from '../../../dtos/event-detail-dto';
 import { EventService } from '../../../services/event.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { firstValueFrom, Observable } from 'rxjs';
+import { catchError, firstValueFrom, Observable } from 'rxjs';
 import { TicketService } from '../../../services/ticket.service';
 import { TicketSelectMode } from '../../../types/ticket-select-mode';
 import { OrderService } from '../../../services/order.service';
@@ -73,6 +73,10 @@ export class EventDetailComponent implements OnInit {
     }
 
     this.event$ = this.eventService.getEvent(eventId).pipe(
+      catchError(err => {
+        this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto));
+        throw err;
+      }),
       tap(event => {
         for (let seat of event.occupiedSeats) {
           this.occupiedSeats.set(`${seat.rowNumber}:${seat.seatNumber}`, true);

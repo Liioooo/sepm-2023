@@ -63,7 +63,7 @@ public class NewsDataGenerator extends DataGenerator<News> {
                 .publishDate(OffsetDateTime.of(2022, 1, 1, 15, 30, 0, 0, ZoneOffset.UTC))
                 .overviewText("This is an abstract for News-Title-4")
                 .text("This is text for News-Title-4")
-                .author(userDataGenerator.getTestData().get(0))
+                .author(userDataGenerator.getTestData().get(1))
                 .image(publicFileDataGenerator.getTestData().get(1))
                 .build(),
             News.builder()
@@ -71,7 +71,7 @@ public class NewsDataGenerator extends DataGenerator<News> {
                 .publishDate(OffsetDateTime.of(2020, 10, 25, 20, 15, 0, 0, ZoneOffset.UTC))
                 .overviewText("This is an abstract for News-Title-5")
                 .text("This is text for News-Title-5")
-                .author(userDataGenerator.getTestData().get(0))
+                .author(userDataGenerator.getTestData().get(1))
                 .image(publicFileDataGenerator.getTestData().get(1))
                 .build(),
             News.builder()
@@ -86,7 +86,7 @@ public class NewsDataGenerator extends DataGenerator<News> {
                         + "Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt u"
                         + "t labore et dolore magna aliquyam"
                         + " erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et e")
-                .author(userDataGenerator.getTestData().get(0))
+                .author(userDataGenerator.getTestData().get(1))
                 .image(publicFileDataGenerator.getTestData().get(1))
                 .build()
         );

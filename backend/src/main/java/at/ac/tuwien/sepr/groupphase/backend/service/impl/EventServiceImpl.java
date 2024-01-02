@@ -46,6 +46,11 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public Page<Event> getEventsBySearchWithoutGlobalSearch(EventSearchDto search, Pageable pageable) {
+        return this.eventRepository.findBySearchCriteria(search, pageable);
+    }
+
+    @Override
     @Transactional
     public void createEvent(EventCreateDto eventCreateDto) {
         PublicFile imageFile = null;

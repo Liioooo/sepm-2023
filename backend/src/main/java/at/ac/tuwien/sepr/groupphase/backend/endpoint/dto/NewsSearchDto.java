@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepr.groupphase.backend.endpoint.dto;
 
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -9,19 +10,15 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @EqualsAndHashCode
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
-public class UserDetailDto {
+public class NewsSearchDto {
 
-    private Long id;
+    @Size(max = 255)
+    private String title;
 
-    private String email;
-
-    private String firstName;
-
-    private String lastName;
-
-    private UserLocationDto location;
+    @Size(max = 255)
+    private String authorName;
 }

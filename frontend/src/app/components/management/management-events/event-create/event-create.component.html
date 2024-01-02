@@ -1,0 +1,139 @@
+<div class="container">
+  <div class="mb-4">
+    <div class="col py-4">
+      <h2 class="fs-1 fw-bold">Create new Event</h2>
+    </div>
+
+    <form #form="ngForm" (ngSubmit)="onSubmit(form)">
+      <div class="row">
+        <div class="mb-2 col-lg-6">
+          <div class="row">
+            <label for="eventTitle" class="col-form-label text-muted col-md-2 col-lg-4">Title</label>
+            <input
+              type="text"
+              id="eventTitle"
+              name="eventTitle"
+              placeholder="event xyz"
+              class="form-control"
+              [(ngModel)]="event.title"
+              required>
+            <div class="invalid-feedback">
+              Title is required
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <label for="eventArtist" class="col-form-label text-muted col-md-2 col-lg-4">Artist</label>
+            <input
+              type="text"
+              id="eventArtist"
+              name="eventArtist"
+              placeholder="artist xyz"
+              class="form-control"
+              [(ngModel)]="event.artist"
+              required>
+            <div class="invalid-feedback">
+              Artist is required
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <label for="eventLocation" class="col-form-label text-muted col-md-2 col-lg-4">Hall</label>
+            <input
+              type="text"
+              id="eventLocation"
+              name="eventLocation"
+              placeholder="street xyz"
+              class="form-control"
+              [(ngModel)]="event.hall.name"
+              required>
+            <div class="invalid-feedback">
+              Hall is required
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <label for="eventStandingPrice" class="col-form-label text-muted col-md-2 col-lg-4">Price for Standing</label>
+            <input
+              type="number"
+              id="eventStandingPrice"
+              name="eventStandingPrice"
+              placeholder="xx,xx"
+              class="form-control"
+              value="40"
+              [(ngModel)]="event.standingPrice"
+              required>
+            <div class="invalid-feedback">
+              Standing Price is required
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <label for="eventSeatingPrice" class="col-form-label text-muted col-md-2 col-lg-4">Price for Seating</label>
+            <input
+              type="number"
+              id="eventSeatingPrice"
+              name="eventStandingPrice"
+              placeholder="xx,xx"
+              class="form-control"
+              value="60"
+              [(ngModel)]="event.seatPrice"
+              required>
+            <div class="invalid-feedback">
+              Seating Price is required
+            </div>
+          </div>
+
+        </div>
+
+        <div class="mb-2 col-lg-6">
+          <div class="row">
+            <label for="startDate" class="col-form-label text-muted col-md-2 col-lg-4">Start Time</label>
+            <input
+              type="date"
+              id="startDate"
+              name="eventStartDate"
+              placeholder="yyyy-mm-dd"
+              class="form-control"
+              required>
+            <div class="invalid-feedback">
+              Start Time is required
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <label for="endDate" class="col-form-label text-muted col-md-2 col-lg-4">End Time</label>
+            <input
+              type="date"
+              id="endDate"
+              name="eventEndDate"
+              placeholder="yyyy-mm-dd"
+              class="form-control"
+              required>
+            <div class="invalid-feedback">
+              End Time is required
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <label for="eventImage" class="col-form-label text-muted col-md-2 col-lg-4">Upload Image</label>
+            <input
+              type="file"
+              id="eventImage"
+              name="eventImage"
+              class="form-control"
+              alt="image for event">
+          </div>
+
+        </div>
+        <div class="mt-4 d-flex flex-row end-0">
+          <button type="button"
+                  class="btn btn-primary">
+            Create Event
+          </button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+</div>
