@@ -52,6 +52,7 @@ import { OrderItemComponent } from './components/profile-overview/order-item/ord
 import { EventCreateComponent } from './components/management/management-events/event-create/event-create.component';
 import { NewsCreateComponent } from './components/news/news-create/news-create.component';
 import { ProfileOrderDetailComponent } from './components/profile-order-detail/profile-order-detail.component';
+import { AdminResetPasswordComponent } from './components/management/management-users/admin-reset-password/admin-reset-password.component';
 
 @NgModule({
   declarations: [
@@ -92,7 +93,8 @@ import { ProfileOrderDetailComponent } from './components/profile-order-detail/p
     NewsSearchFieldsComponent,
     UsersSearchFieldsComponent,
     EventOverviewComponent,
-    EventCreateComponent
+    EventCreateComponent,
+    AdminResetPasswordComponent
   ],
   imports: [
     BrowserModule,

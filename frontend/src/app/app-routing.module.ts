@@ -28,6 +28,7 @@ import {
   EventOverviewComponent
 } from './components/management/management-events/event-overview/event-overview.component';
 import { EventCreateComponent } from './components/management/management-events/event-create/event-create.component';
+import { AdminResetPasswordComponent } from './components/management/management-users/admin-reset-password/admin-reset-password.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -91,6 +92,7 @@ const routes: Routes = [
   { path: 'management/users', canActivate: [adminGuard], component: ManagementUsersComponent },
   { path: 'management/events/view/:id', canActivate: [adminGuard], component: EventOverviewComponent },
   { path: 'management/events/create', canActivate: [adminGuard], component: EventCreateComponent },
+  { path: 'admin-reset-password', canActivate: [adminGuard], component: AdminResetPasswordComponent },
   { path: '**', component: NotFoundComponent }
 ];
 
