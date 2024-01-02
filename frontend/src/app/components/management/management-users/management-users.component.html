@@ -33,7 +33,7 @@
               <i class="bi bi-ban danger"></i>
             </a>
             <a class="btn btn-sm responsive-info-button"
-               [routerLink]="['/admin-reset-password']"
+               (click)="clickMethod(user.firstName + ' ' + user.lastName, user.email)"
                aria-label="Reset User Password">
               <i class="bi bi-key"></i>
             </a>
