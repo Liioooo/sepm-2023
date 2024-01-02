@@ -140,13 +140,6 @@ export class UserService {
       );
   }
 
-  adminSendPasswordResetEmail(emailResetDto: EmailResetDto): Observable<void> {
-    return this.httpClient.post<void>(`${this.authBaseUri}/admin-send-password-reset-email`, emailResetDto, { responseType: 'json' });
-  }
-
-  adminResetPassword(resetPasswordDto: ResetPasswordDto): Observable<void> {
-    return this.httpClient.post<void>(`${this.authBaseUri}/admin-reset-password`, resetPasswordDto, { responseType: 'json' });
-  }
 
   getUsers(search: UserSearchDto | null, pageable?: PageableRequest): Observable<PageDto<UserDetailDto>> {
     const searchParams = search ? convertToDatesInObject(removeNullOrUndefinedProps(search as {

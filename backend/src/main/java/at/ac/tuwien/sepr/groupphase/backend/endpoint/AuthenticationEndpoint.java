@@ -60,13 +60,4 @@ public class AuthenticationEndpoint {
             throw new UnauthorizedException("Invalid Token", e);
         }
     }
-
-    @PermitAll
-    @PostMapping(path = "/admin-send-password-reset-email")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "Sends Password Reset Email")
-    public void adminSendPasswordResetEmail(@Valid @RequestBody EmailResetDto emailResetDto) {
-        userService.adminSendPasswordResetEmail(emailResetDto);
-    }
-
 }

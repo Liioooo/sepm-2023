@@ -50,7 +50,7 @@ export class AdminResetPasswordComponent {
    */
   sendEmail(emailResetDto: EmailResetDto) {
     console.log('Try to send email for user: ' + emailResetDto.email);
-    this.userService.adminSendPasswordResetEmail(emailResetDto).subscribe({
+    this.userService.sendPasswordResetEmail(emailResetDto).subscribe({
       next: () => {
         console.log('Successfully sent email for user: ' + emailResetDto.email);
         this.toastService.showSuccess('Success', 'If the user exists, an email has been sent to ' + emailResetDto.email);
