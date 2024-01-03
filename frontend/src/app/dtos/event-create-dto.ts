@@ -1,3 +1,5 @@
+import { EventType } from '../enums/eventType';
+
 export class EventCreateDto {
   title: string;
   startDate: Date;
@@ -6,5 +8,6 @@ export class EventCreateDto {
   standingPrice: number;
   hallId: number;
   artistId: number;
+  type: EventType;
   image: File;
 }

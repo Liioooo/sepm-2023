@@ -58,13 +58,24 @@ export class EventService {
 
   /**
    * Create new event
-   * @param event event to create
+   * @param eventCreate event to create
    */
-  createEvent(event: EventCreateDto): Observable<EventCreateDto> {
-    return this.httpClient.post<EventCreateDto>(
-      `${this.baseUri}`,
-      event
-    );
+  createEvent(eventCreate: EventCreateDto): Observable<EventCreateDto> {
+    let startDate = new Date(eventCreate.startDate);
+    let endDate = new Date(eventCreate.endDate);
+
+    const formData: FormData = new FormData();
+    formData.append('title', eventCreate.title);
+    formData.append('startDate', startDate.toISOString());
+    formData.append('endDate', endDate.toISOString());
+    formData.append('seatPrice', eventCreate.seatPrice.toString());
+    formData.append('standingPrice', eventCreate.standingPrice.toString());
+    formData.append('hallId', eventCreate.hallId.toString());
+    formData.append('artistId', eventCreate.artistId.toString());
+    formData.append('type', eventCreate.type);
+    formData.append('image', eventCreate.image);
+
+    return this.httpClient.post<EventCreateDto>(`${this.baseUri}`, formData);
   }
 
   /**

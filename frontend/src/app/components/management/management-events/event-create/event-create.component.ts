@@ -8,6 +8,7 @@ import { EventCreateDto } from '../../../../dtos/event-create-dto';
 import { ArtistDetailDto } from '../../../../dtos/artist-detail-dto';
 import { HallRowsDetailDto } from '../../../../dtos/hall-rows-detail-dto';
 import { LocationsService } from '../../../../services/location.service';
+import { EventType } from '../../../../enums/eventType';
 
 @Component({
   selector: 'app-event-create',
@@ -49,6 +50,8 @@ export class EventCreateComponent implements OnInit {
         this.notification.showError('Error', this.errorFormatterService.format(error['error'] as ErrorResponseDto));
       }
     });
+
+    this.event.type = EventType.UNKNOWN;
   }
 
   onArtistSelected(value: string): void {
@@ -74,6 +77,30 @@ export class EventCreateComponent implements OnInit {
     }
   }
 
+  onTypeSelected(value: string): void {
+    switch (value) {
+    case 'unknown':
+      this.event.type = EventType.UNKNOWN;
+      break;
+    case 'concert':
+      this.event.type = EventType.CONCERT;
+      break;
+    case 'show':
+      this.event.type = EventType.SHOW;
+      break;
+    case 'festival':
+      this.event.type = EventType.FESTIVAL;
+      break;
+    case 'sport':
+      this.event.type = EventType.SPORT;
+      break;
+    case 'culture':
+      this.event.type = EventType.CULTURE;
+      break;
+    }
+
+  }
+
   onFileChanged(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
@@ -96,4 +123,6 @@ export class EventCreateComponent implements OnInit {
       }
     });
   }
+
+  protected readonly EventType = EventType;
 }
