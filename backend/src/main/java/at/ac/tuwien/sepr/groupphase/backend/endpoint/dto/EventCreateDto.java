@@ -1,8 +1,10 @@
 package at.ac.tuwien.sepr.groupphase.backend.endpoint.dto;
 
+import at.ac.tuwien.sepr.groupphase.backend.enums.EventType;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +16,7 @@ import java.time.OffsetDateTime;
 @Setter
 @EqualsAndHashCode
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
 public class EventCreateDto {
 
@@ -27,10 +30,11 @@ public class EventCreateDto {
 
     private Float standingPrice;
 
-    private Integer hallId;
+    private Long hallId;
 
-    private Integer artistId;
+    private Long artistId;
 
     private MultipartFile image;
 
+    private EventType type;
 }

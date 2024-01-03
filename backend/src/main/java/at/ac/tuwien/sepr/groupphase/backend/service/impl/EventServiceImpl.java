@@ -61,7 +61,7 @@ public class EventServiceImpl implements EventService {
     public void createEvent(EventCreateDto eventCreateDto) {
         PublicFile imageFile = new PublicFile();
         if (eventCreateDto.getImage() != null) {
-            imageFile = this.publicFileService.storeFile(eventCreateDto.getImage());
+            imageFile = publicFileService.storeFile(eventCreateDto.getImage());
         }
 
         Event e = Event.builder()
@@ -73,6 +73,7 @@ public class EventServiceImpl implements EventService {
             .image(imageFile)
             .hall(locationService.getHallById(eventCreateDto.getHallId()))
             .artist(artistService.getArtistById(eventCreateDto.getArtistId()))
+            .type(eventCreateDto.getType())
             .build();
 
         eventRepository.save(e);
