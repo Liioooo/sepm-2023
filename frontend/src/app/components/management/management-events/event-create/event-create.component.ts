@@ -123,6 +123,4 @@ export class EventCreateComponent implements OnInit {
       }
     });
   }
-
-  protected readonly EventType = EventType;
 }
