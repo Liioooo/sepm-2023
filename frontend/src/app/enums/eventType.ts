@@ -1,8 +1,8 @@
 export enum EventType {
-  UNKNOWN = 'unknown',
-  CONCERT = 'concert',
-  SHOW = 'show',
-  FESTIVAL = 'festival',
-  SPORT = 'sport',
+  UNKNOWN = 'UNKNOWN',
+  CONCERT = 'CONCERT',
+  SHOW = 'SHOW',
+  FESTIVAL = 'FESTIVAL',
+  SPORT = 'SPORT',
   CULTURE = 'CULTURE'
 }
