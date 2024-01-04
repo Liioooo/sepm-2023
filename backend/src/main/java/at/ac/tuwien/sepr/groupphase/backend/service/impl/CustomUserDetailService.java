@@ -167,17 +167,17 @@ public class CustomUserDetailService implements UserService {
             throw new ForbiddenException("Admin user cannot lock/unlock own account");
         }
 
-        ApplicationUser userToUpdate = applicationUserRepository
+        ApplicationUser toUpdate = applicationUserRepository
             .findById(id).orElseThrow(() -> new NotFoundException("No user with id %d found".formatted(id)));
 
         if (userUpdateManagementDto.getIsLocked() != null) {
-            userToUpdate.setLocked(userToUpdate.isLocked());
+            toUpdate.setLocked(userUpdateManagementDto.getIsLocked());
             if (!userUpdateManagementDto.getIsLocked()) { // in case of unlock
-                userToUpdate.setFailedAuths(0);
+                toUpdate.setFailedAuths(0);
             }
         }
 
-        return applicationUserRepository.save(userToUpdate);
+        return applicationUserRepository.save(toUpdate);
     }
 
     @Override
