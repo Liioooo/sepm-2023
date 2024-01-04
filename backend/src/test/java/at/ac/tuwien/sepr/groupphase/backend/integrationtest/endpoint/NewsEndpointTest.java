@@ -98,9 +98,9 @@ public class NewsEndpointTest {
             // Check if newly created News-Article in a Database
             Collection<News> selectedNews = newsRepository.findAllByTitleContains("create-test-title");
 
-            assertAll(() -> {
-                assertNotNull(selectedNews);
-                assertThat(selectedNews)
+            assertAll(
+                () -> assertNotNull(selectedNews),
+                () -> assertThat(selectedNews)
                     .extracting(
                         News::getTitle,
                         News::getOverviewText,
@@ -111,8 +111,8 @@ public class NewsEndpointTest {
                             toCreate.getOverviewText(),
                             toCreate.getText()
                         )
-                    );
-            });
+                    )
+            );
         });
 
     }
@@ -158,9 +158,9 @@ public class NewsEndpointTest {
 
             NewsDetailDto news = objectMapper.readerFor(NewsDetailDto.class).<NewsDetailDto>readValues(result).next();
 
-            assertAll(() -> {
-                assertThat(news).isNotNull();
-                assertThat(news)
+            assertAll(
+                () -> assertThat(news).isNotNull(),
+                () -> assertThat(news)
                     .extracting(
                         NewsDetailDto::getId,
                         NewsDetailDto::getTitle,
@@ -175,8 +175,8 @@ public class NewsEndpointTest {
                         "This is an abstract for News-Title-1",
                         OffsetDateTime.of(2023, 12, 9, 20, 0, 0, 0, ZoneOffset.UTC),
                         "Admin, Admin"
-                    );
-            });
+                    )
+            );
         });
     }
 
@@ -203,10 +203,10 @@ public class NewsEndpointTest {
 
             List<NewsListDto> actualNews = pageDto.getContent();
 
-            assertAll(() -> {
-                assertThat(actualNews).isNotNull();
 
-                assertThat(actualNews)
+            assertAll(
+                () -> assertThat(actualNews).isNotNull(),
+                () -> assertThat(actualNews)
                     .extracting(
                         NewsListDto::getTitle,
                         NewsListDto::getPublishDate,
@@ -238,8 +238,8 @@ public class NewsEndpointTest {
                             OffsetDateTime.of(2020, 10, 25, 20, 15, 0, 0, ZoneOffset.UTC),
                             "This is an abstract for News-Title-5"
                         )
-                    );
-            });
+                    )
+            );
         });
     }
 
@@ -284,10 +284,9 @@ public class NewsEndpointTest {
 
             List<NewsListDto> actualNews = pageDto.getContent();
 
-            assertAll(() -> {
-                assertThat(actualNews).isNotNull();
-
-                assertThat(actualNews)
+            assertAll(
+                () -> assertThat(actualNews).isNotNull(),
+                () -> assertThat(actualNews)
                     .extracting(
                         NewsListDto::getTitle,
                         NewsListDto::getPublishDate,
@@ -303,9 +302,8 @@ public class NewsEndpointTest {
                             OffsetDateTime.of(2021, 2, 9, 20, 0, 0, 0, ZoneOffset.UTC),
                             "This is an abstract for News-Title-2"
                         )
-                    );
-
-                assertThat(actualNews)
+                    ),
+                () -> assertThat(actualNews)
                     .extracting(
                         NewsListDto::getTitle,
                         NewsListDto::getPublishDate,
@@ -326,8 +324,8 @@ public class NewsEndpointTest {
                             OffsetDateTime.of(2020, 10, 25, 20, 15, 0, 0, ZoneOffset.UTC),
                             "This is an abstract for News-Title-5"
                         )
-                    );
-            });
+                    )
+            );
         });
     }
 }
