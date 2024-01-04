@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepr.groupphase.backend.endpoint.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -9,21 +10,15 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @EqualsAndHashCode
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
-public class UserDetailDto {
+public class UserUpdateManagementDto {
 
+    @NotNull(message = "No user id given")
     private Long id;
-
-    private String email;
-
-    private String firstName;
-
-    private String lastName;
 
     private Boolean isLocked;
 
-    private UserLocationDto location;
 }

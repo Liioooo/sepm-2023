@@ -6,6 +6,7 @@ import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserLoginDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserRegisterDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserSearchDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateDetailDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateManagementDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.UnauthorizedException;
@@ -79,6 +80,14 @@ public interface UserService extends UserDetailsService {
      * @return the updated user details
      */
     ApplicationUser updateAuthenticatedUser(UserUpdateDetailDto userUpdateDetailDto);
+
+    /**
+     * Updates a given user.
+     *
+     * @param userUpdateManagementDto the new user data
+     * @return the updated user details
+     */
+    ApplicationUser updateUser(Long id, UserUpdateManagementDto userUpdateManagementDto, ApplicationUser authenticatedUser);
 
     /**
      * Delete the currently authenticated user.

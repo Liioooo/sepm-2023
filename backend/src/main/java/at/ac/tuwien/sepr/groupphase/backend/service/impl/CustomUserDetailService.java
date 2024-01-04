@@ -6,6 +6,7 @@ import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserLoginDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserRegisterDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserSearchDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateDetailDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateManagementDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.UserLocationMapper;
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepr.groupphase.backend.entity.UserLocation;
@@ -36,6 +37,7 @@ import org.springframework.stereotype.Service;
 
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -166,6 +168,22 @@ public class CustomUserDetailService implements UserService {
         }
 
         return applicationUserRepository.save(applicationUser);
+    }
+
+    @Override
+    public ApplicationUser updateUser(Long id, UserUpdateManagementDto userUpdateManagementDto, ApplicationUser authenticatedUser) {
+        if (Objects.equals(id, authenticatedUser.getId())) {
+            throw new UnauthorizedException("Admin user cannot lock own account");
+        }
+
+        ApplicationUser userToUpdate = applicationUserRepository
+            .findById(id).orElseThrow(() -> new NotFoundException("No user with id %d found".formatted(id)));
+
+        if (userUpdateManagementDto.getIsLocked() != null) {
+            userToUpdate.setLocked(userToUpdate.isLocked());
+        }
+
+        return applicationUserRepository.save(userToUpdate);
     }
 
     @Override

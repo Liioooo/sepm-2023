@@ -5,19 +5,27 @@ import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventSearchDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.NewsListManagementDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.NewsSearchDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.PageDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserListDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserSearchDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateManagementDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.ApplicationUserMapper;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.EventMapper;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.NewsMapper;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.PageMapper;
+import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepr.groupphase.backend.service.EventService;
 import at.ac.tuwien.sepr.groupphase.backend.service.NewsService;
 import at.ac.tuwien.sepr.groupphase.backend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -69,5 +77,13 @@ public class ManagementEndpoint {
         return this.pageMapper.toPageDto(
             newsService.getNewsBySearch(search, pageable), this.newsMapper::toNewsListManagementDto
         );
+    }
+
+    @Secured("ROLE_ADMIN")
+    @PatchMapping("users/{id}")
+    @Operation(summary = "Update details for a given user")
+    public UserDetailDto updateUserDetails(@PathVariable Long id, @Valid @RequestBody UserUpdateManagementDto userUpdateManagementDto, Authentication authentication) {
+        ApplicationUser currentUser = userService.getUserFromAuthentication(authentication);
+        return applicationUserMapper.applicationUserToUserDetailDto(userService.updateUser(id, userUpdateManagementDto, currentUser));
     }
 }

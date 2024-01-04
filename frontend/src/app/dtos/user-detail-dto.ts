@@ -5,5 +5,6 @@ export interface UserDetailDto {
   email: string;
   firstName: string;
   lastName: string;
+  isLocked: boolean;
   location?: UserLocationDto;
 }
