@@ -2,6 +2,8 @@ package at.ac.tuwien.sepr.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EmailResetDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.ResetPasswordDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserCreateDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserLocationDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserLoginDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserRegisterDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserSearchDto;
@@ -98,20 +100,16 @@ public class CustomUserDetailService implements UserService {
 
     @Override
     public String register(UserRegisterDto userRegisterDto) {
-        var user = ApplicationUser.builder()
-            .firstName(userRegisterDto.getFirstName())
-            .lastName(userRegisterDto.getLastName())
-            .email(userRegisterDto.getEmail())
-            .password(passwordEncoder.encode(userRegisterDto.getPassword()))
-            .location(userLocationMapper.userLocationDtoToUserLocation(userRegisterDto.getLocation()))
-            .role(UserRole.ROLE_USER)
-            .build();
+        ApplicationUser user = createUser(
+            userRegisterDto.getFirstName(),
+            userRegisterDto.getLastName(),
+            userRegisterDto.getEmail(),
+            userRegisterDto.getPassword(),
+            userRegisterDto.getLocation(),
+            UserRole.ROLE_USER,
+            false
+        );
 
-        try {
-            applicationUserRepository.save(user);
-        } catch (DataIntegrityViolationException ex) {
-            throw new ConflictException("Email is already in use", ex);
-        }
         return generateTokenForUser(user);
     }
 
@@ -121,14 +119,6 @@ public class CustomUserDetailService implements UserService {
             .map(GrantedAuthority::getAuthority)
             .toList();
         return jwtTokenizer.getAuthToken(userDetails.getUsername(), roles);
-    }
-
-    @Override
-    public void unlockUser(long userId) {
-        ApplicationUser user = applicationUserRepository.findById(userId).orElseThrow(() -> new NotFoundException("No user with id %s found".formatted(userId)));
-        user.setLocked(false);
-        user.setFailedAuths(0);
-        applicationUserRepository.save(user);
     }
 
     @Override
@@ -181,6 +171,9 @@ public class CustomUserDetailService implements UserService {
 
         if (userUpdateManagementDto.getIsLocked() != null) {
             userToUpdate.setLocked(userToUpdate.isLocked());
+            if (!userUpdateManagementDto.getIsLocked()) { // in case of unlock
+                userToUpdate.setFailedAuths(0);
+            }
         }
 
         return applicationUserRepository.save(userToUpdate);
@@ -239,5 +232,36 @@ public class CustomUserDetailService implements UserService {
     @Override
     public Page<ApplicationUser> getUsersBySearch(UserSearchDto search, Pageable pageable) {
         return this.applicationUserRepository.findUserBySearchCriteria(search, pageable);
+    }
+
+    @Override
+    public ApplicationUser createUserAsAdmin(UserCreateDto userCreateDto) {
+        return createUser(
+            userCreateDto.getFirstName(),
+            userCreateDto.getLastName(),
+            userCreateDto.getEmail(),
+            userCreateDto.getPassword(),
+            userCreateDto.getLocation(),
+            userCreateDto.getRole(),
+            userCreateDto.getIsLocked()
+        );
+    }
+
+    private ApplicationUser createUser(String firstName, String lastName, String email, String password, UserLocationDto location, UserRole role, Boolean isLocked) {
+        var user = ApplicationUser.builder()
+            .firstName(firstName)
+            .lastName(lastName)
+            .email(email)
+            .password(passwordEncoder.encode(password))
+            .location(userLocationMapper.userLocationDtoToUserLocation(location))
+            .role(role)
+            .isLocked(isLocked)
+            .build();
+
+        try {
+            return applicationUserRepository.save(user);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException("Email is already in use", ex);
+        }
     }
 }

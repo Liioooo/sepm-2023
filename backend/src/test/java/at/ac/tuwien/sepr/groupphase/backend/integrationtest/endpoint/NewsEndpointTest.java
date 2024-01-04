@@ -128,8 +128,6 @@ public class NewsEndpointTest {
             null
         );
 
-        // new MockMultipartFile("m", "image.jpg", MediaType.IMAGE_JPEG_VALUE, new byte[] {}
-
         try {
             var result = this.mockMvc.perform(MockMvcRequestBuilders.post(API_BASE)
                 .contentType(MediaType.APPLICATION_JSON)

@@ -5,6 +5,7 @@ import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventSearchDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.NewsListManagementDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.NewsSearchDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.PageDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserListDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserSearchDto;
@@ -25,6 +26,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -85,5 +87,12 @@ public class ManagementEndpoint {
     public UserDetailDto updateUserDetails(@PathVariable Long id, @Valid @RequestBody UserUpdateManagementDto userUpdateManagementDto, Authentication authentication) {
         ApplicationUser currentUser = userService.getUserFromAuthentication(authentication);
         return applicationUserMapper.applicationUserToUserDetailDto(userService.updateUser(id, userUpdateManagementDto, currentUser));
+    }
+
+    @Secured("ROLE_ADMIN")
+    @PutMapping("users/create")
+    @Operation(summary = "Create a new (admin) user")
+    public UserDetailDto createUser(@Valid @RequestBody UserCreateDto userCreateDto, Authentication authentication) {
+        return applicationUserMapper.applicationUserToUserDetailDto(userService.createUserAsAdmin(userCreateDto));
     }
 }
