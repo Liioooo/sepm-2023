@@ -14,6 +14,7 @@ import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepr.groupphase.backend.entity.UserLocation;
 import at.ac.tuwien.sepr.groupphase.backend.enums.UserRole;
 import at.ac.tuwien.sepr.groupphase.backend.exception.ConflictException;
+import at.ac.tuwien.sepr.groupphase.backend.exception.ForbiddenException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepr.groupphase.backend.repository.ApplicationUserRepository;
@@ -163,7 +164,7 @@ public class CustomUserDetailService implements UserService {
     @Override
     public ApplicationUser updateUser(Long id, UserUpdateManagementDto userUpdateManagementDto, ApplicationUser authenticatedUser) {
         if (Objects.equals(id, authenticatedUser.getId())) {
-            throw new UnauthorizedException("Admin user cannot lock own account");
+            throw new ForbiddenException("Admin user cannot lock/unlock own account");
         }
 
         ApplicationUser userToUpdate = applicationUserRepository
