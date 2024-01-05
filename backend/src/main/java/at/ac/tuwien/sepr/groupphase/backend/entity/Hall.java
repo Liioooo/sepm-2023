@@ -43,6 +43,6 @@ public class Hall {
     @ManyToOne(fetch = FetchType.EAGER)
     private Location location;
 
-    @OneToMany(mappedBy = "hall")
+    @OneToMany(mappedBy = "hall", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Row> rows;
 }

@@ -8,6 +8,7 @@ import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.TicketMapper;
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Order;
+import at.ac.tuwien.sepr.groupphase.backend.entity.Row;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Ticket;
 import at.ac.tuwien.sepr.groupphase.backend.enums.OrderType;
 import at.ac.tuwien.sepr.groupphase.backend.enums.TicketCategory;
@@ -39,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -113,7 +115,8 @@ public class OrderServiceImpl implements OrderService {
 
         // Check if tickets are still available
         for (var ticket : Arrays.stream(orderCreateDto.getTickets()).filter(t -> t.getTicketCategory() == TicketCategory.SEATING).toList()) {
-            if (ticket.getRowNumber() > hall.getRows().size() || ticket.getSeatNumber() > hall.getRows().get((int) (ticket.getRowNumber() - 1)).getNumberOfSeats()) {
+            Optional<Row> rowOfTicket = hall.getRows().stream().filter(r -> Objects.equals(r.getNumber(), ticket.getRowNumber())).findFirst();
+            if (rowOfTicket.isEmpty() || ticket.getSeatNumber() > rowOfTicket.get().getNumberOfSeats()) {
                 throw new ConflictException("Seat does not exist");
             }
 
