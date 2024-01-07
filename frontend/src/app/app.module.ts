@@ -53,6 +53,14 @@ import { EventCreateComponent } from './components/management/management-events/
 import { NewsCreateComponent } from './components/news/news-create/news-create.component';
 import { ProfileOrderDetailComponent } from './components/profile-order-detail/profile-order-detail.component';
 import { RequestPasswordChangeModalComponent } from './components/modal/request-password-change-modal/request-password-change-modal.component';
+import {
+  ManagementLocationsComponent
+} from './components/management/management-locations/management-locations.component';
+import {
+  ManagementLocationCreateComponent
+} from './components/management/management-locations/management-location-create/management-location-create.component';
+import { ManagementLocationDetailsComponent } from './components/management/management-locations/management-location-details/management-location-details.component';
+import { ManagementLocationHallCreateComponent } from './components/management/management-locations/halls/management-location-hall-create/management-location-hall-create.component';
 
 @NgModule({
   declarations: [
@@ -94,6 +102,10 @@ import { RequestPasswordChangeModalComponent } from './components/modal/request-
     UsersSearchFieldsComponent,
     EventOverviewComponent,
     EventCreateComponent,
+    ManagementLocationsComponent,
+    ManagementLocationCreateComponent,
+    ManagementLocationDetailsComponent,
+    ManagementLocationHallCreateComponent,
     RequestPasswordChangeModalComponent
   ],
   imports: [

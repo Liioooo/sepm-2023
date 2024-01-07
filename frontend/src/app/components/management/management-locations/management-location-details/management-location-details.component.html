@@ -1,0 +1,43 @@
+<div class="container">
+  <div class="mb-4" *ngIf="(location$ | async) as location; else loading">
+    <div class="py-4">
+      <h1 class="fs-1 fw-bold">{{ location.title }}</h1>
+      <p class="fs-2">{{ location.address }}, {{ location.postalCode }} {{ location.city }}, {{ location.country }}</p>
+      <h2 class="fw-bold mt-4">Halls</h2>
+      <a class="btn btn-primary mb-2" [routerLink]="['..', 'halls', 'create']">
+        <i class="bi-plus-lg" aria-hidden="true"></i>
+        Create new Hall
+      </a>
+      <table class="table table-sm" *ngIf="location.halls.length !== 0; else noHalls">
+        <thead>
+        <tr>
+          <th>Title</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let hall of location.halls">
+          <td>{{ hall.name }}</td>
+          <td>
+            <div class="btn-group">
+              <a class="btn btn-sm" [routerLink]="['..', 'halls', hall.id, 'edit']">
+                <i class="bi-pencil"></i>
+              </a>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <ng-template #noHalls>
+        <p>No halls at this location</p>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="container text-center fs-2">
+    Loading location data &hellip;
+  </div>
+</ng-template>
+
