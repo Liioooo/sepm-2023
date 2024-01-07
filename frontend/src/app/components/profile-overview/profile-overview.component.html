@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row mt-5">
     <div class="col-12 col-lg-4">
-      <div class="bg-light rounded-3 p-5">
+      <div class="bg-light rounded-3 p-5 sticky-lg-top" style="top: 3rem;">
         <h2 class="text-secondary fs-1 fw-bold">Welcome back!</h2>
         <div *ngIf="userDetails$ | async as user"
              class="fs-4 fw-bold mt-3">{{ user.firstName }} {{ user.lastName }}</div>
@@ -24,7 +24,7 @@
         </div>
       </div>
     </div>
-    <div class="col p pt-5 pt-lg-0 px-lg-5">
+    <div class="col p pt-5 pt-lg-0 px-lg-5 mb-4">
       <h2 class="fs-1 fw-bold mb-3">My Orders</h2>
       <ul ngbNav #nav="ngbNav" [(activeId)]="activeTab" class="nav-tabs">
         <li [ngbNavItem]="1">
