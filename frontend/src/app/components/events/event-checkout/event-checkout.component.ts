@@ -137,7 +137,7 @@ export class EventCheckoutComponent implements OnInit {
         this.router.navigate(['/profile']);
       },
       error: err => {
-        this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto))
+        this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto));
         this.isLoading = false;
       }
     });
@@ -155,7 +155,7 @@ export class EventCheckoutComponent implements OnInit {
         this.router.navigate(['/profile']);
       },
       error: err => {
-        this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto))
+        this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto));
         this.isLoading = false;
       }
     });
@@ -195,7 +195,7 @@ export class EventCheckoutComponent implements OnInit {
         this.router.navigate(['/profile']);
       },
       error: err => {
-        this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto))
+        this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto));
         this.isLoading = false;
       }
     });
