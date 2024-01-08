@@ -22,6 +22,7 @@ interface CreateHallFormData {
 export class ManagementLocationHallCreateComponent {
   createHallForm: FormGroup<CreateHallFormData>;
   locationId: number;
+  readonly MAX_SEATS_PER_ROW: number = 20;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -76,17 +77,17 @@ export class ManagementLocationHallCreateComponent {
   }
 
   addRow(): void {
-    this.rows.push(this.formBuilder.control(1, [Validators.required, Validators.min(1)]));
+    this.rows.push(this.formBuilder.control(1, [Validators.required, Validators.min(1), Validators.max(20)]));
   }
 
   addSeat(row: AbstractControl): void {
-    row.setValue(row.value + 1);
+    row.setValue(Math.min(row.value + 1, this.MAX_SEATS_PER_ROW));
   }
 
   removeSeat(row: AbstractControl): void {
     row.setValue(row.value - 1);
     if (row.value === 0) {
-      this.rows.removeAt(this.rows.controls.indexOf(row));
+      this.deleteRow(row);
     }
   }
 
@@ -110,5 +111,13 @@ export class ManagementLocationHallCreateComponent {
       rows: rowListDto,
       locationId: this.locationId
     };
+  }
+
+  deleteRow(row: AbstractControl) {
+    this.rows.removeAt(this.rows.controls.indexOf(row));
+  }
+
+  getRowSeats(row: AbstractControl): number[] {
+    return row.value >= 0 ? [].constructor(Math.min(row.value, this.MAX_SEATS_PER_ROW)) : [];
   }
 }

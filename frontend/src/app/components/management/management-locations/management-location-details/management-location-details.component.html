@@ -12,19 +12,11 @@
         <thead>
         <tr>
           <th>Title</th>
-          <th>Actions</th>
         </tr>
         </thead>
         <tbody>
         <tr *ngFor="let hall of location.halls">
           <td>{{ hall.name }}</td>
-          <td>
-            <div class="btn-group">
-              <a class="btn btn-sm" [routerLink]="['..', 'halls', hall.id, 'edit']">
-                <i class="bi-pencil"></i>
-              </a>
-            </div>
-          </td>
         </tr>
         </tbody>
       </table>

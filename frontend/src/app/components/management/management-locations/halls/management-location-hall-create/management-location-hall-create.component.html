@@ -23,7 +23,7 @@
             <div class="flex-grow-1 d-flex justify-content-center align-items-center">
               <button
                 (click)="removeSeat(row)"
-                *ngFor="let _ of [].constructor(row.value); index as seat"
+                *ngFor="let _ of getRowSeats(row); index as seat"
                 attr.aria-label="Row {{ i + 1 }} Seat {{ seat + 1 }}"
                 class="seat-button me-1"
                 type="button"
@@ -32,6 +32,10 @@
             <button (click)="addSeat(row)" class="btn btn-sm btn-primary" type="button">
               <i aria-hidden="true" class="bi-plus-lg"></i>
               Add Seat
+            </button>
+            <button (click)="deleteRow(row)" class="btn btn-sm btn-danger ms-1" type="button">
+              <i aria-hidden="true" class="bi-x-lg"></i>
+              <span class="visually-hidden">Delete Row</span>
             </button>
           </div>
           <div class="d-flex flex-row py-1">
@@ -59,13 +63,18 @@
               <div *ngFor="let row of rows.controls; index as i" class="mb-3 row">
                 <label class="col-sm-2 col-form-label text-black" for="row-{{ i }}">Row {{ i + 1 }}:</label>
                 <div class="col-sm-10">
-                  <input [class.is-invalid]="createHallForm.controls.rows.controls[i].touched && createHallForm.controls.rows.controls[i].errors"
-                         [formControlName]="i" class="form-control" id="row-{{ i }}" min="1" type="number">
+                  <input
+                    [class.is-invalid]="createHallForm.controls.rows.controls[i].touched && createHallForm.controls.rows.controls[i].errors"
+                    [formControlName]="i" class="form-control" id="row-{{ i }}" min="1" [max]="MAX_SEATS_PER_ROW"
+                    type="number">
                   <div *ngIf="createHallForm.controls.rows.controls[i].errors?.required" class="invalid-feedback">
                     The amount of seats is required!
                   </div>
                   <div *ngIf="createHallForm.controls.rows.controls[i].errors?.min" class="invalid-feedback">
                     The amount of seats needs to be larger than 0!
+                  </div>
+                  <div *ngIf="createHallForm.controls.rows.controls[i].errors?.max" class="invalid-feedback">
+                    The amount of seats must be a maximum of {{ MAX_SEATS_PER_ROW }}!
                   </div>
                 </div>
               </div>
@@ -83,8 +92,9 @@
             <div class="mb-3 row">
               <label class="col-sm-2 col-form-label text-black" for="name">Standing:</label>
               <div class="col-sm-10">
-                <input [class.is-invalid]="createHallForm.controls.standingCount.touched && createHallForm.controls.standingCount.errors"
-                       class="form-control" formControlName="standingCount" min="0" type="number">
+                <input
+                  [class.is-invalid]="createHallForm.controls.standingCount.touched && createHallForm.controls.standingCount.errors"
+                  class="form-control" formControlName="standingCount" min="0" type="number">
                 <div *ngIf="createHallForm.controls.standingCount.errors?.required" class="invalid-feedback">
                   The standing count is required!
                 </div>
