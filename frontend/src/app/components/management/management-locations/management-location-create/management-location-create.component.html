@@ -5,7 +5,7 @@
       To the locations overview
     </a>
     <h1 class="mt-1">Create a new Location</h1>
-    <form class="row" [formGroup]="createLocationForm" (ngSubmit)="createLocation()">
+    <form [formGroup]="createLocationForm" (ngSubmit)="createLocation()">
       <div class="row">
         <div class="mb-3">
           <label for="title" class="form-label">Title *</label>

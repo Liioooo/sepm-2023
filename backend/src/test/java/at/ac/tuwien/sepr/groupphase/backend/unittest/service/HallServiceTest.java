@@ -1,12 +1,12 @@
 package at.ac.tuwien.sepr.groupphase.backend.unittest.service;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.HallCreateDto;
-import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.LocationDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.RowListDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Hall;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Location;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Row;
 import at.ac.tuwien.sepr.groupphase.backend.repository.HallRepository;
+import at.ac.tuwien.sepr.groupphase.backend.repository.LocationRepository;
 import at.ac.tuwien.sepr.groupphase.backend.service.HallService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +18,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -37,6 +40,9 @@ public class HallServiceTest {
     @Autowired
     private HallRepository hallRepository;
 
+    @Autowired
+    private LocationRepository locationRepository;
+
     @TestConfiguration
     public static class TestConfig {
         @Bean
@@ -45,6 +51,13 @@ public class HallServiceTest {
             Mockito.when(hallRepository.save(Mockito.any())).thenAnswer(i -> i.getArguments()[0]);
             return hallRepository;
         }
+
+        @Bean
+        public LocationRepository locationRepository() {
+            LocationRepository locationRepository = Mockito.mock(LocationRepository.class);
+            Mockito.when(locationRepository.findById(1L)).thenReturn(Optional.of(new Location(1L, "Testlocation", "Teststreet", "1012", "Wien", "Österreich", List.of())));
+            return locationRepository;
+        }
     }
 
     @Test
@@ -52,7 +65,7 @@ public class HallServiceTest {
         HallCreateDto hallCreateDto = new HallCreateDto(
             "Test hall",
             20L,
-            new LocationDetailDto(1L, "Testlocation", "Teststreet", "1012", "Wien", "Österreich"),
+            1L,
             new RowListDto[] {
                 new RowListDto(1L, 20L),
                 new RowListDto(2L, 20L),
@@ -89,7 +102,7 @@ public class HallServiceTest {
         HallCreateDto hallCreateDto = new HallCreateDto(
             "Test hall",
             20L,
-            new LocationDetailDto(1L, "Testlocation", "Teststreet", "1012", "Wien", "Österreich"),
+            1L,
             new RowListDto[] {}
         );
         Hall hall = hallService.createHall(hallCreateDto);

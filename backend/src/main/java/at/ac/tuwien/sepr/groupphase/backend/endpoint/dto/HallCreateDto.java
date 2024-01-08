@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepr.groupphase.backend.endpoint.dto;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -27,8 +26,8 @@ public class HallCreateDto {
     private Long standingCount;
 
     @NotNull
-    @Valid
-    private LocationDetailDto location;
+    @Min(0)
+    private Long locationId;
 
     private RowListDto[] rows;
 }
