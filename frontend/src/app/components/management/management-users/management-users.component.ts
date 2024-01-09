@@ -68,12 +68,12 @@ export class ManagementUsersComponent {
   clickMethod(name: string, email: string  ) {
 
     const emailResetDto: EmailResetDto = { email: email };
-    this.sendEmail(emailResetDto);
+    this.sendEmail(emailResetDto, name);
 
   }
 
-  async sendEmail(emailResetDto: EmailResetDto) {
-    const sendRequest = await this.modalService.showModal(RequestPasswordChangeModalComponent, undefined);
+  async sendEmail(emailResetDto: EmailResetDto, name: string) {
+    const sendRequest = await this.modalService.showModal(RequestPasswordChangeModalComponent, name);
 
     if (sendRequest === false || sendRequest === MODAL_DISMISSED) {
       return;
