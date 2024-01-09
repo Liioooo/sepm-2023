@@ -6,12 +6,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS;
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-@ActiveProfiles({"test", "generateData"})
+@ActiveProfiles({"test", "generateTestData"})
+@DirtiesContext(classMode = AFTER_CLASS)
 public class NewsRespositoryTest {
 
     @Autowired

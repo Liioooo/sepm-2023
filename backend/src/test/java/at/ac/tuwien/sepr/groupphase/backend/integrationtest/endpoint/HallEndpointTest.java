@@ -4,18 +4,13 @@ import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.HallCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.HallDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.LocationDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.RowListDto;
-import at.ac.tuwien.sepr.groupphase.backend.entity.Location;
-import at.ac.tuwien.sepr.groupphase.backend.repository.LocationRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -23,8 +18,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -47,18 +40,6 @@ class HallEndpointTest {
     @Autowired
     private ObjectMapper objectMapper;
     private HallCreateDto hallCreateDto;
-    @Autowired
-    private LocationRepository locationRepository;
-
-    @TestConfiguration
-    public static class TestConfig {
-        @Bean
-        public LocationRepository locationRepository() {
-            LocationRepository locationRepository = Mockito.mock(LocationRepository.class);
-            Mockito.when(locationRepository.findById(1L)).thenReturn(Optional.of(new Location(1L, "Testlocation", "Teststreet", "1012", "Wien", "Österreich", List.of())));
-            return locationRepository;
-        }
-    }
 
     @BeforeEach
     void init() {
@@ -119,7 +100,7 @@ class HallEndpointTest {
                 () -> assertNotNull(hallDetailDto),
                 () -> assertThat(hallDetailDto)
                     .extracting(HallDetailDto::getName, HallDetailDto::getStandingCount, HallDetailDto::getLocation)
-                    .contains(hallCreateDto.getName(), hallCreateDto.getStandingCount(), new LocationDetailDto(1L, "Testlocation", "Teststreet", "1012", "Wien", "Österreich"))
+                    .contains(hallCreateDto.getName(), hallCreateDto.getStandingCount(), new LocationDetailDto(1L, "Wiener Stadthalle", "Roland-Rainer-Platz 1", "1150", "Wien", "Österreich"))
             );
         });
     }

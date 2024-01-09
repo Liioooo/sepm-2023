@@ -8,13 +8,13 @@ import at.ac.tuwien.sepr.groupphase.backend.entity.Row;
 import at.ac.tuwien.sepr.groupphase.backend.repository.HallRepository;
 import at.ac.tuwien.sepr.groupphase.backend.repository.LocationRepository;
 import at.ac.tuwien.sepr.groupphase.backend.service.HallService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -26,38 +26,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(properties = "spring.main.allow-bean-definition-overriding=true")
-@ActiveProfiles({"test", "generateData"})
-// DirtiesContext is required in order to create a new orderRepository Bean with the correct Order, otherwise later tests will get the wrong Order
-@DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
+@ActiveProfiles({"test", "generateTestData"})
+@DirtiesContext(classMode = AFTER_CLASS)
 public class HallServiceTest {
     @Autowired
     private HallService hallService;
 
-    @Autowired
+    @MockBean
     private HallRepository hallRepository;
 
-    @Autowired
+    @MockBean
     private LocationRepository locationRepository;
 
-    @TestConfiguration
-    public static class TestConfig {
-        @Bean
-        public HallRepository hallRepository() {
-            HallRepository hallRepository = Mockito.mock(HallRepository.class);
-            Mockito.when(hallRepository.save(Mockito.any())).thenAnswer(i -> i.getArguments()[0]);
-            return hallRepository;
-        }
-
-        @Bean
-        public LocationRepository locationRepository() {
-            LocationRepository locationRepository = Mockito.mock(LocationRepository.class);
-            Mockito.when(locationRepository.findById(1L)).thenReturn(Optional.of(new Location(1L, "Testlocation", "Teststreet", "1012", "Wien", "Österreich", List.of())));
-            return locationRepository;
-        }
+    @BeforeEach
+    void setup() {
+        Mockito.when(hallRepository.save(Mockito.any())).thenAnswer(i -> i.getArguments()[0]);
+        Mockito.when(locationRepository.findById(1L)).thenReturn(Optional.of(new Location(1L, "Testlocation", "Teststreet", "1012", "Wien", "Österreich", List.of())));
     }
 
     @Test
