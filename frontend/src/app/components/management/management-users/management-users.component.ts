@@ -11,6 +11,11 @@ import { Router } from '@angular/router';
 import { ToastService } from '../../../services/toast.service';
 import { ErrorFormatterService } from '../../../services/error-formatter.service';
 import { FormBuilder } from '@angular/forms';
+import {
+  RequestPasswordChangeModalComponent
+} from '../../modal/request-password-change-modal/request-password-change-modal.component';
+import { MODAL_DISMISSED, ModalService } from '../../../services/modal.service';
+
 
 @Component({
   selector: 'app-management-users',
@@ -28,7 +33,8 @@ export class ManagementUsersComponent {
     private formBuilder: FormBuilder,
     private router: Router,
     private toastService: ToastService,
-    private errorFormatterService: ErrorFormatterService
+    private errorFormatterService: ErrorFormatterService,
+    private modalService: ModalService
   ) {
     this.users$ = combineLatest([this.searchAttributes$, this.onPageChangeDistinct$]).pipe(
       debounceTime(250),
@@ -60,13 +66,18 @@ export class ManagementUsersComponent {
   }
 
   clickMethod(name: string, email: string  ) {
-    if (confirm('Are you sure to request a password change for '+ name + '?')) {
-      const emailResetDto: EmailResetDto = { email: email };
-      this.sendEmail(emailResetDto);
-    }
+
+    const emailResetDto: EmailResetDto = { email: email };
+    this.sendEmail(emailResetDto);
+
   }
 
-  sendEmail(emailResetDto: EmailResetDto) {
+  async sendEmail(emailResetDto: EmailResetDto) {
+    const sendRequest = await this.modalService.showModal(RequestPasswordChangeModalComponent, undefined);
+
+    if (sendRequest === false || sendRequest === MODAL_DISMISSED) {
+      return;
+    }
     console.log('Try to send email for user: ' + emailResetDto.email);
     this.service.sendPasswordResetEmail(emailResetDto).subscribe({
       next: () => {
