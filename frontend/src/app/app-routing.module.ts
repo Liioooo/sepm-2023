@@ -28,6 +28,18 @@ import {
   EventOverviewComponent
 } from './components/management/management-events/event-overview/event-overview.component';
 import { EventCreateComponent } from './components/management/management-events/event-create/event-create.component';
+import {
+  ManagementLocationsComponent
+} from './components/management/management-locations/management-locations.component';
+import {
+  ManagementLocationCreateComponent
+} from './components/management/management-locations/management-location-create/management-location-create.component';
+import {
+  ManagementLocationDetailsComponent
+} from './components/management/management-locations/management-location-details/management-location-details.component';
+import {
+  ManagementLocationHallCreateComponent
+} from './components/management/management-locations/halls/management-location-hall-create/management-location-hall-create.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -91,6 +103,18 @@ const routes: Routes = [
   { path: 'management/users', canActivate: [adminGuard], component: ManagementUsersComponent },
   { path: 'management/events/view/:id', canActivate: [adminGuard], component: EventOverviewComponent },
   { path: 'management/events/create', canActivate: [adminGuard], component: EventCreateComponent },
+  { path: 'management/locations', canActivate: [adminGuard], component: ManagementLocationsComponent },
+  { path: 'management/locations/create', canActivate: [adminGuard], component: ManagementLocationCreateComponent },
+  {
+    path: 'management/locations/:id/details',
+    canActivate: [adminGuard],
+    component: ManagementLocationDetailsComponent
+  },
+  {
+    path: 'management/locations/:id/halls/create',
+    canActivate: [adminGuard],
+    component: ManagementLocationHallCreateComponent
+  },
   { path: '**', component: NotFoundComponent }
 ];
 

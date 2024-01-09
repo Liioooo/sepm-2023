@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper;
 
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.LocationCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.LocationDetailDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.LocationHallsDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Location;
 import org.mapstruct.Mapper;
 
@@ -14,4 +16,7 @@ public interface LocationMapper {
 
     List<LocationDetailDto> locationCollectionToLocationDetailDtoList(Collection<Location> locations);
 
+    Location locationCreateDtoToLocation(LocationCreateDto locationCreateDto);
+
+    LocationHallsDto locationToLocationHallsDto(Location location);
 }

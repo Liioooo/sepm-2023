@@ -1,0 +1,56 @@
+<div class="container">
+  <div class="mb-4">
+    <div class="col py-4">
+      <h1 class="fs-1 fw-bold">Locations</h1>
+    </div>
+    <app-location-search-fields
+      class="d-block mb-5"
+      (searchChange)="searchAttributes$.next($event)"
+    ></app-location-search-fields>
+
+    <a class="btn btn-primary mb-3" [routerLink]="['create']">
+      <i class="bi-plus-lg" aria-hidden="true"></i>
+      New Location
+    </a>
+
+    <table class="table table-sm">
+      <thead>
+      <tr>
+        <th>Title</th>
+        <th>Postal Code</th>
+        <th>City</th>
+        <th>Address</th>
+        <th>Country</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let location of locations$ | async">
+        <td>{{ location.title }}</td>
+        <td>{{ location.postalCode }}</td>
+        <td>{{ location.city }}</td>
+        <td>{{ location.address }}</td>
+        <td>{{ location.country }}</td>
+        <td>
+          <!-- ACTIONS -->
+          <div class="btn-group">
+            <a class="btn btn-sm responsive-info-button" aria-label="Show detailed information about location"
+               [routerLink]="[location.id, 'details']">
+              <i class="bi bi-info"></i>
+            </a>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div class="d-flex justify-content-center mt-4">
+      <ngb-pagination
+        [(page)]="pageableState.currentPage"
+        [pageSize]="pageableState.pageSize"
+        [collectionSize]="pageableState.totalElements"
+        (pageChange)="onPageChange($event)"
+      ></ngb-pagination>
+    </div>
+  </div>
+</div>
