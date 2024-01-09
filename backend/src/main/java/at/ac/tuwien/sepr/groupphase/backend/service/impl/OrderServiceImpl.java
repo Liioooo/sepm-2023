@@ -216,7 +216,12 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public Order updateOrderTickets(Long orderId, OrderUpdateTicketsDto orderUpdateTicketsDto, @NotNull ApplicationUser currentUser) {
         var order = orderRepository.findOrderByIdAndUserId(orderId, currentUser.getId()).orElseThrow(() -> new NotFoundException("Order not found"));
-
+        if (order.getTickets().isEmpty()) {
+            throw new ConflictException("You have already cancelled your ticket(s) for this event");
+        }
+        if (!order.getTickets().isEmpty() && (orderUpdateTicketsDto.getTickets().size() >= order.getTickets().size())) {
+            throw new ConflictException("Please select a ticket to be cancelled");
+        }
         if (order.getEvent().getEndDate().isBefore(OffsetDateTime.now())) {
             throw new ConflictException("Event is already in the past");
         }
