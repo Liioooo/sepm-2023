@@ -27,7 +27,8 @@ public abstract class DataGenerator<T> {
                 try {
                     Method m = u.getClass().getMethod("setId", Long.class);
                     m.invoke(u, (long) id[0]++);
-                } catch (Exception ignored) {
+                } catch (Exception e) {
+                    LOGGER.debug(e.getMessage(), e);
                 }
             });
             isGenerated = true;
