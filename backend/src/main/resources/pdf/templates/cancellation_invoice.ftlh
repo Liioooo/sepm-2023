@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cancellation Invoice</title>
+    <title>Cancellation Confirmation</title>
     <style>
         * {
             font-family: 'NotoSerif', serif;
@@ -31,7 +31,7 @@
             left: 0;
             right: 0;
             text-align: center;
-            background-color: rgb(1,21,104);
+            background-color: rgb(1, 21, 104);
             border-bottom: 1px solid #ccc;
         }
 
@@ -41,11 +41,11 @@
         }
 
         h2 {
-            text-align: center;
+            margin-top: 20px;
         }
 
         address {
-            margin-top: 30pt;
+            margin-top: 20pt;
         }
 
         table {
@@ -66,6 +66,15 @@
         .totals {
             margin-top: 20px;
         }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgb(1, 21, 104);
+            height: 30px;
+        }
     </style>
 </head>
 <body>
@@ -73,20 +82,20 @@
     <img src="images/logo.png" height="50" alt="Ticketline Logo">
 </div>
 <main>
-    <h2>Cancellation Invoice</h2>
+    <h2>Cancellation Confirmation</h2>
     <address>
         Ticketline <br>
         Karlsplatz 13, 1040 Wien <br>
         ATU82739182
     </address>
-    <div style="margin-top: 14pt;">
-        Purchaser: <br>
+    <div style="margin-top: 10pt;">
+        Bill to: <br>
         ${order.user.firstName} ${order.user.lastName}<br>
         ${order.user.location.address}, ${order.user.location.postalCode} ${order.user.location.city},
         ${order.user.location.country}
     </div>
-    <div>
-        Invoice No.: ${invoiceNumber} <br>
+    <div style="margin-top: 10pt;">
+        Invoice Number: ${order.id} <br>
         Date: ${orderDate}
     </div>
     <table>
@@ -122,8 +131,9 @@
     <div class="totals">
         Total before tax: ${totalPrice / 1.2} €<br>
         VAT: ${totalPrice - totalPrice / 1.2} €<br>
-        Total after tax: ${totalPrice} €
+        <b> Total after tax: ${totalPrice} € </b>
     </div>
 </main>
+<div class="footer"></div>
 </body>
 </html>
