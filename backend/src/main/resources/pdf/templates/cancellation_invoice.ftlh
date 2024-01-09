@@ -1,13 +1,20 @@
 <html lang="en">
 <head>
-    <title>Document</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancellation Invoice</title>
     <style>
         * {
             font-family: 'NotoSerif', serif;
         }
 
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
         @page {
-            margin: 50px;
+            margin: 0;
 
             @top-left {
                 content: element(header);
@@ -18,19 +25,46 @@
             }
         }
 
-        .table {
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            background-color: rgb(1,21,104);
+            border-bottom: 1px solid #ccc;
+        }
+
+        main {
+            margin: 50px 50px 50px;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        address {
+            margin-top: 30pt;
+        }
+
+        table {
             border-collapse: collapse;
-            border-spacing: 0;
-            margin: 2rem 0;
             width: 100%;
+            margin-top: 20px;
         }
 
-        .table th, .table td {
-            padding: 0.5em;
+        th, td {
+            padding: 12px;
+            text-align: left;
         }
 
-        .table th {
+        th {
             border-bottom: 1px solid black;
+        }
+
+        .totals {
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -39,23 +73,23 @@
     <img src="images/logo.png" height="50" alt="Ticketline Logo">
 </div>
 <main>
-    <h1>Cancellation Invoice</h1>
-    <div>
+    <h2>Cancellation Invoice</h2>
+    <address>
         Ticketline <br>
         Karlsplatz 13, 1040 Wien <br>
         ATU82739182
-    </div>
+    </address>
     <div style="margin-top: 14pt;">
-        Purchaser <br>
+        Purchaser: <br>
         ${order.user.firstName} ${order.user.lastName}<br>
         ${order.user.location.address}, ${order.user.location.postalCode} ${order.user.location.city},
         ${order.user.location.country}
     </div>
     <div>
-        Invoice No.:${invoiceNumber} <br>
+        Invoice No.: ${invoiceNumber} <br>
         Date: ${orderDate}
     </div>
-    <table class="table">
+    <table>
         <thead>
         <tr>
             <th>Count</th>
@@ -85,7 +119,7 @@
         </#if>
         </tbody>
     </table>
-    <div>
+    <div class="totals">
         Total before tax: ${totalPrice / 1.2} €<br>
         VAT: ${totalPrice - totalPrice / 1.2} €<br>
         Total after tax: ${totalPrice} €
