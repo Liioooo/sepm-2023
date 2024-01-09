@@ -23,12 +23,13 @@ import at.ac.tuwien.sepr.groupphase.backend.service.OrderService;
 import at.ac.tuwien.sepr.groupphase.backend.service.PdfService;
 import at.ac.tuwien.sepr.groupphase.backend.service.UserService;
 import freemarker.template.TemplateException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
@@ -50,6 +51,7 @@ public class OrderServiceImpl implements OrderService {
     private final TicketMapper ticketMapper;
     private final OrderMapper orderMapper;
     private final EventRepository eventRepository;
+    private final EntityManager entityManager;
 
     private final PdfService pdfService;
 
@@ -63,7 +65,8 @@ public class OrderServiceImpl implements OrderService {
                             UserService userService,
                             EventRepository eventRepository,
                             PdfService pdfService,
-                            EmbeddedFileRepository embeddedFileRepository
+                            EmbeddedFileRepository embeddedFileRepository,
+                            EntityManager entityManager
     ) {
         this.orderRepository = orderRepository;
         this.ticketRepository = ticketRepository;
@@ -73,6 +76,7 @@ public class OrderServiceImpl implements OrderService {
         this.eventRepository = eventRepository;
         this.pdfService = pdfService;
         this.embeddedFileRepository = embeddedFileRepository;
+        this.entityManager = entityManager;
     }
 
     @Override
@@ -94,8 +98,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.SERIALIZABLE)
-    public synchronized void createOrder(OrderCreateDto orderCreateDto) {
+    @Transactional()
+    public void createOrder(OrderCreateDto orderCreateDto) {
+        // Lock tables
+        entityManager.find(Ticket.class, 1, LockModeType.PESSIMISTIC_WRITE);
+        entityManager.find(Order.class, 1, LockModeType.PESSIMISTIC_WRITE);
+
         var event = eventRepository.findById(orderCreateDto.getEventId()).orElseThrow(() -> new NotFoundException("Event not found"));
         var hall = event.getHall();
 
@@ -134,14 +142,14 @@ public class OrderServiceImpl implements OrderService {
 
         // Save order and tickets
         var user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
-        var order = orderRepository.saveAndFlush(orderMapper.orderCreateDtoToOrder(orderCreateDto, user));
+        var order = orderRepository.save(orderMapper.orderCreateDtoToOrder(orderCreateDto, user));
 
         var tickets = Arrays.stream(orderCreateDto.getTickets())
             .map(ticketMapper::createTicketDtoToTicket)
             .peek(ticket -> ticket.setOrder(order))
             .toList();
 
-        var dbTickets = ticketRepository.saveAllAndFlush(tickets);
+        var dbTickets = ticketRepository.saveAll(tickets);
 
         if (orderCreateDto.getOrderType() == OrderType.BUY) {
             createInvoicePdf(order, dbTickets, event);
@@ -149,8 +157,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.SERIALIZABLE)
-    public synchronized void redeemReservation(Long orderId, RedeemReservationDto redeemReservationDto) {
+    @Transactional()
+    public void redeemReservation(Long orderId, RedeemReservationDto redeemReservationDto) {
+        // Lock tables
+        entityManager.find(Ticket.class, 1, LockModeType.PESSIMISTIC_WRITE);
+        entityManager.find(Order.class, 1, LockModeType.PESSIMISTIC_WRITE);
+
         var user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
         var order = orderRepository.findOrderByIdAndUserId(orderId, user.getId()).orElseThrow(() -> new NotFoundException("Order not found"));
 
@@ -182,10 +194,9 @@ public class OrderServiceImpl implements OrderService {
         order.getTickets().addAll(tickets);
         order.setOrderType(OrderType.BUY);
         order.setOrderDate(OffsetDateTime.now());
-        orderRepository.saveAndFlush(order);
+        orderRepository.save(order);
 
-        var event = eventRepository.findById(order.getEvent().getId()).orElseThrow(() -> new NotFoundException("Event not found"));
-        createInvoicePdf(order, tickets, event);
+        createInvoicePdf(order, tickets, order.getEvent());
     }
 
     @Override

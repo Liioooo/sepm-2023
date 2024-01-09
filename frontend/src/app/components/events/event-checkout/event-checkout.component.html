@@ -49,14 +49,16 @@
           You will have to pay the shown amount less when buying the tickets from the reservation.
         </p>
         <div class="text-center">
-          <button *ngIf="isBuy" (click)="submitNewOrder(event)" class="btn btn-primary mt-4">Buy Tickets</button>
-          <button *ngIf="isReserve" (click)="submitNewOrder(event)" class="btn btn-primary mt-4">
+          <button *ngIf="isBuy" [disabled]="isLoading" (click)="submitNewOrder(event)" class="btn btn-primary mt-4">
+            Buy Tickets
+          </button>
+          <button *ngIf="isReserve" [disabled]="isLoading" (click)="submitNewOrder(event)" class="btn btn-primary mt-4">
             Reserve Tickets
           </button>
-          <button *ngIf="isBuyingReservation" (click)="submitReservationPurchase()" class="btn btn-primary mt-4">
+          <button *ngIf="isBuyingReservation" [disabled]="isLoading" (click)="submitReservationPurchase()" class="btn btn-primary mt-4">
             Buy Reserved Tickets
           </button>
-          <button *ngIf="isUpdate" (click)="submitUpdateOrderTickets()" class="btn btn-primary mt-4">
+          <button *ngIf="isUpdate" [disabled]="isLoading" (click)="submitUpdateOrderTickets()" class="btn btn-primary mt-4">
             Cancel Tickets
           </button>
         </div>
