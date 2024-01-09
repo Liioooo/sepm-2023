@@ -222,4 +222,5 @@ public class CustomUserDetailService implements UserService {
     public Page<ApplicationUser> getUsersBySearch(UserSearchDto search, Pageable pageable) {
         return this.applicationUserRepository.findUserBySearchCriteria(search, pageable);
     }
+
 }

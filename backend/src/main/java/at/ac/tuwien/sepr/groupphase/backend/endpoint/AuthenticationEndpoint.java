@@ -60,5 +60,4 @@ public class AuthenticationEndpoint {
             throw new UnauthorizedException("Invalid Token", e);
         }
     }
-
 }
