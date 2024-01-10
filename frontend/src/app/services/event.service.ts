@@ -56,6 +56,22 @@ export class EventService {
     );
   }
 
+
+  getEventsForManagement(search: EventSearchDto | null, pageable?: PageableRequest): Observable<PageDto<EventDetailDto>> {
+    const searchParams = search ? convertFromDatesInObject(removeNullOrUndefinedProps(search as {
+      [key: string]: string
+    })) : {};
+
+    return this.httpClient.get<PageDto<EventDetailDto>>(`${this.adminUri}/events`, {
+      params: {
+        ...searchParams,
+        ...pageable
+      }
+    }).pipe(
+      map(convertToDatesInObject)
+    );
+  }
+
   /**
    * Create new event
    * @param eventCreate event to create

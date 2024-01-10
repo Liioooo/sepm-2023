@@ -62,7 +62,7 @@ public class ManagementEndpoint {
 
     @Secured("ROLE_ADMIN")
     @GetMapping({"events"})
-    @Operation(summary = "Get users, optionally filter by search criteria")
+    @Operation(summary = "Get events, optionally filter by search criteria")
     public PageDto<EventListDto> getEvents(EventSearchDto search, Pageable pageable) {
         return this.pageMapper.toPageDto(
             eventService.getEventsBySearchWithoutGlobalSearch(search, pageable), this.eventMapper::eventToEventListDto
