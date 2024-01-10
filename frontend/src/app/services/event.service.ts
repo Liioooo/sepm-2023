@@ -11,6 +11,8 @@ import { PageableRequest } from '../types/pageable-request';
 import { PageDto } from '../dtos/page-dto';
 import { TopTenEventSearchDto } from '../dtos/top-ten-event-search-dto';
 import { EventWithBoughtCountDto } from '../dtos/event-with-bought-count-dto';
+import { EventCreateDto } from '../dtos/event-create-dto';
+import { ArtistDetailDto } from '../dtos/artist-detail-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -54,15 +56,49 @@ export class EventService {
     );
   }
 
+
+  getEventsForManagement(search: EventSearchDto | null, pageable?: PageableRequest): Observable<PageDto<EventDetailDto>> {
+    const searchParams = search ? convertFromDatesInObject(removeNullOrUndefinedProps(search as {
+      [key: string]: string
+    })) : {};
+
+    return this.httpClient.get<PageDto<EventDetailDto>>(`${this.adminUri}/events`, {
+      params: {
+        ...searchParams,
+        ...pageable
+      }
+    }).pipe(
+      map(convertToDatesInObject)
+    );
+  }
+
   /**
    * Create new event
-   * @param event event to create
+   * @param eventCreate event to create
    */
-  createEvent(event: EventDetailDto): Observable<EventDetailDto> {
-    return this.httpClient.post<EventDetailDto>(
-      `${this.adminUri}`,
-      event
-    );
+  createEvent(eventCreate: EventCreateDto): Observable<EventCreateDto> {
+    let startDate = new Date(eventCreate.startDate);
+    let endDate = new Date(eventCreate.endDate);
+
+    const formData: FormData = new FormData();
+    formData.append('title', eventCreate.title);
+    formData.append('startDate', startDate.toISOString());
+    formData.append('endDate', endDate.toISOString());
+    formData.append('seatPrice', eventCreate.seatPrice.toString());
+    formData.append('standingPrice', eventCreate.standingPrice.toString());
+    formData.append('hallId', eventCreate.hallId.toString());
+    formData.append('artistId', eventCreate.artistId.toString());
+    formData.append('type', eventCreate.type);
+    formData.append('image', eventCreate.image);
+
+    return this.httpClient.post<EventCreateDto>(`${this.baseUri}`, formData);
+  }
+
+  /**
+   * Get all artists from backend
+   */
+  getAllArtists(): Observable<ArtistDetailDto[]> {
+    return this.httpClient.get<ArtistDetailDto[]>(`${this.adminUri}/artists`);
   }
 
   getTopEvents(search: TopTenEventSearchDto): Observable<EventWithBoughtCountDto[]> {

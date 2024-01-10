@@ -10,7 +10,9 @@ import at.ac.tuwien.sepr.groupphase.backend.entity.interfaces.EventWithBoughtCou
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepr.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepr.groupphase.backend.repository.TicketRepository;
+import at.ac.tuwien.sepr.groupphase.backend.service.ArtistService;
 import at.ac.tuwien.sepr.groupphase.backend.service.EventService;
+import at.ac.tuwien.sepr.groupphase.backend.service.LocationService;
 import at.ac.tuwien.sepr.groupphase.backend.service.PublicFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,14 +30,18 @@ import java.util.List;
 public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
+    private final LocationService locationService;
+    private final ArtistService artistService;
 
     private final PublicFileService publicFileService;
 
     private final TicketRepository ticketRepository;
 
     @Autowired
-    public EventServiceImpl(EventRepository eventRepository, PublicFileService publicFileService, TicketRepository ticketRepository) {
+    public EventServiceImpl(EventRepository eventRepository, LocationService locationService, ArtistService artistService, PublicFileService publicFileService, TicketRepository ticketRepository) {
         this.eventRepository = eventRepository;
+        this.locationService = locationService;
+        this.artistService = artistService;
         this.publicFileService = publicFileService;
         this.ticketRepository = ticketRepository;
     }
@@ -47,16 +53,30 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Page<Event> getEventsBySearchWithoutGlobalSearch(EventSearchDto search, Pageable pageable) {
-        return this.eventRepository.findBySearchCriteria(search, pageable);
+        return this.eventRepository.findBySearchCriteriaWithoutGlobalSearch(search, pageable);
     }
 
     @Override
     @Transactional
     public void createEvent(EventCreateDto eventCreateDto) {
-        PublicFile imageFile = null;
+        PublicFile imageFile = new PublicFile();
         if (eventCreateDto.getImage() != null) {
-            imageFile = this.publicFileService.storeFile(eventCreateDto.getImage());
+            imageFile = publicFileService.storeFile(eventCreateDto.getImage());
         }
+
+        Event e = Event.builder()
+            .title(eventCreateDto.getTitle())
+            .startDate(eventCreateDto.getStartDate())
+            .endDate(eventCreateDto.getEndDate())
+            .seatPrice(eventCreateDto.getSeatPrice())
+            .standingPrice(eventCreateDto.getStandingPrice())
+            .image(imageFile)
+            .hall(locationService.getHallById(eventCreateDto.getHallId()))
+            .artist(artistService.getArtistById(eventCreateDto.getArtistId()))
+            .type(eventCreateDto.getType())
+            .build();
+
+        eventRepository.save(e);
     }
 
     @Override
