@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepr.groupphase.backend.endpoint.dto;
 
 import at.ac.tuwien.sepr.groupphase.backend.enums.EventType;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -52,4 +53,11 @@ public class EventCreateDto {
 
     @NotNull(message = "Event Type is required")
     private EventType type;
+
+    @AssertTrue(message = "Start time must be before end time")
+    private boolean getStartAfterEnd() {
+        return startDate.isBefore(endDate);
+    }
+
+
 }
