@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepr.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.LocationCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.LocationSearchDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.LocationMapper;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Hall;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Location;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
@@ -17,10 +19,13 @@ import java.util.Collection;
 public class LocationServiceImpl implements LocationService {
 
     private final LocationRepository locationRepository;
+    private final LocationMapper locationMapper;
     private final HallRepository hallRepository;
 
+    LocationServiceImpl(LocationRepository locationRepository, LocationMapper locationMapper) {
     LocationServiceImpl(LocationRepository locationRepository, HallRepository hallRepository) {
         this.locationRepository = locationRepository;
+        this.locationMapper = locationMapper;
         this.hallRepository = hallRepository;
     }
 
@@ -32,6 +37,11 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public Location getLocationById(long id) {
         return this.locationRepository.findById(id).orElseThrow(() -> new NotFoundException("No location with id %s found".formatted(id)));
+    }
+
+    @Override
+    public Location createLocation(LocationCreateDto locationCreateDto) {
+        return this.locationRepository.save(locationMapper.locationCreateDtoToLocation(locationCreateDto));
     }
 
     @Override

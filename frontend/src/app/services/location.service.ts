@@ -8,6 +8,8 @@ import { LocationSearchDto } from '../dtos/location-search-dto';
 import { LocationDetailDto } from '../dtos/location-detail-dto';
 import { PageDto } from '../dtos/page-dto';
 import { PageableRequest } from '../types/pageable-request';
+import { LocationCreateDto } from '../dtos/location-create-dto';
+import { LocationHallsDto } from '../dtos/location-halls-dto';
 import { HallRowsDetailDto } from '../dtos/hall-rows-detail-dto';
 
 @Injectable({
@@ -56,4 +58,16 @@ export class LocationsService {
     return this.httpClient.get<HallRowsDetailDto[]>(`${this.adminUri}/halls`);
   }
 
+  /**
+   * Get a Location with its Halls from backend
+   *
+   * @param id the id of the location to get
+   */
+  getLocationWithHallsById(id: number): Observable<LocationHallsDto> {
+    return this.httpClient.get<LocationHallsDto>(`${this.baseUri}/${id}?includeHalls=true`);
+  }
+
+  createLocation(locationCreateDto: LocationCreateDto): Observable<LocationDetailDto> {
+    return this.httpClient.post<LocationDetailDto>(`${this.baseUri}`, locationCreateDto);
+  }
 }

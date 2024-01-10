@@ -1,0 +1,122 @@
+<div class="container">
+  <div class="mt-5 mb-4">
+    <a [routerLink]="['/management/locations']" class="btn btn-outline-dark">
+      <i class="bi bi-chevron-left"></i>
+      To the locations overview
+    </a>
+    <h1 class="mt-1">Create a new Hall</h1>
+    <form (ngSubmit)="createHall()" [formGroup]="createHallForm">
+      <div class="row">
+        <div class="col-12 col-lg-6">
+          <div
+            class="d-flex align-items-center justify-content-center bg-light rounded-3 p-3 text-description mb-3 fw-bold"
+          >
+            Stage
+          </div>
+          <div
+            class="d-flex align-items-center justify-content-center bg-light rounded-3 p-3 text-description mb-3 fw-bold"
+          >
+            Standing
+          </div>
+          <div *ngFor="let row of rows.controls; index as i;" class="d-flex flex-row py-1">
+            <div class="row-number d-flex align-items-center text-description">{{ i + 1 }}</div>
+            <div class="flex-grow-1 d-flex justify-content-center align-items-center">
+              <button
+                (click)="removeSeat(row)"
+                *ngFor="let _ of getRowSeats(row); index as seat"
+                attr.aria-label="Row {{ i + 1 }} Seat {{ seat + 1 }}"
+                class="seat-button me-1"
+                type="button"
+              ></button>
+            </div>
+            <button (click)="addSeat(row)" class="btn btn-sm btn-primary" type="button">
+              <i aria-hidden="true" class="bi-plus-lg"></i>
+              Add Seat
+            </button>
+            <button (click)="deleteRow(row)" class="btn btn-sm btn-danger ms-1" type="button">
+              <i aria-hidden="true" class="bi-x-lg"></i>
+              <span class="visually-hidden">Delete Row</span>
+            </button>
+          </div>
+          <div class="d-flex flex-row py-1">
+            <div class="row-number d-flex align-items-center text-description">{{ rows.controls.length + 1 }}</div>
+            <button (click)="addRow()" class="btn btn-sm btn-primary" type="button">
+              <i aria-hidden="true" class="bi-plus-lg"></i>
+              Add Row
+            </button>
+          </div>
+        </div>
+        <div class="col-12 col-lg-6 mt-4 mt-lg-0">
+          <div class="bg-light rounded-3 p-5">
+            <div class="mb-3 row">
+              <label class="col-sm-2 col-form-label text-black" for="name">Name:</label>
+              <div class="col-sm-10">
+                <input [class.is-invalid]="createHallForm.controls.name.touched && createHallForm.controls.name.errors"
+                       class="form-control" formControlName="name" id="name" type="text">
+                <div *ngIf="createHallForm.controls.name.errors?.required" class="invalid-feedback">
+                  The name is required!
+                </div>
+              </div>
+            </div>
+            <hr>
+            <div formArrayName="rows">
+              <div *ngFor="let row of rows.controls; index as i" class="mb-3 row">
+                <label class="col-sm-2 col-form-label text-black" for="row-{{ i }}">Row {{ i + 1 }}:</label>
+                <div class="col-sm-10">
+                  <input
+                    [class.is-invalid]="createHallForm.controls.rows.controls[i].touched && createHallForm.controls.rows.controls[i].errors"
+                    [formControlName]="i" class="form-control" id="row-{{ i }}" min="1" [max]="MAX_SEATS_PER_ROW"
+                    type="number">
+                  <div *ngIf="createHallForm.controls.rows.controls[i].errors?.required" class="invalid-feedback">
+                    The amount of seats is required!
+                  </div>
+                  <div *ngIf="createHallForm.controls.rows.controls[i].errors?.min" class="invalid-feedback">
+                    The amount of seats needs to be larger than 0!
+                  </div>
+                  <div *ngIf="createHallForm.controls.rows.controls[i].errors?.max" class="invalid-feedback">
+                    The amount of seats must be a maximum of {{ MAX_SEATS_PER_ROW }}!
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex flex-row">
+              <div>
+                <div class="fw-bold fs-3">Total Seats</div>
+              </div>
+              <span class="flex-grow-1"></span>
+              <div class="d-flex align-items-center fw-bold fs-3 justify-content-center ticket-control">
+                {{ getTotalSeats() }}
+              </div>
+            </div>
+            <hr>
+            <div class="mb-3 row">
+              <label class="col-sm-2 col-form-label text-black" for="name">Standing:</label>
+              <div class="col-sm-10">
+                <input
+                  [class.is-invalid]="createHallForm.controls.standingCount.touched && createHallForm.controls.standingCount.errors"
+                  class="form-control" formControlName="standingCount" min="0" type="number">
+                <div *ngIf="createHallForm.controls.standingCount.errors?.required" class="invalid-feedback">
+                  The standing count is required!
+                </div>
+                <div *ngIf="createHallForm.controls.standingCount.errors?.min" class="invalid-feedback">
+                  The standing count has to be at least 0!
+                </div>
+              </div>
+            </div>
+            <hr>
+            <p class="text-description">
+              Click the "Add Seat" button in the editor to add a seat to that row. Click on any seat that already exists
+              to
+              remove it. Click "Add Row" to add a new row after the last row. If you remove all seats of a row, the row
+              will
+              be deleted.
+            </p>
+            <div class="text-center">
+              <button class="btn btn-primary mt-4" type="submit">Create Hall</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

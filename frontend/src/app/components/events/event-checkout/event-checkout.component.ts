@@ -28,6 +28,7 @@ export class EventCheckoutComponent implements OnInit {
   mode: CheckoutMode;
   orderId: number;
   order?: OrderDetailDto;
+  isLoading: boolean = false;
 
   constructor(
     private eventService: EventService,
@@ -129,12 +130,16 @@ export class EventCheckoutComponent implements OnInit {
       eventId: event.id
     };
 
+    this.isLoading = true;
     this.orderService.createOrder(order).subscribe({
       next: () => {
         this.toastService.showSuccess('Success', 'Order created successfully');
         this.router.navigate(['/profile']);
       },
-      error: err => this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto))
+      error: err => {
+        this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto));
+        this.isLoading = false;
+      }
     });
   }
 
@@ -143,12 +148,16 @@ export class EventCheckoutComponent implements OnInit {
       tickets: this.generateTickets()
     };
 
+    this.isLoading = true;
     this.orderService.purchaseReservation(this.orderId, redeemReservationDto).subscribe({
       next: () => {
         this.toastService.showSuccess('Success', 'Reservation redeemed successfully');
         this.router.navigate(['/profile']);
       },
-      error: err => this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto))
+      error: err => {
+        this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto));
+        this.isLoading = false;
+      }
     });
   }
 
@@ -179,12 +188,16 @@ export class EventCheckoutComponent implements OnInit {
       })
     };
 
+    this.isLoading = true;
     this.orderService.updateOrder(this.orderId, orderUpdateTicketsDto).subscribe({
       next: () => {
         this.toastService.showSuccess('Success', 'Order updated successfully');
         this.router.navigate(['/profile']);
       },
-      error: err => this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto))
+      error: err => {
+        this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto));
+        this.isLoading = false;
+      }
     });
   }
 }
