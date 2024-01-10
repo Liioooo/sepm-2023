@@ -4,7 +4,7 @@
       <h2 class="fs-1 fw-bold">Create new Event</h2>
     </div>
 
-    <form (ngSubmit)="onSubmit()" class="needs-validation" novalidate>
+    <form #form = "ngForm" (ngSubmit)="onSubmit()" class="needs-validation" novalidate>
       <div class="row">
         <div class="mb-2 col-lg-6">
           <div class="row">
@@ -15,7 +15,10 @@
               name="eventTitle"
               placeholder="Event Name"
               class="form-control"
+              maxlength="255"
               [(ngModel)]="event.title"
+              #title="ngModel"
+              [class.is-invalid] = "title.touched && title.errors"
               required>
             <div class="invalid-feedback">
               Title is required
@@ -44,11 +47,12 @@
               name="eventStandingPrice"
               placeholder="xx,xx"
               class="form-control"
-              value="40"
               [(ngModel)]="event.standingPrice"
+              #standing = "ngModel"
+              [class.is-invalid] = "standing.touched && standing.errors"
               required>
             <div class="invalid-feedback">
-              Standing Price is required
+              Standing Price is required and must be a number
             </div>
           </div>
 
@@ -57,14 +61,15 @@
             <input
               type="number"
               id="eventSeatingPrice"
-              name="eventStandingPrice"
+              name="eventSeatingPrice"
               placeholder="xx,xx"
               class="form-control"
-              value="60"
               [(ngModel)]="event.seatPrice"
+              #seating = "ngModel"
+              [class.is-invalid] = "seating.touched && seating.errors"
               required>
             <div class="invalid-feedback">
-              Seating Price is required
+              Seating Price is required and must be a number
             </div>
           </div>
         </div>
@@ -79,6 +84,8 @@
               placeholder="yyyy-mm-dd"
               class="form-control"
               [(ngModel)]="event.startDate"
+              #startDate = "ngModel"
+              [class.is-invalid] = "startDate.touched && startDate.errors"
               required>
             <div class="invalid-feedback">
               Start Time is required
@@ -94,6 +101,8 @@
               placeholder="yyyy-mm-dd"
               class="form-control"
               [(ngModel)]="event.endDate"
+              #endDate = "ngModel"
+              [class.is-invalid] = "endDate.touched && endDate.errors"
               required>
             <div class="invalid-feedback">
               End Time is required
@@ -121,6 +130,7 @@
               alt="image for event"
               (change)="onFileChanged($event)"
               accept="image/*"
+              [class.is-invalid] = "event.image === undefined"
               required>
             <small *ngIf="event.image" class="text-success">Image selected successfully!</small>
             <div class="invalid-feedback">
@@ -130,7 +140,7 @@
 
         </div>
         <div class="mt-4 d-flex flex-row end-0">
-          <button type="submit" class="btn btn-primary">Create Event</button>
+          <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Create Event</button>
         </div>
       </div>
     </form>
