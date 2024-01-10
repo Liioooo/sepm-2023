@@ -4,7 +4,7 @@
       <h2 class="fs-1 fw-bold">Create new Event</h2>
     </div>
 
-    <form #form = "ngForm" (ngSubmit)="onSubmit()" class="needs-validation" novalidate>
+    <form #form="ngForm" (ngSubmit)="onSubmit()" class="needs-validation" novalidate>
       <div class="row">
         <div class="mb-2 col-lg-6">
           <div class="row">
@@ -18,7 +18,7 @@
               maxlength="255"
               [(ngModel)]="event.title"
               #title="ngModel"
-              [class.is-invalid] = "title.touched && title.errors"
+              [class.is-invalid]="title.touched && title.errors"
               required>
             <div class="invalid-feedback">
               Title is required
@@ -27,14 +27,17 @@
 
           <div class="row mt-3">
             <label class="form-label text-muted col-md-2 col-lg-4">Artist</label>
-            <select class="form-select" aria-label="Select Artist" #selectArtist (change)="onArtistSelected(selectArtist.value)">
-              <option *ngFor="let artist of artists">{{ artist.fictionalName}}{{ artist.firstname }} {{ artist.lastname }}</option>
+            <select class="form-select" aria-label="Select Artist" #selectArtist
+                    (change)="onArtistSelected(selectArtist.value)">
+              <option
+                *ngFor="let artist of artists">{{ artist.fictionalName}}{{ artist.firstname }} {{ artist.lastname }}</option>
             </select>
           </div>
 
           <div class="row mt-3">
             <label class="form-label text-muted col-md-2 col-lg-4">Hall</label>
-            <select class="form-select" aria-label="Select Hall" #selectHall (change)="onHallSelected(selectHall.value)">
+            <select class="form-select" aria-label="Select Hall" #selectHall
+                    (change)="onHallSelected(selectHall.value)">
               <option *ngFor="let hall of halls">{{ hall.name }}, {{ hall.location.title }}</option>
             </select>
           </div>
@@ -48,8 +51,8 @@
               placeholder="xx,xx"
               class="form-control"
               [(ngModel)]="event.standingPrice"
-              #standing = "ngModel"
-              [class.is-invalid] = "standing.touched && standing.errors"
+              #standing="ngModel"
+              [class.is-invalid]="standing.touched && standing.errors"
               required>
             <div class="invalid-feedback">
               Standing Price is required and must be a number
@@ -65,8 +68,8 @@
               placeholder="xx,xx"
               class="form-control"
               [(ngModel)]="event.seatPrice"
-              #seating = "ngModel"
-              [class.is-invalid] = "seating.touched && seating.errors"
+              #seating="ngModel"
+              [class.is-invalid]="seating.touched && seating.errors"
               required>
             <div class="invalid-feedback">
               Seating Price is required and must be a number
@@ -78,14 +81,14 @@
           <div class="row mx-2">
             <label for="startDate" class="form-label text-muted col-md-2 col-lg-4">Start Time</label>
             <input
-              type="date"
+              type="datetime-local"
               id="startDate"
               name="eventStartDate"
               placeholder="yyyy-mm-dd"
               class="form-control"
               [(ngModel)]="event.startDate"
-              #startDate = "ngModel"
-              [class.is-invalid] = "startDate.touched && startDate.errors"
+              #startDate="ngModel"
+              [class.is-invalid]="startDate.touched && startDate.errors"
               required>
             <div class="invalid-feedback">
               Start Time is required
@@ -95,14 +98,14 @@
           <div class="row mt-3 mx-2">
             <label for="endDate" class="form-label text-muted col-md-2 col-lg-4">End Time</label>
             <input
-              type="date"
+              type="datetime-local"
               id="endDate"
               name="eventEndDate"
               placeholder="yyyy-mm-dd"
               class="form-control"
               [(ngModel)]="event.endDate"
-              #endDate = "ngModel"
-              [class.is-invalid] = "endDate.touched && endDate.errors"
+              #endDate="ngModel"
+              [class.is-invalid]="endDate.touched && endDate.errors"
               required>
             <div class="invalid-feedback">
               End Time is required
@@ -111,7 +114,8 @@
 
           <div class="row mt-3 mx-2">
             <label class="form-label text-muted col-md-2 col-lg-4">Event Type</label>
-            <select class="form-select" aria-label="Select Type" #selectType (change)="onTypeSelected(selectType.value)">
+            <select class="form-select" aria-label="Select Type" #selectType
+                    (change)="onTypeSelected(selectType.value)">
               <option>Unknown</option>
               <option>Concert</option>
               <option>Show</option>
@@ -130,7 +134,7 @@
               alt="image for event"
               (change)="onFileChanged($event)"
               accept="image/*"
-              [class.is-invalid] = "event.image === undefined"
+              [class.is-invalid]="event.image === undefined"
               required>
             <small *ngIf="event.image" class="text-success">Image selected successfully!</small>
             <div class="invalid-feedback">
@@ -140,7 +144,7 @@
 
         </div>
         <div class="mt-4 d-flex flex-row end-0">
-          <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Create Event</button>
+          <button type="submit" class="btn btn-primary" [disabled]="form.invalid || !event.image">Create Event</button>
         </div>
       </div>
     </form>
