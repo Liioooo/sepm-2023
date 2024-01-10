@@ -21,6 +21,7 @@ public interface LocationMapper {
     Location locationCreateDtoToLocation(LocationCreateDto locationCreateDto);
 
     LocationHallsDto locationToLocationHallsDto(Location location);
+
     List<HallDetailDto> hallCollectionToHallDetailDtoList(Collection<Hall> halls);
 
 }

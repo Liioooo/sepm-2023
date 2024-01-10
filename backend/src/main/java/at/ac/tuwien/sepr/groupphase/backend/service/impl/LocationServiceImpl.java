@@ -22,8 +22,7 @@ public class LocationServiceImpl implements LocationService {
     private final LocationMapper locationMapper;
     private final HallRepository hallRepository;
 
-    LocationServiceImpl(LocationRepository locationRepository, LocationMapper locationMapper) {
-    LocationServiceImpl(LocationRepository locationRepository, HallRepository hallRepository) {
+    LocationServiceImpl(LocationRepository locationRepository, HallRepository hallRepository, LocationMapper locationMapper) {
         this.locationRepository = locationRepository;
         this.locationMapper = locationMapper;
         this.hallRepository = hallRepository;
