@@ -122,7 +122,7 @@
             <tr>
                 <td>${standingTicketsCount}</td>
                 <td>Standing tickets</td>
-                <td>${(standingTicketsCount * -event.standingPrice)!'-'} €</td>
+                <td>${(standingTicketsCount * event.standingPrice)!'-'} €</td>
                 <td>20%</td>
             </tr>
         </#if>
