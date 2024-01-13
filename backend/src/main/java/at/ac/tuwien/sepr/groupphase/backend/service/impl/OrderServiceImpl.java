@@ -219,9 +219,6 @@ public class OrderServiceImpl implements OrderService {
         if (order.getTickets().isEmpty()) {
             throw new ConflictException("You have already cancelled your ticket(s) for this event");
         }
-        if (!order.getTickets().isEmpty() && (orderUpdateTicketsDto.getTickets().size() >= order.getTickets().size())) {
-            throw new ConflictException("Please select a ticket to be cancelled");
-        }
         if (order.getEvent().getEndDate().isBefore(OffsetDateTime.now())) {
             throw new ConflictException("Event is already in the past");
         }
