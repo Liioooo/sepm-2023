@@ -1,9 +1,12 @@
 package at.ac.tuwien.sepr.groupphase.backend.integrationtest.endpoint;
 
-import at.ac.tuwien.sepr.groupphase.backend.datagenerator.EventDataGenerator;
+import at.ac.tuwien.sepr.groupphase.backend.datagenerator.ApplicationUserDataGenerator;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserCreateDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserDetailDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserLocationDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateManagementDto;
-import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.EventMapper;
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepr.groupphase.backend.enums.UserRole;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepr.groupphase.backend.repository.ApplicationUserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,16 +17,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -31,6 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ActiveProfiles({"test", "generateData"})
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 class ManagementEndpointTest {
 
     @Autowired
@@ -40,45 +50,82 @@ class ManagementEndpointTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private EventMapper eventMapper;
-
-    @Autowired
-    private EventDataGenerator eventDataGenerator;
-
-    @Autowired
     private ApplicationUserRepository userRepository;
+
+    @Autowired
+    private ApplicationUserDataGenerator userDataGenerator;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     private final String API_BASE = "/api/v1/management";
 
     private final String API_USERS = API_BASE + "/users";
 
-    private final Long USER1_ID = 3L; // user1@email.com, Not Locked
-    private final Long USER2_ID = 3L; // user2@email.com, Not Locked
 
-    private final Long LOCKED_USER_ID = 5L; // locked@email.com,  Locked
-
-    private final Long ADMIN_ID = 1L;
-
-    private final String ADMIN_EMAIL = "admin@email.com";
+    private ApplicationUser user1_info;
+    private ApplicationUser user2_info;
+    private ApplicationUser lockedUser_info;
+    private ApplicationUser admin1_info;
+    private UserCreateDto userCreateDto_genericUser;
+    private UserCreateDto userCreateDto_adminUser;
 
 
     @BeforeEach()
     void setupData() {
+        initUser();
+        initAdminUser();
+        initCreateDto();
+    }
+
+    void initCreateDto() {
+        userCreateDto_genericUser = new UserCreateDto(
+            "created_user1@email.com",
+            "created_firstname",
+            "created_lastname",
+            "password",
+            "password",
+            new UserLocationDto("Testgasse 1", "1110", "Vienna", "Austria"),
+            false,
+            UserRole.ROLE_USER
+        );
+
+        userCreateDto_adminUser = new UserCreateDto(
+            "created_admin1@email.com",
+            "created_firstname",
+            "created_lastname",
+            "admin_password",
+            "admin_password",
+            new UserLocationDto("Admingasse 12/29", "1010", "Berlin", "Germany"),
+            false,
+            UserRole.ROLE_ADMIN
+        );
+    }
+
+    void initUser() {
+        user1_info = userDataGenerator.getTestData().get(2);
+
+        user2_info = userDataGenerator.getTestData().get(3);
+
+        lockedUser_info = userDataGenerator.getTestData().get(9);
+    }
+
+    void initAdminUser() {
+        admin1_info = userDataGenerator.getTestData().get(0);
     }
 
     @Test
-    @DirtiesContext
     void lockUser_loggedInAsAdmin_successfullyLocksUser() {
-        Long toLock = USER1_ID;
+        Long toLock = user1_info.getId();
         UserUpdateManagementDto toUpdate = UserUpdateManagementDto.builder().isLocked(true).build();
 
         assertDoesNotThrow(() -> {
-            this.mockMvc.perform(patch(API_USERS + "/" + toLock)
+            this.mockMvc.perform(patch(API_USERS + "/" + toLock.toString())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     objectMapper.writeValueAsString(toUpdate)
                 )
-                .with(user(ADMIN_EMAIL).roles("ADMIN"))
+                .with(user(admin1_info.getEmail()).roles("ADMIN"))
             ).andExpectAll(
                 status().isOk()
             );
@@ -93,13 +140,13 @@ class ManagementEndpointTest {
         UserUpdateManagementDto toUpdate = UserUpdateManagementDto.builder().isLocked(true).build();
 
         assertDoesNotThrow(() -> {
-            this.mockMvc.perform(patch(API_USERS + "/" + ADMIN_ID)
+            this.mockMvc.perform(patch(API_USERS + "/" + admin1_info.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     objectMapper.writeValueAsString(toUpdate)
                 )
-                .with(user(ADMIN_EMAIL).roles("ADMIN"))
+                .with(user(admin1_info.getEmail()).roles("ADMIN"))
             ).andExpectAll(
                 status().isForbidden()
             );
@@ -111,13 +158,13 @@ class ManagementEndpointTest {
         UserUpdateManagementDto toUpdate = UserUpdateManagementDto.builder().isLocked(true).build();
 
         assertDoesNotThrow(() -> {
-            this.mockMvc.perform(patch(API_USERS + "/" + USER2_ID)
+            this.mockMvc.perform(patch(API_USERS + "/" + user2_info.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     objectMapper.writeValueAsString(toUpdate)
                 )
-                .with(user("user1@email.com").roles("USER"))
+                .with(user(user1_info.getEmail()).roles("USER"))
             ).andExpectAll(
                 status().isForbidden()
             );
@@ -129,7 +176,7 @@ class ManagementEndpointTest {
         UserUpdateManagementDto toUpdate = UserUpdateManagementDto.builder().isLocked(false).build();
 
         assertDoesNotThrow(() -> {
-            this.mockMvc.perform(patch(API_USERS + "/" + USER1_ID)
+            this.mockMvc.perform(patch(API_USERS + "/" + user1_info.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
@@ -142,9 +189,8 @@ class ManagementEndpointTest {
     }
 
     @Test
-    @DirtiesContext
     void unlockUser_loggedInAsAdmin_successfullyUnlocksUser() {
-        Long toLock = LOCKED_USER_ID;
+        Long toLock = lockedUser_info.getId();
         UserUpdateManagementDto toUpdate = UserUpdateManagementDto.builder().isLocked(false).build();
 
         assertDoesNotThrow(() -> {
@@ -154,17 +200,41 @@ class ManagementEndpointTest {
                 .content(
                     objectMapper.writeValueAsString(toUpdate)
                 )
-                .with(user(ADMIN_EMAIL).roles("ADMIN"))
+                .with(user(admin1_info.getEmail()).roles("ADMIN"))
             ).andExpectAll(
                 status().isOk()
             ).andReturn().getResponse().getContentAsByteArray();
 
 
-            // Verify respository
+            // Get respository
             ApplicationUser savedUser = userRepository.findById(toLock).orElseThrow(() -> new NotFoundException("No user with id %s found".formatted(toLock)));
-            assertFalse(savedUser.isLocked());
 
-            // Verify returned user-content
+            // Get returned user-content
+            UserDetailDto returnedUser = objectMapper.readerFor(UserDetailDto.class).<UserDetailDto>readValues(body).next();
+
+            assertAll(
+                () -> assertFalse(savedUser.isLocked()), // Verify repository
+
+                () -> assertThat(returnedUser).extracting( // Check if UserDetailDto returns up to date information
+                    UserDetailDto::getId,
+                    UserDetailDto::getEmail,
+                    UserDetailDto::getFirstName,
+                    UserDetailDto::getLastName,
+                    UserDetailDto::getIsLocked
+                ).containsExactly(
+                    savedUser.getId(),
+                    savedUser.getEmail(),
+                    savedUser.getFirstName(),
+                    savedUser.getLastName(),
+                    savedUser.isLocked()
+                ),
+                () -> assertThat(returnedUser.getLocation().getAddress()).isEqualTo(savedUser.getLocation().getAddress()),
+                () -> assertThat(returnedUser.getLocation().getCity()).isEqualTo(savedUser.getLocation().getCity()),
+                () -> assertThat(returnedUser.getLocation().getCountry()).isEqualTo(savedUser.getLocation().getCountry()),
+                () -> assertThat(returnedUser.getLocation().getPostalCode()).isEqualTo(savedUser.getLocation().getPostalCode())
+
+            );
+
         });
     }
 
@@ -174,17 +244,164 @@ class ManagementEndpointTest {
         UserUpdateManagementDto toUpdate = UserUpdateManagementDto.builder().isLocked(false).build();
 
         assertDoesNotThrow(() -> {
-            this.mockMvc.perform(patch(API_USERS + "/" + LOCKED_USER_ID)
+            this.mockMvc.perform(patch(API_USERS + "/" + lockedUser_info.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     objectMapper.writeValueAsString(toUpdate)
                 )
-                .with(user("user1@email.com").roles("USER"))
+                .with(user(user1_info.getEmail()).roles("USER"))
             ).andExpectAll(
                 status().isForbidden()
             );
         });
     }
 
+    @Test
+    void createNonAdminUser_whileLoggedInAsAdmin_isCreated() {
+        assertDoesNotThrow(() -> {
+
+            byte[] content = this.mockMvc.perform(post(API_USERS)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userCreateDto_genericUser))
+                .with(user(admin1_info.getEmail()).roles("ADMIN"))
+            ).andExpect(
+                status().isCreated()
+            ).andReturn().getResponse().getContentAsByteArray();
+
+            // Returned by the Endpoint
+            UserDetailDto returnedDetailDto = objectMapper.readerFor(UserDetailDto.class).<UserDetailDto>readValues(content).next();
+
+            // Repository entry
+            ApplicationUser repositoryUser = userRepository.findUserByEmail(userCreateDto_genericUser.getEmail())
+                .orElseThrow(() -> new NotFoundException("No user with id email found".formatted(userCreateDto_genericUser.getEmail())));
+
+
+            assertAll(
+                () -> assertNotNull(returnedDetailDto),
+                () -> assertThat(returnedDetailDto) // verify returned DTO
+                    .extracting(
+                        UserDetailDto::getEmail,
+                        UserDetailDto::getFirstName,
+                        UserDetailDto::getLastName,
+                        UserDetailDto::getLocation,
+                        UserDetailDto::getIsLocked
+                    )
+                    .contains(
+                        userCreateDto_genericUser.getEmail(),
+                        userCreateDto_genericUser.getFirstName(),
+                        userCreateDto_genericUser.getLastName(),
+                        userCreateDto_genericUser.getLocation(),
+                        userCreateDto_genericUser.getIsLocked()
+                    ),
+                () -> assertThat(repositoryUser) // verify repository entry
+                    .extracting(
+                        ApplicationUser::getEmail,
+                        ApplicationUser::getFirstName,
+                        ApplicationUser::getLastName,
+                        ApplicationUser::isLocked,
+                        ApplicationUser::getPassword,
+                        ApplicationUser::getFailedAuths,
+                        ApplicationUser::getRole
+                    )
+                    .contains(
+                        userCreateDto_genericUser.getEmail(),
+                        userCreateDto_genericUser.getFirstName(),
+                        userCreateDto_genericUser.getLastName(),
+                        userCreateDto_genericUser.getIsLocked(),
+                        0,
+                        UserRole.ROLE_USER
+                    ),
+                // verify password
+                () -> passwordEncoder.matches(userCreateDto_genericUser.getPassword(), repositoryUser.getPassword()),
+                // verify location
+                () -> assertThat(repositoryUser.getLocation().getAddress()).isEqualTo(userCreateDto_genericUser.getLocation().getAddress()),
+                () -> assertThat(repositoryUser.getLocation().getCity()).isEqualTo(userCreateDto_genericUser.getLocation().getCity()),
+                () -> assertThat(repositoryUser.getLocation().getCountry()).isEqualTo(userCreateDto_genericUser.getLocation().getCountry()),
+                () -> assertThat(repositoryUser.getLocation().getPostalCode()).isEqualTo(userCreateDto_genericUser.getLocation().getPostalCode())
+            );
+        });
+    }
+
+    @Test
+    void createAdminUser_whileLoggedInAsAdmin_isCreatedWithAdminRole() {
+        assertDoesNotThrow(() -> {
+
+            byte[] content = this.mockMvc.perform(post(API_USERS)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userCreateDto_adminUser))
+                .with(user(admin1_info.getEmail()).roles("ADMIN"))
+            ).andExpect(
+                status().isCreated()
+            ).andReturn().getResponse().getContentAsByteArray();
+
+            // Returned by the Endpoint
+            UserDetailDto returnedDetailDto = objectMapper.readerFor(UserDetailDto.class).<UserDetailDto>readValues(content).next();
+
+            // Repository entry
+            ApplicationUser repositoryUser = userRepository.findUserByEmail(userCreateDto_adminUser.getEmail())
+                .orElseThrow(() -> new NotFoundException("No user with id email found".formatted(userCreateDto_adminUser.getEmail())));
+
+
+            assertAll(
+                () -> assertNotNull(returnedDetailDto),
+                () -> assertThat(returnedDetailDto) // verify returned DTO
+                    .extracting(
+                        UserDetailDto::getEmail,
+                        UserDetailDto::getFirstName,
+                        UserDetailDto::getLastName,
+                        UserDetailDto::getLocation,
+                        UserDetailDto::getIsLocked
+                    )
+                    .contains(
+                        userCreateDto_adminUser.getEmail(),
+                        userCreateDto_adminUser.getFirstName(),
+                        userCreateDto_adminUser.getLastName(),
+                        userCreateDto_adminUser.getLocation(),
+                        userCreateDto_adminUser.getIsLocked()
+                    ),
+                () -> assertThat(repositoryUser) // verify repository entry
+                    .extracting(
+                        ApplicationUser::getEmail,
+                        ApplicationUser::getFirstName,
+                        ApplicationUser::getLastName,
+                        ApplicationUser::isLocked,
+                        ApplicationUser::getPassword,
+                        ApplicationUser::getFailedAuths,
+                        ApplicationUser::getRole
+                    )
+                    .contains(
+                        userCreateDto_adminUser.getEmail(),
+                        userCreateDto_adminUser.getFirstName(),
+                        userCreateDto_adminUser.getLastName(),
+                        userCreateDto_adminUser.getIsLocked(),
+                        0,
+                        UserRole.ROLE_ADMIN
+                    ),
+                // verify password
+                () -> assertTrue(passwordEncoder.matches(userCreateDto_adminUser.getPassword(), repositoryUser.getPassword())),
+                // verify location
+                () -> assertThat(repositoryUser.getLocation().getAddress()).isEqualTo(userCreateDto_adminUser.getLocation().getAddress()),
+                () -> assertThat(repositoryUser.getLocation().getCity()).isEqualTo(userCreateDto_adminUser.getLocation().getCity()),
+                () -> assertThat(repositoryUser.getLocation().getCountry()).isEqualTo(userCreateDto_adminUser.getLocation().getCountry()),
+                () -> assertThat(repositoryUser.getLocation().getPostalCode()).isEqualTo(userCreateDto_adminUser.getLocation().getPostalCode())
+            );
+        });
+    }
+
+    @Test
+    void createAdminUser_whileLoggedInAsNonAdmin_returnsForbidden() {
+        assertDoesNotThrow(() -> {
+            this.mockMvc.perform(post(API_USERS)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userCreateDto_adminUser))
+                .with(user(user1_info.getEmail()).roles("USER"))
+            ).andExpect(
+                status().isForbidden()
+            );
+        });
+    }
 }

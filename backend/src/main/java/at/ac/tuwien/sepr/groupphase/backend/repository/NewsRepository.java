@@ -16,8 +16,8 @@ import java.util.Collection;
 public interface NewsRepository extends JpaRepository<News, Long> {
 
     /**
-     * Find all news that HAVE NOT been read by the given user
-     * Returned rows are ordered by publish date
+     * Find all news that HAVE NOT been read by the given user.
+     * Returned rows are ordered by publish date.
      *
      * @param user     the given user
      * @param pageable page
@@ -26,8 +26,8 @@ public interface NewsRepository extends JpaRepository<News, Long> {
     Page<News> findAllByReadByNotContainsOrderByPublishDateDesc(ApplicationUser user, Pageable pageable);
 
     /**
-     * Find all news that HAVE been read by the given user
-     * Returned rows are ordered by publish date
+     * Find all news that HAVE been read by the given user.
+     * Returned rows are ordered by publish date.
      *
      * @param user     the given user
      * @param pageable page
@@ -36,7 +36,7 @@ public interface NewsRepository extends JpaRepository<News, Long> {
     Page<News> findAllByReadByContainsOrderByPublishDateDesc(ApplicationUser user, Pageable pageable);
 
     /**
-     * Finds all news by a given title
+     * Finds all news by a given title.
      *
      * @param title the title
      * @return all news that contain the given title

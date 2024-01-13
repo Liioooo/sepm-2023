@@ -64,7 +64,6 @@ public class NewsEndpointTest {
     private final String API_UNREAD = API_BASE + "/unread";
 
     @Test
-    @DirtiesContext
     void createNews_whileLoggedInAsAdmin_createsNews() {
         String username = "admin@email.com";
 
@@ -144,7 +143,6 @@ public class NewsEndpointTest {
 
 
     @Test
-    @DirtiesContext
     void getSingleNews_whileLoggedInAsKnownUser_showsNewsWithId1() {
         String username = "user1@email.com";
 
@@ -182,7 +180,6 @@ public class NewsEndpointTest {
     }
 
     @Test
-    @DirtiesContext
     void getAllUnReadNews_whileLoggedInAsKnownUser_containsUnReadNews() {
         String username = "user1@email.com";
 
@@ -246,7 +243,6 @@ public class NewsEndpointTest {
 
 
     @Test
-    @DirtiesContext
     void getAllReadNews_whileLoggedInAsKnownUser_containsOnlyReadNews() {
         String username = "user1@email.com";
 
