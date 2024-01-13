@@ -23,7 +23,7 @@ export class ManagementEventsComponent {
     this.events$ = combineLatest([this.searchAttributes$, this.onPageChangeDistinct$]).pipe(
       debounceTime(250),
       switchMap(([searchAttributes, page]) => {
-        return this.service.getEvents({
+        return this.service.getEventsForManagement({
           ...searchAttributes
         }, { page, size: 20 });
       }),

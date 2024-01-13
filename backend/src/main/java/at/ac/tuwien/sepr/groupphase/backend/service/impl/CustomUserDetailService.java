@@ -265,4 +265,5 @@ public class CustomUserDetailService implements UserService {
             throw new ConflictException("Email is already in use", ex);
         }
     }
+
 }

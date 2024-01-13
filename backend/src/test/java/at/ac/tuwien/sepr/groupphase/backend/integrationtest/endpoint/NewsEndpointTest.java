@@ -35,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -42,6 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ActiveProfiles({"test", "generateData"})
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = AFTER_CLASS)
 public class NewsEndpointTest {
 
     @Autowired
@@ -56,7 +58,6 @@ public class NewsEndpointTest {
     PasswordEncoder passwordEncoder;
     @Autowired
     ApplicationUserRepository userRepository;
-
 
     private final String API_BASE = "/api/v1/news";
     private final String API_READ = API_BASE + "/read";

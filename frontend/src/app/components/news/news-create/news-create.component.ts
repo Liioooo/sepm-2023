@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { NewsCreateDto } from '../../../dtos/news-create-dto';
-import { FormBuilder } from '@angular/forms';
 import { NewsService } from '../../../services/news.service';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../services/toast.service';
@@ -18,7 +17,6 @@ export class NewsCreateComponent {
 
   constructor(
     private newsService: NewsService,
-    private formBuilder: FormBuilder,
     private router: Router,
     private toastService: ToastService,
     private errorFormatterService: ErrorFormatterService
