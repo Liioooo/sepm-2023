@@ -65,11 +65,9 @@ export class ManagementUsersComponent {
     this.onPageChange$.next(newPage - 1);
   }
 
-  clickMethod(name: string, email: string  ) {
-
+  clickMethod(name: string, email: string) {
     const emailResetDto: EmailResetDto = { email: email };
     this.sendEmail(emailResetDto, name);
-
   }
 
   async sendEmail(emailResetDto: EmailResetDto, name: string) {

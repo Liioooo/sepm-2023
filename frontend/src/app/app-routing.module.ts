@@ -40,6 +40,9 @@ import {
 import {
   ManagementLocationHallCreateComponent
 } from './components/management/management-locations/halls/management-location-hall-create/management-location-hall-create.component';
+import {
+  ManagementUserCreateComponent
+} from './components/management/management-users/management-user-create/management-user-create.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -101,6 +104,7 @@ const routes: Routes = [
   { path: 'management/news', canActivate: [adminGuard], component: ManagementNewsComponent },
   { path: 'management/news/create', canActivate: [authGuard], component: NewsCreateComponent },
   { path: 'management/users', canActivate: [adminGuard], component: ManagementUsersComponent },
+  { path: 'management/users/create', canActivate: [adminGuard], component: ManagementUserCreateComponent },
   { path: 'management/events/view/:id', canActivate: [adminGuard], component: EventOverviewComponent },
   { path: 'management/events/create', canActivate: [adminGuard], component: EventCreateComponent },
   { path: 'management/locations', canActivate: [adminGuard], component: ManagementLocationsComponent },

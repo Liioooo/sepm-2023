@@ -10,6 +10,11 @@
       (searchChange)="searchAttributes$.next($event)"
     ></app-users-search-fields>
 
+    <a class="btn btn-primary mb-3" [routerLink]="['create']">
+      <i class="bi-plus-lg" aria-hidden="true"></i>
+      New User
+    </a>
+
     <!-- EVENT LIST -->
     <table class="table table-sm">
       <thead>
