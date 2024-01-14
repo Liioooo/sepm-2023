@@ -64,32 +64,29 @@ export class ManagementUsersComponent {
     this.onPageChange$.next(newPage - 1);
   }
 
-  lockUser(id: number): void {
+  lockUser(user: UserListDto): void {
     const userUpdateInfo: UserUpdateManagementDto = {
-      id: id,
+      id: user.id,
       isLocked: true
     };
 
-    this.service.updateUser(userUpdateInfo).subscribe({
-      next: user => {
-        this.toastService.showSuccess('Success', `User ${user.firstName}, ${user.lastName} locked`);
-      },
-      error: err => {
-        this.toastService
-          .showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto));
-      }
-    });
+    this.updateUser(userUpdateInfo, user);
   }
 
-  unlockUser(id: number): void {
+  unlockUser(user: UserListDto): void {
     const userUpdateInfo: UserUpdateManagementDto = {
-      id: id,
+      id: user.id,
       isLocked: false
     };
 
+    this.updateUser(userUpdateInfo, user);
+  }
+
+  private updateUser(userUpdateInfo: UserUpdateManagementDto, user: UserListDto) {
     this.service.updateUser(userUpdateInfo).subscribe({
-      next: user => {
+      next: updatedUser => {
         this.toastService.showSuccess('Success', `User ${user.firstName}, ${user.lastName} unlocked`);
+        user.isLocked = updatedUser.isLocked; // instantly reflect change
       },
       error: err => {
         this.toastService
