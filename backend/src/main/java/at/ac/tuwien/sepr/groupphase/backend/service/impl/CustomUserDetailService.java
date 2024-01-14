@@ -54,6 +54,8 @@ public class CustomUserDetailService implements UserService {
     private final UserLocationMapper userLocationMapper;
     private final EmailService emailService;
 
+    private static final int MAX_ALLOWED_FAILED_AUTHS = 5;
+
     @Autowired
     public CustomUserDetailService(ApplicationUserRepository applicationUserRepository,
                                    PasswordEncoder passwordEncoder,
@@ -77,26 +79,31 @@ public class CustomUserDetailService implements UserService {
 
     @Override
     public String login(UserLoginDto userLoginDto) {
+        ApplicationUser applicationUser;
         try {
-            ApplicationUser applicationUser = loadUserByUsername(userLoginDto.getEmail());
-            if (applicationUser.isAccountNonExpired() && applicationUser.isAccountNonLocked() && applicationUser.isCredentialsNonExpired()) {
-                boolean authenticationSuccess = false;
-                if (passwordEncoder.matches(userLoginDto.getPassword(), applicationUser.getPassword())) {
-                    applicationUser.setFailedAuths(0);
-                    authenticationSuccess = true;
-                } else {
-                    applicationUser.setFailedAuths(applicationUser.getFailedAuths() + 1);
-                }
-                applicationUserRepository.save(applicationUser);
-                if (authenticationSuccess) {
-                    return generateTokenForUser(applicationUser);
-                }
-                throw new BadCredentialsException("Username or password is incorrect");
-            }
-            throw new BadCredentialsException("Account is locked");
+            applicationUser = loadUserByUsername(userLoginDto.getEmail());
         } catch (UsernameNotFoundException e) {
             throw new NotFoundException(e.getMessage(), e);
         }
+
+        if (!passwordEncoder.matches(userLoginDto.getPassword(), applicationUser.getPassword())) {
+            applicationUser.setFailedAuths(applicationUser.getFailedAuths() + 1);
+
+            if (applicationUser.getFailedAuths() >= MAX_ALLOWED_FAILED_AUTHS) {
+                applicationUser.setLocked(true);
+            }
+            applicationUserRepository.save(applicationUser);
+            throw new BadCredentialsException("Username or password is incorrect");
+        }
+
+        if (!applicationUser.isAccountNonLocked() || !applicationUser.isCredentialsNonExpired() || !applicationUser.isAccountNonExpired()) {
+            throw new BadCredentialsException("Account is locked");
+        }
+
+        applicationUser.setFailedAuths(0);
+        applicationUserRepository.save(applicationUser);
+
+        return generateTokenForUser(applicationUser);
     }
 
     @Override

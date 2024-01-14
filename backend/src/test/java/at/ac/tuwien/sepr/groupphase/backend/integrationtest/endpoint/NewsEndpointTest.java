@@ -64,6 +64,7 @@ public class NewsEndpointTest {
     private final String API_UNREAD = API_BASE + "/unread";
 
     @Test
+    @DirtiesContext
     void createNews_whileLoggedInAsAdmin_createsNews() {
         String username = "admin@email.com";
 
@@ -129,7 +130,7 @@ public class NewsEndpointTest {
         );
 
         try {
-            var result = this.mockMvc.perform(MockMvcRequestBuilders.post(API_BASE)
+            this.mockMvc.perform(MockMvcRequestBuilders.post(API_BASE)
                 .contentType(MediaType.APPLICATION_JSON)
                 .flashAttr("newsCreateDto", toCreate)
                 .with(user(username).roles("USER"))
@@ -143,6 +144,7 @@ public class NewsEndpointTest {
 
 
     @Test
+    @DirtiesContext
     void getSingleNews_whileLoggedInAsKnownUser_showsNewsWithId1() {
         String username = "user1@email.com";
 
@@ -180,6 +182,7 @@ public class NewsEndpointTest {
     }
 
     @Test
+    @DirtiesContext
     void getAllUnReadNews_whileLoggedInAsKnownUser_containsUnReadNews() {
         String username = "user1@email.com";
 
@@ -200,7 +203,6 @@ public class NewsEndpointTest {
             });
 
             List<NewsListDto> actualNews = pageDto.getContent();
-
 
             assertAll(
                 () -> assertThat(actualNews).isNotNull(),
@@ -243,6 +245,7 @@ public class NewsEndpointTest {
 
 
     @Test
+    @DirtiesContext
     void getAllReadNews_whileLoggedInAsKnownUser_containsOnlyReadNews() {
         String username = "user1@email.com";
 

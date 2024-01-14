@@ -53,11 +53,11 @@ class AuthenticationEndpointTest {
         ).andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
 
-        assertAll(() -> {
-            assertEquals(HttpStatus.OK.value(), response.getStatus());
-            assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
-            assertThat(response.getContentAsString()).startsWith("Bearer ");
-        });
+        assertAll(
+            () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
+            () -> assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType()),
+            () -> assertThat(response.getContentAsString()).startsWith("Bearer ")
+        );
     }
 
     @Test
@@ -90,11 +90,11 @@ class AuthenticationEndpointTest {
         ).andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
 
-        assertAll(() -> {
-            assertEquals(HttpStatus.OK.value(), response.getStatus());
-            assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
-            assertThat(response.getContentAsString()).startsWith("Bearer ");
-        });
+        assertAll(
+            () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
+            () -> assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType()),
+            () -> assertThat(response.getContentAsString()).startsWith("Bearer ")
+        );
     }
 
     @Test
@@ -150,13 +150,12 @@ class AuthenticationEndpointTest {
 
     @Test
     @DirtiesContext
-    void normalAccountLockedAfter5Attempts() throws Exception {
+    void login_asNormalUser_locksAccountAfter5Attemps_invalidLogin() throws Exception {
         var requestBody = new HashMap<String, Object>();
         requestBody.put("email", "user2@email.com");
         requestBody.put("password", "invalid");
 
         for (int i = 0; i < 5; i++) {
-            System.out.println("XXxxxxxxxxxxxxxxxxxxxxx");
             this.mockMvc.perform(post(AUTHENTICATION_BASE + "/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestBody))
@@ -167,6 +166,38 @@ class AuthenticationEndpointTest {
                 jsonPath("$.error").value("Username or password is incorrect")
             );
         }
+
+        this.mockMvc.perform(post(AUTHENTICATION_BASE + "/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(requestBody))
+            .accept(MediaType.APPLICATION_JSON)
+        ).andExpectAll(
+            status().isForbidden(),
+            jsonPath("$.status").value("403"),
+            jsonPath("$.error").value("Username or password is incorrect")
+        );
+    }
+
+    @Test
+    @DirtiesContext
+    void login_asNormalUser_locksAccountAfter5Attemps_validLogin_() throws Exception {
+        var requestBody = new HashMap<String, Object>();
+        requestBody.put("email", "user2@email.com");
+        requestBody.put("password", "invalid");
+
+        for (int i = 0; i < 5; i++) {
+            this.mockMvc.perform(post(AUTHENTICATION_BASE + "/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestBody))
+                .accept(MediaType.APPLICATION_JSON)
+            ).andExpectAll(
+                status().isForbidden(),
+                jsonPath("$.status").value("403"),
+                jsonPath("$.error").value("Username or password is incorrect")
+            );
+        }
+
+        requestBody.put("password", "password");
 
         this.mockMvc.perform(post(AUTHENTICATION_BASE + "/login")
             .contentType(MediaType.APPLICATION_JSON)
@@ -196,11 +227,11 @@ class AuthenticationEndpointTest {
         ).andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
 
-        assertAll(() -> {
-            assertEquals(HttpStatus.OK.value(), response.getStatus());
-            assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
-            assertThat(response.getContentAsString()).startsWith("Bearer ");
-        });
+        assertAll(
+            () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
+            () -> assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType()),
+            () -> assertThat(response.getContentAsString()).startsWith("Bearer ")
+        );
 
         var loginRequestBody = new HashMap<String, Object>();
         loginRequestBody.put("email", "newAccount@email.com");
@@ -213,11 +244,11 @@ class AuthenticationEndpointTest {
         ).andReturn();
         MockHttpServletResponse loginResponse = loginMvcResult.getResponse();
 
-        assertAll(() -> {
-            assertEquals(HttpStatus.OK.value(), loginResponse.getStatus());
-            assertEquals(MediaType.APPLICATION_JSON_VALUE, loginResponse.getContentType());
-            assertThat(loginResponse.getContentAsString()).startsWith("Bearer ");
-        });
+        assertAll(
+            () -> assertEquals(HttpStatus.OK.value(), loginResponse.getStatus()),
+            () -> assertEquals(MediaType.APPLICATION_JSON_VALUE, loginResponse.getContentType()),
+            () -> assertThat(loginResponse.getContentAsString()).startsWith("Bearer ")
+        );
     }
 
 }
