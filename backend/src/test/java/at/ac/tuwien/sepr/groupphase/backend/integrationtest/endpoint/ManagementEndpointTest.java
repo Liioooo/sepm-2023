@@ -106,7 +106,7 @@ class ManagementEndpointTest {
 
         user2_info = userDataGenerator.getTestData().get(3);
 
-        lockedUser_info = userDataGenerator.getTestData().get(9);
+        lockedUser_info = userDataGenerator.getTestData().get(8);
     }
 
     void initAdminUser() {
@@ -115,11 +115,14 @@ class ManagementEndpointTest {
 
     @Test
     void lockUser_loggedInAsAdmin_successfullyLocksUser() {
-        Long toLock = user1_info.getId();
-        UserUpdateManagementDto toUpdate = UserUpdateManagementDto.builder().isLocked(true).build();
+        UserUpdateManagementDto toUpdate = UserUpdateManagementDto
+            .builder()
+            .isLocked(true)
+            .id(user1_info.getId())
+            .build();
 
         assertDoesNotThrow(() -> {
-            this.mockMvc.perform(patch(API_USERS + "/" + toLock.toString())
+            this.mockMvc.perform(patch(API_USERS)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
@@ -130,17 +133,21 @@ class ManagementEndpointTest {
                 status().isOk()
             );
 
-            ApplicationUser savedUser = userRepository.findById(toLock).orElseThrow(() -> new NotFoundException("No user with id %s found".formatted(toLock)));
+            ApplicationUser savedUser = userRepository.findById(user1_info.getId()).orElseThrow(() -> new NotFoundException("No user with id %s found".formatted(user1_info.getId())));
             assertTrue(savedUser.isLocked());
         });
     }
 
     @Test
     void lockOwnAccount_loggedInAsAdmin_returnsForbidden() {
-        UserUpdateManagementDto toUpdate = UserUpdateManagementDto.builder().isLocked(true).build();
+        UserUpdateManagementDto toUpdate = UserUpdateManagementDto
+            .builder()
+            .isLocked(true)
+            .id(admin1_info.getId())
+            .build();
 
         assertDoesNotThrow(() -> {
-            this.mockMvc.perform(patch(API_USERS + "/" + admin1_info.getId())
+            this.mockMvc.perform(patch(API_USERS)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
@@ -155,10 +162,14 @@ class ManagementEndpointTest {
 
     @Test
     void lockUser_notLoggedIn_returnsForbidden() {
-        UserUpdateManagementDto toUpdate = UserUpdateManagementDto.builder().isLocked(true).build();
+        UserUpdateManagementDto toUpdate = UserUpdateManagementDto
+            .builder()
+            .isLocked(true)
+            .id(user2_info.getId())
+            .build();
 
         assertDoesNotThrow(() -> {
-            this.mockMvc.perform(patch(API_USERS + "/" + user2_info.getId())
+            this.mockMvc.perform(patch(API_USERS)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
@@ -173,10 +184,14 @@ class ManagementEndpointTest {
 
     @Test
     void lockUser_LoggedInAsNonAdmin_returnsUnauthorized() {
-        UserUpdateManagementDto toUpdate = UserUpdateManagementDto.builder().isLocked(false).build();
+        UserUpdateManagementDto toUpdate = UserUpdateManagementDto
+            .builder()
+            .isLocked(false)
+            .id(user1_info.getId())
+            .build();
 
         assertDoesNotThrow(() -> {
-            this.mockMvc.perform(patch(API_USERS + "/" + user1_info.getId())
+            this.mockMvc.perform(patch(API_USERS)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
@@ -190,11 +205,14 @@ class ManagementEndpointTest {
 
     @Test
     void unlockUser_loggedInAsAdmin_successfullyUnlocksUser() {
-        Long toLock = lockedUser_info.getId();
-        UserUpdateManagementDto toUpdate = UserUpdateManagementDto.builder().isLocked(false).build();
+        UserUpdateManagementDto toUpdate = UserUpdateManagementDto
+            .builder()
+            .isLocked(false)
+            .id(lockedUser_info.getId())
+            .build();
 
         assertDoesNotThrow(() -> {
-            byte[] body = this.mockMvc.perform(patch(API_USERS + "/" + toLock)
+            byte[] body = this.mockMvc.perform(patch(API_USERS)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
@@ -207,7 +225,8 @@ class ManagementEndpointTest {
 
 
             // Get respository
-            ApplicationUser savedUser = userRepository.findById(toLock).orElseThrow(() -> new NotFoundException("No user with id %s found".formatted(toLock)));
+            ApplicationUser savedUser = userRepository.findById(lockedUser_info.getId())
+                .orElseThrow(() -> new NotFoundException("No user with id %s found".formatted(lockedUser_info.getId())));
 
             // Get returned user-content
             UserDetailDto returnedUser = objectMapper.readerFor(UserDetailDto.class).<UserDetailDto>readValues(body).next();
@@ -232,7 +251,6 @@ class ManagementEndpointTest {
                 () -> assertThat(returnedUser.getLocation().getCity()).isEqualTo(savedUser.getLocation().getCity()),
                 () -> assertThat(returnedUser.getLocation().getCountry()).isEqualTo(savedUser.getLocation().getCountry()),
                 () -> assertThat(returnedUser.getLocation().getPostalCode()).isEqualTo(savedUser.getLocation().getPostalCode())
-
             );
 
         });
@@ -241,10 +259,14 @@ class ManagementEndpointTest {
 
     @Test
     void unlockUser_loggedInAsNonAdmin_returnsForbidden() {
-        UserUpdateManagementDto toUpdate = UserUpdateManagementDto.builder().isLocked(false).build();
+        UserUpdateManagementDto toUpdate = UserUpdateManagementDto
+            .builder()
+            .isLocked(false)
+            .id(lockedUser_info.getId())
+            .build();
 
         assertDoesNotThrow(() -> {
-            this.mockMvc.perform(patch(API_USERS + "/" + lockedUser_info.getId())
+            this.mockMvc.perform(patch(API_USERS)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(

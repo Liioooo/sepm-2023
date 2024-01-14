@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { DEFAULT_PAGEABLE_STATE, PageableState } from '../../../types/pageable-request';
 import { BehaviorSubject, combineLatest, debounceTime, distinctUntilChanged, map, Observable, switchMap } from 'rxjs';
-import { UserDetailDto } from '../../../dtos/user-detail-dto';
 import { UserSearchDto } from '../../../dtos/user-search-dto';
 import { tap } from 'rxjs/operators';
 import { UserService } from '../../../services/user.service';
@@ -10,11 +9,12 @@ import { ErrorResponseDto } from '../../../dtos/error-response-dto';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../services/toast.service';
 import { ErrorFormatterService } from '../../../services/error-formatter.service';
-import { FormBuilder } from '@angular/forms';
 import {
   RequestPasswordChangeModalComponent
 } from '../../modal/request-password-change-modal/request-password-change-modal.component';
 import { MODAL_DISMISSED, ModalService } from '../../../services/modal.service';
+import { UserListDto } from '../../../dtos/user-list-dto';
+import { UserUpdateManagementDto } from '../../../dtos/user-update-management-dto';
 
 
 @Component({
@@ -24,13 +24,12 @@ import { MODAL_DISMISSED, ModalService } from '../../../services/modal.service';
 })
 export class ManagementUsersComponent {
   public pageableState: PageableState = DEFAULT_PAGEABLE_STATE;
-  public users$: Observable<UserDetailDto[]>;
+  public users$: Observable<UserListDto[]>;
   public searchAttributes$ = new BehaviorSubject<UserSearchDto>({});
   private onPageChange$ = new BehaviorSubject<number>(0);
 
   constructor(
     private service: UserService,
-    private formBuilder: FormBuilder,
     private router: Router,
     private toastService: ToastService,
     private errorFormatterService: ErrorFormatterService,
@@ -65,7 +64,41 @@ export class ManagementUsersComponent {
     this.onPageChange$.next(newPage - 1);
   }
 
-  clickMethod(name: string, email: string) {
+  lockUser(id: number): void {
+    const userUpdateInfo: UserUpdateManagementDto = {
+      id: id,
+      isLocked: true
+    };
+
+    this.service.updateUser(userUpdateInfo).subscribe({
+      next: user => {
+        this.toastService.showSuccess('Success', `User ${user.firstName}, ${user.lastName} locked`);
+      },
+      error: err => {
+        this.toastService
+          .showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto));
+      }
+    });
+  }
+
+  unlockUser(id: number): void {
+    const userUpdateInfo: UserUpdateManagementDto = {
+      id: id,
+      isLocked: false
+    };
+
+    this.service.updateUser(userUpdateInfo).subscribe({
+      next: user => {
+        this.toastService.showSuccess('Success', `User ${user.firstName}, ${user.lastName} unlocked`);
+      },
+      error: err => {
+        this.toastService
+          .showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto));
+      }
+    });
+  }
+
+  clickSendEmail(name: string, email: string) {
     const emailResetDto: EmailResetDto = { email: email };
     this.sendEmail(emailResetDto, name);
   }
@@ -87,5 +120,21 @@ export class ManagementUsersComponent {
         this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto));
       }
     });
+  }
+
+  getStatusClass(user: UserListDto): string[] {
+    let classes: string[] = ['badge'];
+
+    if (!user.isLocked) {
+      classes.push('text-bg-success');
+    } else {
+      classes.push('text-bg-danger');
+    }
+
+    return classes;
+  }
+
+  getStatus(user: UserListDto): string {
+    return user.isLocked ? 'Disabled' : 'Enabled';
   }
 }

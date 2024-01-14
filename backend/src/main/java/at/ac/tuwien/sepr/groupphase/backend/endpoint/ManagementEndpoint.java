@@ -32,7 +32,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -114,11 +113,11 @@ public class ManagementEndpoint {
     }
 
     @Secured("ROLE_ADMIN")
-    @PatchMapping("users/{id}")
+    @PatchMapping("users")
     @Operation(summary = "Update details for a given user")
-    public UserDetailDto updateUserDetails(@PathVariable Long id, @Valid @RequestBody UserUpdateManagementDto userUpdateManagementDto, Authentication authentication) {
+    public UserDetailDto updateUserDetails(@Valid @RequestBody UserUpdateManagementDto userUpdateManagementDto, Authentication authentication) {
         ApplicationUser currentUser = userService.getUserFromAuthentication(authentication);
-        return applicationUserMapper.applicationUserToUserDetailDto(userService.updateUser(id, userUpdateManagementDto, currentUser));
+        return applicationUserMapper.applicationUserToUserDetailDto(userService.updateUser(userUpdateManagementDto, currentUser));
     }
 
     @Secured("ROLE_ADMIN")
@@ -126,9 +125,6 @@ public class ManagementEndpoint {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new (admin) user")
     public UserDetailDto createUser(@Valid @RequestBody UserCreateDto userCreateDto) {
-        //ApplicationUser user = userService.createUserAsAdmin(userCreateDto);
-        //UserDetailDto dto = applicationUserMapper.applicationUserToUserDetailDto(user);
-        //return dto;
         return applicationUserMapper.applicationUserToUserDetailDto(userService.createUserAsAdmin(userCreateDto));
     }
 }

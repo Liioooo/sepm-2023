@@ -12,6 +12,7 @@ public interface ApplicationUserMapper {
     @Mapping(source = "locked", target = "isLocked")
     UserDetailDto applicationUserToUserDetailDto(ApplicationUser applicationUser);
 
+    @Mapping(source = "locked", target = "isLocked")
     UserListDto toUserListDto(ApplicationUser user);
 
 }

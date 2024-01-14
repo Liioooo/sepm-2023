@@ -16,5 +16,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class UserUpdateManagementDto {
+    private Long id;
     private Boolean isLocked;
 }

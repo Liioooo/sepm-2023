@@ -11,14 +11,12 @@ import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateManagementDto
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.UnauthorizedException;
-import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Optional;
 
@@ -84,7 +82,7 @@ public interface UserService extends UserDetailsService {
      * @param userUpdateManagementDto the new user data
      * @return the updated user details
      */
-    ApplicationUser updateUser(Long id, UserUpdateManagementDto userUpdateManagementDto, ApplicationUser authenticatedUser);
+    ApplicationUser updateUser(UserUpdateManagementDto userUpdateManagementDto, ApplicationUser authenticatedUser);
 
     /**
      * Delete the currently authenticated user.
