@@ -80,7 +80,6 @@ export class NewsService {
     formData.append('text', createDto.text);
     formData.append('image', createDto.image);
 
-
     return this.httpClient.post<NewsDetailDto>(createUri, formData);
   }
 

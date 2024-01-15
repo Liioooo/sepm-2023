@@ -18,19 +18,19 @@ export class ToastService {
   }
 
   showInfo(header: string, body: string, delay: number = 5000) {
-    this._toasts.push({ header, body, delay, classname: 'bg-info' });
+    this._toasts.push({ header, body, delay, classname: 'text-bg-info' });
   }
 
   showSuccess(header: string, body: string, delay: number = 5000) {
-    this._toasts.push({ header, body, delay, classname: 'bg-success text-white' });
+    this._toasts.push({ header, body, delay, classname: 'text-bg-success' });
   }
 
   showWarning(header: string, body: string, delay: number = 5000) {
-    this._toasts.push({ header, body, delay, classname: 'bg-warning' });
+    this._toasts.push({ header, body, delay, classname: 'text-bg-warning' });
   }
 
   showError(header: string, body: string, delay: number = 5000) {
-    this._toasts.push({ header, body, delay, classname: 'bg-danger text-white' });
+    this._toasts.push({ header, body, delay, classname: 'text-bg-danger' });
   }
 
   remove(toast: ToastInfo) {

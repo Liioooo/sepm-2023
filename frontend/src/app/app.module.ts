@@ -61,6 +61,7 @@ import {
 } from './components/management/management-locations/management-location-create/management-location-create.component';
 import { ManagementLocationDetailsComponent } from './components/management/management-locations/management-location-details/management-location-details.component';
 import { ManagementLocationHallCreateComponent } from './components/management/management-locations/halls/management-location-hall-create/management-location-hall-create.component';
+import { ManagementUserCreateComponent } from './components/management/management-users/management-user-create/management-user-create.component';
 
 @NgModule({
   declarations: [
@@ -106,7 +107,8 @@ import { ManagementLocationHallCreateComponent } from './components/management/m
     ManagementLocationCreateComponent,
     ManagementLocationDetailsComponent,
     ManagementLocationHallCreateComponent,
-    RequestPasswordChangeModalComponent
+    RequestPasswordChangeModalComponent,
+    ManagementUserCreateComponent
   ],
   imports: [
     BrowserModule,

@@ -1,12 +1,13 @@
 import { UserLocationDto } from './user-location-dto';
 import { UserRole } from '../enums/userRole';
 
-export interface UserDetailDto {
-  id: number;
+export interface UserCreateDto {
   email: string;
   firstName: string;
   lastName: string;
-  isLocked: boolean;
-  role: UserRole;
+  password?: string;
+  confirmPassword?: string;
   location?: UserLocationDto;
+  isLocked: boolean,
+  role: UserRole
 }
