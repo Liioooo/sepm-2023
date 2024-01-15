@@ -34,5 +34,5 @@ public interface PdfService {
      * @param ticket The ticket for which to create the PDF
      * @return The EmbeddedFile as PDF
      */
-    EmbeddedFile createTicketPdf(Ticket ticket);
+    EmbeddedFile createTicketPdf(@NotNull Order order, @NotNull Ticket ticket, @NotNull Event event) throws IOException, TemplateException ;
 }

@@ -147,9 +147,10 @@ public class OrderServiceImpl implements OrderService {
         var user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
         var order = orderRepository.save(orderMapper.orderCreateDtoToOrder(orderCreateDto, user));
 
+        // TODO: generate pdf only if ticket bought
         var tickets = Arrays.stream(orderCreateDto.getTickets())
             .map(ticketMapper::createTicketDtoToTicket)
-            .peek(ticket -> ticket.setOrder(order))
+            .peek(ticket -> createTicketPdf(order, ticket, event))
             .toList();
 
         var dbTickets = ticketRepository.saveAll(tickets);
@@ -258,6 +259,18 @@ public class OrderServiceImpl implements OrderService {
             embeddedFileRepository.saveAndFlush(pdfFile);
         } catch (IOException | TemplateException e) {
             throw new InternalServerException("Could not generate cancellation invoice PDF.", e);
+        }
+    }
+
+    private void createTicketPdf(Order order, Ticket ticket, Event event) {
+        try {
+            var pdfFile = pdfService.createTicketPdf(order, ticket, event);
+            ticket.setPdfTicket(pdfFile);
+            ticket.setOrder(order);
+            ticketRepository.saveAndFlush(ticket);
+            embeddedFileRepository.saveAndFlush(pdfFile);
+        } catch (IOException | TemplateException e) {
+            throw new InternalServerException("Could not generate ticket PDF.", e);
         }
     }
 }
