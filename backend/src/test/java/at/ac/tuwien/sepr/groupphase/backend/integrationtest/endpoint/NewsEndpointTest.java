@@ -175,7 +175,7 @@ public class NewsEndpointTest {
                         "This is text for News-Title-1",
                         "This is an abstract for News-Title-1",
                         OffsetDateTime.of(2023, 12, 9, 20, 0, 0, 0, ZoneOffset.UTC),
-                        "Admin, Admin"
+                        "Admin Admin"
                     )
             );
         });
