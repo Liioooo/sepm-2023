@@ -55,7 +55,7 @@ export class ManagementUserCreateComponent {
         .subscribe({
           next: () => {
             this.toastService.showSuccess('Success', 'Created new user');
-            this.router.navigate(['/']);
+            this.router.navigate(['management/users']);
           },
           error: err => this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto))
         });
