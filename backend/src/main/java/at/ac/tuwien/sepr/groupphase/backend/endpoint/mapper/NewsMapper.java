@@ -31,7 +31,7 @@ public interface NewsMapper {
             return "[deleted]";
         }
 
-        return String.format("%s, %s", author.getFirstName(), author.getLastName());
+        return String.format("%s %s", author.getFirstName(), author.getLastName());
     }
 
     @Named("mapImageDto")

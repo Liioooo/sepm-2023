@@ -15,6 +15,7 @@ import {
 import { MODAL_DISMISSED, ModalService } from '../../../services/modal.service';
 import { UserListDto } from '../../../dtos/user-list-dto';
 import { UserUpdateManagementDto } from '../../../dtos/user-update-management-dto';
+import { UserRole } from '../../../enums/userRole';
 
 
 @Component({
@@ -133,5 +134,14 @@ export class ManagementUsersComponent {
 
   getStatus(user: UserListDto): string {
     return user.isLocked ? 'Disabled' : 'Enabled';
+  }
+
+  getRole(user: UserListDto): string {
+    switch (user.role) {
+      case UserRole.ROLE_ADMIN:
+        return 'Admin';
+      case UserRole.ROLE_USER:
+        return 'User';
+    }
   }
 }
