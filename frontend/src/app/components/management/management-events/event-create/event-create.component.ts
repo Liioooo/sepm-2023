@@ -34,7 +34,7 @@ export class EventCreateComponent implements OnInit {
   ngOnInit() {
     this.locationService.getAllHalls().subscribe({
       next: halls => {
-        this.halls  = halls;
+        this.halls = halls;
         this.selectedHallId = this.halls[0].id;
       },
       error: error => {
@@ -79,24 +79,24 @@ export class EventCreateComponent implements OnInit {
 
   onTypeSelected(value: string): void {
     switch (value) {
-    case 'unknown':
-      this.event.type = EventType.UNKNOWN;
-      break;
-    case 'concert':
-      this.event.type = EventType.CONCERT;
-      break;
-    case 'show':
-      this.event.type = EventType.SHOW;
-      break;
-    case 'festival':
-      this.event.type = EventType.FESTIVAL;
-      break;
-    case 'sport':
-      this.event.type = EventType.SPORT;
-      break;
-    case 'culture':
-      this.event.type = EventType.CULTURE;
-      break;
+      case 'unknown':
+        this.event.type = EventType.UNKNOWN;
+        break;
+      case 'concert':
+        this.event.type = EventType.CONCERT;
+        break;
+      case 'show':
+        this.event.type = EventType.SHOW;
+        break;
+      case 'festival':
+        this.event.type = EventType.FESTIVAL;
+        break;
+      case 'sport':
+        this.event.type = EventType.SPORT;
+        break;
+      case 'culture':
+        this.event.type = EventType.CULTURE;
+        break;
     }
 
   }
