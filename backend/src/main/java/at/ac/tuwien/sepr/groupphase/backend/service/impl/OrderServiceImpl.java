@@ -105,6 +105,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public Ticket getTicketByUuid(UUID uuid) {
+        return ticketRepository.findTicketByUuid(uuid);
+    }
+
+    @Override
     public List<Order> getOrdersOfCurrentUser() {
         var user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
         return orderRepository.findOrdersByUserId(user.getId());
@@ -176,7 +181,7 @@ public class OrderServiceImpl implements OrderService {
             for (Ticket ticket : dbTickets) {
                 try {
                     // generate and save QR Code image in resources/qr_codes folder
-                    qrCodeGenerator.generateQRCodeImage("http://localhost:4200/tickets/verify/" + ticket.getUuid(), 250, 250, "src/main/resources/pdf/templates/qr_codes/" + ticket.getId() + ".png");
+                    qrCodeGenerator.generateQRCodeImage("http://localhost:4200/#/tickets/verify/" + ticket.getUuid(), 250, 250, "src/main/resources/pdf/templates/qr_codes/" + ticket.getId() + ".png");
                 } catch (WriterException | IOException e) {
                     e.printStackTrace();
                 }

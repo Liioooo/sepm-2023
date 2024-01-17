@@ -7,8 +7,10 @@ import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import jakarta.validation.constraints.NotNull;
+import at.ac.tuwien.sepr.groupphase.backend.entity.Ticket;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface OrderService {
 
@@ -19,6 +21,12 @@ public interface OrderService {
      * @return the order
      */
     Order getOrderById(Long id);
+
+    /**
+     * Queries a ticket by UUID.
+     * @return the ticket
+     */
+    Ticket getTicketByUuid(UUID uuid);
 
     /**
      * Queries all orders of the current user.
