@@ -87,7 +87,9 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Event getEvent(long id) {
-        return eventRepository.findById(id).orElseThrow(() -> new NotFoundException("The event was not found"));
+        Event event = eventRepository.findById(id).orElseThrow(() -> new NotFoundException("The event was not found"));
+        setPublicImagePathForSingleEvent(event);
+        return event;
     }
 
     @Override

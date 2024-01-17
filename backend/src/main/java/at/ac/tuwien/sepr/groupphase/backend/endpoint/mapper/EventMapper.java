@@ -20,6 +20,7 @@ public interface EventMapper {
     @Mapping(source = "image", target = "image", qualifiedByName = "mapImageDto")
     EventListDto eventToEventListDto(Event event);
 
+    @Mapping(source = "image", target = "image", qualifiedByName = "mapImageDto")
     EventDetailDto eventToEventDetailDto(Event event);
 
     List<EventWithBoughtCountDto> eventWithBoughtToEventWithBoughtDtoList(Collection<EventWithBoughtCount> events);

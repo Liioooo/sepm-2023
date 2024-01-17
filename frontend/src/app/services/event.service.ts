@@ -61,7 +61,11 @@ export class EventService {
    */
   getEvent(id: number): Observable<EventDetailDto> {
     return this.httpClient.get<EventDetailDto>(`${this.baseUri}/${id}`).pipe(
-      map(convertToDatesInObject)
+      map(convertToDatesInObject),
+      map(event => {
+        event.image = convertPublicFileUrlToAbsoluteUrl(event.image, this.globals.backendBaseUri);
+        return event;
+      })
     );
   }
 
