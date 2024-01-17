@@ -44,6 +44,7 @@ public class PublicFileDataGenerator extends DataGenerator<PublicFile> {
             copyImageFromResoucesToPublicFiles(imageName);
             images.add(PublicFile.builder()
                 .path(imageName)
+                .publicUrl("/public-files/" + imageName)
                 .mimeType("image/jpeg")
                 .build());
         }
