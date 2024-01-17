@@ -1,7 +1,8 @@
 package at.ac.tuwien.sepr.groupphase.backend.unittest.service;
 
-import at.ac.tuwien.sepr.groupphase.backend.datagenerator.OrderDataGenerator;
-import at.ac.tuwien.sepr.groupphase.backend.datagenerator.TicketDataGenerator;
+import at.ac.tuwien.sepr.groupphase.backend.datagenerator.test.ApplicationUserDataGenerator;
+import at.ac.tuwien.sepr.groupphase.backend.datagenerator.test.OrderDataGenerator;
+import at.ac.tuwien.sepr.groupphase.backend.datagenerator.test.TicketDataGenerator;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderUpdateTicketsDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.TicketOrderUpdateDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
@@ -30,9 +31,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(properties = "spring.main.allow-bean-definition-overriding=true")
