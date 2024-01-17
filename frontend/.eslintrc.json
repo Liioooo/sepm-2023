@@ -37,18 +37,41 @@
           2,
           "always"
         ],
-        "comma-dangle": ["error", "never"],
-        "quotes": ["error", "single"],
-        "indent": ["error", 2],
-        "no-var": [ "error" ],
-        "no-shadow": "off", // https://github.com/typescript-eslint/typescript-eslint/issues/2779
+        "comma-dangle": [
+          "error",
+          "never"
+        ],
+        "quotes": [
+          "error",
+          "single"
+        ],
+        "indent": [
+          "error",
+          2,
+          {
+            "SwitchCase": 1
+          }
+        ],
+        "no-var": [
+          "error"
+        ],
+        "no-shadow": "off",
+        // https://github.com/typescript-eslint/typescript-eslint/issues/2779
         "no-unneeded-ternary": "error",
-        "no-empty": ["error", { "allowEmptyCatch": true}],
+        "no-empty": [
+          "error",
+          {
+            "allowEmptyCatch": true
+          }
+        ],
         "keyword-spacing": "error",
         "block-spacing": "error",
         "space-before-blocks": "error",
         "comma-spacing": "error",
-        "object-curly-spacing": ["error", "always"]
+        "object-curly-spacing": [
+          "error",
+          "always"
+        ]
       }
     },
     {

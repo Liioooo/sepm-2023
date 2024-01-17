@@ -2,6 +2,7 @@ package at.ac.tuwien.sepr.groupphase.backend.endpoint.exceptionhandler;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.ApiErrorDto;
 import at.ac.tuwien.sepr.groupphase.backend.exception.ConflictException;
+import at.ac.tuwien.sepr.groupphase.backend.exception.ForbiddenException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.InternalServerException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.PublicFileStorageException;
@@ -67,7 +68,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = {UnauthorizedException.class})
-    protected ResponseEntity<Object> handleUnauthorized(UnauthorizedException ex) {
+    protected ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException ex) {
         var error = new ApiErrorDto(HttpStatus.UNAUTHORIZED, ex.getMessage());
 
         logError(error, ex);
@@ -104,6 +105,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         logError(error, ex);
         return new ResponseEntity<>(error, headers, status);
 
+    }
+
+    @ExceptionHandler(value = {ForbiddenException.class})
+    protected ResponseEntity<Object> handleForbiddenException(ForbiddenException ex) {
+        var error = new ApiErrorDto(HttpStatus.FORBIDDEN, ex.getMessage());
+
+        logError(error, ex);
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
 
     private void logError(ApiErrorDto apiErrorDto, Exception exception) {

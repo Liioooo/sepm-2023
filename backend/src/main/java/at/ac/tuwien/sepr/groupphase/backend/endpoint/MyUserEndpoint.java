@@ -1,7 +1,7 @@
 package at.ac.tuwien.sepr.groupphase.backend.endpoint;
 
-import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserDetailDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.ApplicationUserMapper;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepr.groupphase.backend.service.UserService;
