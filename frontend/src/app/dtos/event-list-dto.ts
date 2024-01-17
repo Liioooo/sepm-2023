@@ -1,5 +1,6 @@
 import { ArtistDetailDto } from './artist-detail-dto';
 import { HallDetailDto } from './hall-detail-dto';
+import { PublicFileDto } from './public-file-dto';
 
 export interface EventListDto {
   id: number;
@@ -11,5 +12,6 @@ export interface EventListDto {
   artist: ArtistDetailDto;
   hall: HallDetailDto;
   type: string;
+  image: PublicFileDto;
 }
 

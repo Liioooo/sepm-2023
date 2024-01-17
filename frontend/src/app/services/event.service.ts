@@ -13,6 +13,8 @@ import { TopTenEventSearchDto } from '../dtos/top-ten-event-search-dto';
 import { EventWithBoughtCountDto } from '../dtos/event-with-bought-count-dto';
 import { EventCreateDto } from '../dtos/event-create-dto';
 import { ArtistDetailDto } from '../dtos/artist-detail-dto';
+import { EventListDto } from '../dtos/event-list-dto';
+import { convertPublicFileUrlToAbsoluteUrl } from '../utils/convertFromPublicFileUrlToAbsoluteUrl';
 
 @Injectable({
   providedIn: 'root'
@@ -31,18 +33,25 @@ export class EventService {
    * @param search Optional: Search by parameters in EventSearchDto
    * @param pageable Optional: Pageable data
    */
-  getEvents(search: EventSearchDto | null, pageable?: PageableRequest): Observable<PageDto<EventDetailDto>> {
+  getEvents(search: EventSearchDto | null, pageable?: PageableRequest): Observable<PageDto<EventListDto>> {
     const searchParams = search ? convertFromDatesInObject(removeNullOrUndefinedProps(search as {
       [key: string]: string
     })) : {};
 
-    return this.httpClient.get<PageDto<EventDetailDto>>(this.baseUri, {
+    return this.httpClient.get<PageDto<EventListDto>>(this.baseUri, {
       params: {
         ...searchParams,
         ...pageable
       }
     }).pipe(
-      map(convertToDatesInObject)
+      map(convertToDatesInObject),
+      map((page) => {
+        page.content = page.content.map((event) => {
+          event.image = convertPublicFileUrlToAbsoluteUrl(event.image, this.globals.backendBaseUri);
+          return event;
+        });
+        return page;
+      })
     );
   }
 

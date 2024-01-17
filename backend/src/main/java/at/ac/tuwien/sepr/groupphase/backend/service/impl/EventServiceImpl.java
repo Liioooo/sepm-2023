@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepr.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepr.groupphase.backend.config.properties.FilesProperties;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventSearchDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventTop10SearchDto;
@@ -37,18 +38,23 @@ public class EventServiceImpl implements EventService {
 
     private final TicketRepository ticketRepository;
 
+    private final FilesProperties filesProperties;
+
     @Autowired
-    public EventServiceImpl(EventRepository eventRepository, LocationService locationService, ArtistService artistService, PublicFileService publicFileService, TicketRepository ticketRepository) {
+    public EventServiceImpl(EventRepository eventRepository, LocationService locationService, ArtistService artistService, PublicFileService publicFileService, TicketRepository ticketRepository, FilesProperties filesProperties) {
         this.eventRepository = eventRepository;
         this.locationService = locationService;
         this.artistService = artistService;
         this.publicFileService = publicFileService;
         this.ticketRepository = ticketRepository;
+        this.filesProperties = filesProperties;
     }
 
     @Override
     public Page<Event> getEventsBySearch(EventSearchDto search, Pageable pageable) {
-        return this.eventRepository.findBySearchCriteria(search, pageable);
+        Page<Event> eventsPage = this.eventRepository.findBySearchCriteria(search, pageable);
+        setPublicImagePathForAllEvents(eventsPage.getContent());
+        return eventsPage;
     }
 
     @Override
@@ -100,5 +106,24 @@ public class EventServiceImpl implements EventService {
         OffsetDateTime startDate = yearMonth.atDay(1).atTime(0, 0, 0).atOffset(ZoneOffset.UTC);
         OffsetDateTime endDate = yearMonth.atEndOfMonth().atTime(23, 59, 59).atOffset(ZoneOffset.UTC);
         return eventRepository.findTopTenEvent(startDate, endDate, searchDto.getEventType());
+    }
+
+    private void setPublicImagePathForAllEvents(List<Event> eventList) {
+        for (Event event : eventList) {
+            if (event.getImage() == null) {
+                continue;
+            }
+            setPublicImagePathForSingleEvent(event);
+        }
+    }
+
+    private void setPublicImagePathForSingleEvent(Event event) {
+        if (event.getImage() == null) {
+            return;
+        }
+        String baseUrl = this.filesProperties.getPublicServeUrl().replace("*", "");
+        String url = baseUrl + event.getImage().getPath();
+
+        event.getImage().setPublicUrl(url);
     }
 }
