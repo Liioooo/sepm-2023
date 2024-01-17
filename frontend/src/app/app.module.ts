@@ -62,6 +62,7 @@ import {
 import { ManagementLocationDetailsComponent } from './components/management/management-locations/management-location-details/management-location-details.component';
 import { ManagementLocationHallCreateComponent } from './components/management/management-locations/halls/management-location-hall-create/management-location-hall-create.component';
 import { ManagementUserCreateComponent } from './components/management/management-users/management-user-create/management-user-create.component';
+import { TicketValidationComponent } from './components/ticket-validation/ticket-validation.component';
 
 @NgModule({
   declarations: [
@@ -108,7 +109,8 @@ import { ManagementUserCreateComponent } from './components/management/managemen
     ManagementLocationDetailsComponent,
     ManagementLocationHallCreateComponent,
     RequestPasswordChangeModalComponent,
-    ManagementUserCreateComponent
+    ManagementUserCreateComponent,
+    TicketValidationComponent
   ],
   imports: [
     BrowserModule,

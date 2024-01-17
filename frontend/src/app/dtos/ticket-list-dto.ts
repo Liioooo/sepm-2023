@@ -7,4 +7,5 @@ export interface TicketListDto {
   rowNumber: number;
   seatNumber: number;
   pdfTicket: EmbeddedFileDto;
+  uuid: string;
 }

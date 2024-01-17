@@ -1,0 +1,12 @@
+<div *ngIf="ticket" class="container mx-5 my-5">
+  <h2 class="btn-primary">VALID TICKET</h2>
+  <p>
+    {{ ticket.ticketCategory }} <br>
+    Row: {{ ticket.rowNumber }} <br>
+    Seat: {{ ticket.seatNumber }}</p>
+</div>
+
+<div *ngIf="!verified" class="container mx-5 my-5">
+  <h2>INVALID TICKET</h2>
+  <p>This ticket is invalid.</p>
+</div>

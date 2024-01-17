@@ -43,6 +43,7 @@ import {
 import {
   ManagementUserCreateComponent
 } from './components/management/management-users/management-user-create/management-user-create.component';
+import { TicketValidationComponent } from './components/ticket-validation/ticket-validation.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -119,6 +120,7 @@ const routes: Routes = [
     canActivate: [adminGuard],
     component: ManagementLocationHallCreateComponent
   },
+  { path: 'tickets/verify/:uuid', canActivate: [adminGuard], component: TicketValidationComponent },
   { path: '**', component: NotFoundComponent }
 ];
 
