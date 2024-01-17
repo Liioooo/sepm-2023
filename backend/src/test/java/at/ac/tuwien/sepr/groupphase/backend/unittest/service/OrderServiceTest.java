@@ -8,9 +8,9 @@ import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.TicketOrderUpdateDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Ticket;
+import at.ac.tuwien.sepr.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepr.groupphase.backend.repository.OrderRepository;
 import at.ac.tuwien.sepr.groupphase.backend.service.OrderService;
-import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 
 @ExtendWith(SpringExtension.class)
@@ -89,16 +90,10 @@ public class OrderServiceTest {
             .filter(t -> Objects.equals(t.getOrder().getId(), order.getId()))
             .toList();
         OrderUpdateTicketsDto orderUpdateTicketsDto = new OrderUpdateTicketsDto(tickets.stream().map(t -> new TicketOrderUpdateDto(t.getId())).toList());
-        var updatedOrder = orderService.updateOrderTickets(order.getId(), orderUpdateTicketsDto, user);
-        var expectedTickets = tickets.stream().map(t -> tuple(t.getId(), t.getTicketCategory(), t.getRowNumber(), t.getSeatNumber(), t.getOrder().getId())).toArray(Tuple[]::new);
 
-        assertAll(
-            () -> assertNotNull(updatedOrder.getTickets()),
-            () -> assertThat(updatedOrder.getTickets()).hasSize(tickets.size()),
-            () -> assertThat(updatedOrder.getTickets())
-                .extracting(Ticket::getId, Ticket::getTicketCategory, Ticket::getRowNumber, Ticket::getSeatNumber, ticket -> ticket.getOrder().getId())
-                .containsExactlyInAnyOrder(expectedTickets)
-        );
+        assertThrows(ConflictException.class, () -> {
+            orderService.updateOrderTickets(order.getId(), orderUpdateTicketsDto, user);
+        });
     }
 
     @Test
