@@ -8,4 +8,6 @@ import org.mapstruct.Mapper;
 public interface UserLocationMapper {
 
     UserLocation userLocationDtoToUserLocation(UserLocationDto userLocationDto);
+
+    UserLocationDto userLocationToUserLocationDto(UserLocation userLocationDto);
 }

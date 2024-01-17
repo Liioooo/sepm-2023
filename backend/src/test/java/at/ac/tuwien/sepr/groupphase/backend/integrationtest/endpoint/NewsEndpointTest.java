@@ -35,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -42,6 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ActiveProfiles({"test", "generateData"})
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = AFTER_CLASS)
 public class NewsEndpointTest {
 
     @Autowired
@@ -56,7 +58,6 @@ public class NewsEndpointTest {
     PasswordEncoder passwordEncoder;
     @Autowired
     ApplicationUserRepository userRepository;
-
 
     private final String API_BASE = "/api/v1/news";
     private final String API_READ = API_BASE + "/read";
@@ -84,7 +85,7 @@ public class NewsEndpointTest {
         assertDoesNotThrow(() -> {
             // Read Test-News-1 to mark it as read
 
-            var result = this.mockMvc.perform(MockMvcRequestBuilders.multipart(API_BASE)
+            this.mockMvc.perform(MockMvcRequestBuilders.multipart(API_BASE)
                 .file(imageFile) // Attach the image file
                 .param("title", toCreate.getTitle()) // Set parameters from NewsCreateDto
                 .param("overviewText", toCreate.getOverviewText())
@@ -98,9 +99,9 @@ public class NewsEndpointTest {
             // Check if newly created News-Article in a Database
             Collection<News> selectedNews = newsRepository.findAllByTitleContains("create-test-title");
 
-            assertAll(() -> {
-                assertNotNull(selectedNews);
-                assertThat(selectedNews)
+            assertAll(
+                () -> assertNotNull(selectedNews),
+                () -> assertThat(selectedNews)
                     .extracting(
                         News::getTitle,
                         News::getOverviewText,
@@ -111,8 +112,8 @@ public class NewsEndpointTest {
                             toCreate.getOverviewText(),
                             toCreate.getText()
                         )
-                    );
-            });
+                    )
+            );
         });
 
     }
@@ -128,10 +129,8 @@ public class NewsEndpointTest {
             null
         );
 
-        // new MockMultipartFile("m", "image.jpg", MediaType.IMAGE_JPEG_VALUE, new byte[] {}
-
         try {
-            var result = this.mockMvc.perform(MockMvcRequestBuilders.post(API_BASE)
+            this.mockMvc.perform(MockMvcRequestBuilders.post(API_BASE)
                 .contentType(MediaType.APPLICATION_JSON)
                 .flashAttr("newsCreateDto", toCreate)
                 .with(user(username).roles("USER"))
@@ -160,9 +159,9 @@ public class NewsEndpointTest {
 
             NewsDetailDto news = objectMapper.readerFor(NewsDetailDto.class).<NewsDetailDto>readValues(result).next();
 
-            assertAll(() -> {
-                assertThat(news).isNotNull();
-                assertThat(news)
+            assertAll(
+                () -> assertThat(news).isNotNull(),
+                () -> assertThat(news)
                     .extracting(
                         NewsDetailDto::getId,
                         NewsDetailDto::getTitle,
@@ -176,9 +175,9 @@ public class NewsEndpointTest {
                         "This is text for News-Title-1",
                         "This is an abstract for News-Title-1",
                         OffsetDateTime.of(2023, 12, 9, 20, 0, 0, 0, ZoneOffset.UTC),
-                        "Admin, Admin"
-                    );
-            });
+                        "Admin Admin"
+                    )
+            );
         });
     }
 
@@ -205,10 +204,9 @@ public class NewsEndpointTest {
 
             List<NewsListDto> actualNews = pageDto.getContent();
 
-            assertAll(() -> {
-                assertThat(actualNews).isNotNull();
-
-                assertThat(actualNews)
+            assertAll(
+                () -> assertThat(actualNews).isNotNull(),
+                () -> assertThat(actualNews)
                     .extracting(
                         NewsListDto::getTitle,
                         NewsListDto::getPublishDate,
@@ -240,8 +238,8 @@ public class NewsEndpointTest {
                             OffsetDateTime.of(2020, 10, 25, 20, 15, 0, 0, ZoneOffset.UTC),
                             "This is an abstract for News-Title-5"
                         )
-                    );
-            });
+                    )
+            );
         });
     }
 
@@ -286,10 +284,9 @@ public class NewsEndpointTest {
 
             List<NewsListDto> actualNews = pageDto.getContent();
 
-            assertAll(() -> {
-                assertThat(actualNews).isNotNull();
-
-                assertThat(actualNews)
+            assertAll(
+                () -> assertThat(actualNews).isNotNull(),
+                () -> assertThat(actualNews)
                     .extracting(
                         NewsListDto::getTitle,
                         NewsListDto::getPublishDate,
@@ -305,9 +302,8 @@ public class NewsEndpointTest {
                             OffsetDateTime.of(2021, 2, 9, 20, 0, 0, 0, ZoneOffset.UTC),
                             "This is an abstract for News-Title-2"
                         )
-                    );
-
-                assertThat(actualNews)
+                    ),
+                () -> assertThat(actualNews)
                     .extracting(
                         NewsListDto::getTitle,
                         NewsListDto::getPublishDate,
@@ -328,8 +324,8 @@ public class NewsEndpointTest {
                             OffsetDateTime.of(2020, 10, 25, 20, 15, 0, 0, ZoneOffset.UTC),
                             "This is an abstract for News-Title-5"
                         )
-                    );
-            });
+                    )
+            );
         });
     }
 }

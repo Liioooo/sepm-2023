@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ErrorResponseDto } from '../../../dtos/error-response-dto';
 import { ToastService } from '../../../services/toast.service';
 import { ErrorFormatterService } from '../../../services/error-formatter.service';
+import { catchError, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-news-detail',
@@ -12,7 +13,7 @@ import { ErrorFormatterService } from '../../../services/error-formatter.service
   styleUrls: ['./news-detail.component.scss']
 })
 export class NewsDetailComponent implements OnInit {
-  public newsDetail: NewsDetailDto;
+  public newsDetail$: Observable<NewsDetailDto>;
 
   constructor(
     private newsService: NewsService,
@@ -28,15 +29,12 @@ export class NewsDetailComponent implements OnInit {
 
   loadNewsDetailDto() {
 
-    this.newsService.getNews(Number(this.route.snapshot.paramMap.get('id'))).subscribe({
-      next: data => {
-        this.newsDetail = data;
-      },
-      error: err => {
-        this.toastService
-          .showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto));
-      }
-    });
+    this.newsDetail$ = this.newsService.getNews(Number(this.route.snapshot.paramMap.get('id'))).pipe(
+      catchError(err => {
+        this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto));
+        return of(undefined);
+      })
+    );
   }
 
 }

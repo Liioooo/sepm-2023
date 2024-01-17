@@ -14,6 +14,8 @@ import { PageableRequest } from '../types/pageable-request';
 import { PageDto } from '../dtos/page-dto';
 import { convertToDatesInObject } from '../utils/convertToDatesInObject';
 import { removeNullOrUndefinedProps } from '../utils/removeNullOrUndefinedProps';
+import { UserCreateDto } from '../dtos/user-create-dto';
+import { UserUpdateManagementDto } from '../dtos/user-update-management-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +26,7 @@ export class UserService {
 
   private myUserBaseUri: string = this.globals.backendUri + '/my-user';
 
-  private usersBaseUri: string = this.globals.backendUri + '/management/users';
+  private managementUsersBaseUri: string = this.globals.backendUri + '/management/users';
 
   private userDataSubject$: BehaviorSubject<UserDetailDto> = new BehaviorSubject<UserDetailDto>(null);
 
@@ -53,6 +55,11 @@ export class UserService {
         tap(() => this.fetchUserDetails())
       );
   }
+
+  createUser(user: UserCreateDto): Observable<UserDetailDto> {
+    return this.httpClient.post<UserDetailDto>(this.managementUsersBaseUri, user, { responseType: 'json' });
+  }
+
 
   sendPasswordResetEmail(emailResetDto: EmailResetDto): Observable<void> {
     return this.httpClient.post<void>(`${this.authBaseUri}/send-password-reset-email`, emailResetDto, { responseType: 'json' });
@@ -140,12 +147,16 @@ export class UserService {
       );
   }
 
+  updateUser(userUpdate: UserUpdateManagementDto): Observable<UserDetailDto> {
+    return this.httpClient.patch<UserDetailDto>(this.managementUsersBaseUri, userUpdate, { responseType: 'json' });
+  }
+
   getUsers(search: UserSearchDto | null, pageable?: PageableRequest): Observable<PageDto<UserDetailDto>> {
     const searchParams = search ? convertToDatesInObject(removeNullOrUndefinedProps(search as {
       [key: string]: string
     })) : {};
 
-    return this.httpClient.get<PageDto<UserDetailDto>>(this.usersBaseUri, {
+    return this.httpClient.get<PageDto<UserDetailDto>>(this.managementUsersBaseUri, {
       params: {
         ...searchParams,
         ...pageable

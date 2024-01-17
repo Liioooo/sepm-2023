@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepr.groupphase.backend.unittest.service;
 
-import at.ac.tuwien.sepr.groupphase.backend.datagenerator.ApplicationUserDataGenerator;
 import at.ac.tuwien.sepr.groupphase.backend.datagenerator.OrderDataGenerator;
 import at.ac.tuwien.sepr.groupphase.backend.datagenerator.TicketDataGenerator;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderUpdateTicketsDto;
@@ -17,8 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -32,19 +30,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(properties = "spring.main.allow-bean-definition-overriding=true")
-@ActiveProfiles({"test", "generateData"})
-// DirtiesContext is required in order to create a new orderRepository Bean with the correct Order, otherwise later tests will get the wrong Order
-@DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
+@ActiveProfiles({"test", "generateTestData"})
+@DirtiesContext(classMode = AFTER_CLASS)
 public class OrderServiceTest {
     @Autowired
     private OrderService orderService;
 
-    @Autowired
+    @MockBean
     private OrderRepository orderRepository;
 
     @Autowired
@@ -56,24 +54,22 @@ public class OrderServiceTest {
     @Autowired
     private TicketDataGenerator ticketDataGenerator;
 
-    private static ApplicationUser user;
-    private static Order order;
-
-    @TestConfiguration
-    public static class TestConfig {
-        @Bean
-        public OrderRepository orderRepository() {
-            OrderRepository orderRepository = Mockito.mock(OrderRepository.class);
-            Mockito.when(orderRepository.save(Mockito.any())).thenAnswer(i -> i.getArguments()[0]);
-            Mockito.when(orderRepository.findOrderByIdAndUserId(order.getId(), user.getId())).thenReturn(Optional.of(order));
-            return orderRepository;
-        }
-    }
+    private ApplicationUser user;
+    private Order order;
 
     @BeforeEach
     void init() {
         initUser();
         initOrder();
+        mockBeans();
+    }
+
+    void mockBeans() {
+        Mockito.when(orderRepository.save(Mockito.any())).thenAnswer(i -> i.getArguments()[0]);
+        for (Order order : orderDataGenerator.getTestData()) {
+            order.setTickets(new ArrayList<>(ticketDataGenerator.getTestData().stream().filter(t -> Objects.equals(t.getOrder().getId(), order.getId())).toList()));
+            Mockito.when(orderRepository.findOrderByIdAndUserId(order.getId(), user.getId())).thenReturn(Optional.of(order));
+        }
     }
 
     void initOrder() {

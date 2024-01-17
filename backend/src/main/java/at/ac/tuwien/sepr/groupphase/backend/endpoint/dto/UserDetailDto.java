@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepr.groupphase.backend.endpoint.dto;
 
+import at.ac.tuwien.sepr.groupphase.backend.enums.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -22,6 +23,10 @@ public class UserDetailDto {
     private String firstName;
 
     private String lastName;
+
+    private Boolean isLocked;
+
+    private UserRole role;
 
     private UserLocationDto location;
 }

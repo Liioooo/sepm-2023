@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" *ngIf="newsDetail$ | async as newsDetail">
   <div class="mt-5">
     <a class="btn btn-outline-dark" routerLink="/news">
       <i class="bi bi-chevron-left"></i>
@@ -14,7 +14,7 @@
            [src]="newsDetail.image.url"
            *ngIf="newsDetail.image"
            class="float-end ms-3 mb-3">
-      <p>{{ newsDetail.overviewText }}</p>
+      <p class="fw-bold">{{ newsDetail.overviewText }}</p>
       <p>{{ newsDetail.text }}</p>
     </div>
   </div>

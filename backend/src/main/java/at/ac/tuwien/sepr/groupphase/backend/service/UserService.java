@@ -2,10 +2,12 @@ package at.ac.tuwien.sepr.groupphase.backend.service;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EmailResetDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.ResetPasswordDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserLoginDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserRegisterDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserSearchDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateDetailDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateManagementDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.UnauthorizedException;
@@ -46,17 +48,11 @@ public interface UserService extends UserDetailsService {
     /**
      * Register a user.
      *
-     * @param userLoginDto login credentials
+     * @param userRegisterDto register information
      * @return the JWT, if successful
      */
-    String register(UserRegisterDto userLoginDto);
+    String register(UserRegisterDto userRegisterDto);
 
-    /**
-     * Unlock a user account.
-     *
-     * @param userId id of the user to unlock
-     */
-    void unlockUser(long userId);
 
     /**
      * Check if a user is authenticated.
@@ -79,6 +75,14 @@ public interface UserService extends UserDetailsService {
      * @return the updated user details
      */
     ApplicationUser updateAuthenticatedUser(UserUpdateDetailDto userUpdateDetailDto);
+
+    /**
+     * Updates a given user.
+     *
+     * @param userUpdateManagementDto the new user data
+     * @return the updated user details
+     */
+    ApplicationUser updateUser(UserUpdateManagementDto userUpdateManagementDto, ApplicationUser authenticatedUser);
 
     /**
      * Delete the currently authenticated user.
@@ -107,6 +111,7 @@ public interface UserService extends UserDetailsService {
      */
     ApplicationUser getUserFromAuthentication(Authentication authentication);
 
+
     /**
      * Finds users by search criteria.
      *
@@ -114,4 +119,13 @@ public interface UserService extends UserDetailsService {
      * @return the collection of users
      */
     Page<ApplicationUser> getUsersBySearch(UserSearchDto search, Pageable pageable);
+
+    /**
+     * Create a user.
+     *
+     * @param userCreateDto create information
+     * @return the created user
+     */
+    ApplicationUser createUserAsAdmin(UserCreateDto userCreateDto);
+
 }
