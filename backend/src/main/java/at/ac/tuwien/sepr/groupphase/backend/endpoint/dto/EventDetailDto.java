@@ -37,4 +37,6 @@ public class EventDetailDto {
     private SeatDto[] occupiedSeats;
 
     private Integer occupiedStandings;
+
+    private PublicFileDto image;
 }

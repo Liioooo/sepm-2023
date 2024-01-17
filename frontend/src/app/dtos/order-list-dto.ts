@@ -1,10 +1,10 @@
 import { OrderType } from '../types/order-type';
 import { EmbeddedFileDto } from './embedded-file-dto';
-import { EventDetailDto } from './event-detail-dto';
+import { EventListDto } from './event-list-dto';
 
 export interface OrderListDto {
   id: number;
-  event: EventDetailDto;
+  event: EventListDto;
   orderType: OrderType;
   orderDate: Date;
   pdfTickets: EmbeddedFileDto;

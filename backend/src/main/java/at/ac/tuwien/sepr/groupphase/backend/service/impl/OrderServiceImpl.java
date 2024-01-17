@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepr.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepr.groupphase.backend.config.properties.FilesProperties;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderUpdateTicketsDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.RedeemReservationDto;
@@ -59,6 +60,8 @@ public class OrderServiceImpl implements OrderService {
 
     private final EmbeddedFileRepository embeddedFileRepository;
 
+    private final FilesProperties filesProperties;
+
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository,
                             TicketRepository ticketRepository,
@@ -68,7 +71,8 @@ public class OrderServiceImpl implements OrderService {
                             EventRepository eventRepository,
                             PdfService pdfService,
                             EmbeddedFileRepository embeddedFileRepository,
-                            EntityManager entityManager
+                            EntityManager entityManager,
+                            FilesProperties filesProperties
     ) {
         this.orderRepository = orderRepository;
         this.ticketRepository = ticketRepository;
@@ -79,6 +83,7 @@ public class OrderServiceImpl implements OrderService {
         this.pdfService = pdfService;
         this.embeddedFileRepository = embeddedFileRepository;
         this.entityManager = entityManager;
+        this.filesProperties = filesProperties;
     }
 
     @Override
@@ -86,6 +91,7 @@ public class OrderServiceImpl implements OrderService {
     public Order getOrderById(Long id) {
         var user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
         var order = orderRepository.findOrderByIdAndUserId(id, user.getId()).orElseThrow(() -> new NotFoundException("Order not found"));
+        setPublicImagePathForSingleOrder(order);
 
         // Trigger lazy loading of tickets
         order.getTickets().size();
@@ -96,7 +102,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> getOrdersOfCurrentUser() {
         var user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
-        return orderRepository.findOrdersByUserId(user.getId());
+        List<Order> orders = orderRepository.findOrdersByUserId(user.getId());
+        setPublicImagePathOnEventForAllOrders(orders);
+        return orders;
     }
 
     @Override
@@ -263,5 +271,24 @@ public class OrderServiceImpl implements OrderService {
         } catch (IOException | TemplateException e) {
             throw new InternalServerException("Could not generate cancellation invoice PDF.", e);
         }
+    }
+
+    private void setPublicImagePathOnEventForAllOrders(List<Order> orderList) {
+        for (Order order : orderList) {
+            if (order.getEvent().getImage() == null) {
+                continue;
+            }
+            setPublicImagePathForSingleOrder(order);
+        }
+    }
+
+    private void setPublicImagePathForSingleOrder(Order order) {
+        if (order.getEvent().getImage() == null) {
+            return;
+        }
+        String baseUrl = this.filesProperties.getPublicServeUrl().replace("*", "");
+        String url = baseUrl + order.getEvent().getImage().getPath();
+
+        order.getEvent().getImage().setPublicUrl(url);
     }
 }
