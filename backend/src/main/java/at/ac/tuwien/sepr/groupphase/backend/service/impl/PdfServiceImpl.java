@@ -30,6 +30,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class PdfServiceImpl implements PdfService {
@@ -107,14 +108,7 @@ public class PdfServiceImpl implements PdfService {
             variables.put("category", TicketCategory.SEATING);
             variables.put("price", event.getSeatPrice());
         }
-        /* TODO: add QR-Code
-        try {
-            // generate and save QR Code image in resources/qr_codes folder
-            qrCodeGenerator.generateQRCodeImage(ticket.getId().toString(), 250, 250, "./src/main/resources/qr_codes/" + ticket.getId().toString() + ".png");
-        } catch (WriterException | IOException e) {
-            e.printStackTrace();
-        }
-         */
+        variables.put("qrcodePath", "qr_codes/" + ticket.getId() + ".png");
 
         EmbeddedFile pdf = this.generatePdf("ticket", variables);
         pdf.setAllowedViewer(order.getUser());

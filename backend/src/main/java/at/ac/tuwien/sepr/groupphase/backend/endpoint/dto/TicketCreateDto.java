@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -25,4 +27,6 @@ public class TicketCreateDto {
 
     @Min(1)
     private Long rowNumber;
+
+    private UUID uuid;
 }

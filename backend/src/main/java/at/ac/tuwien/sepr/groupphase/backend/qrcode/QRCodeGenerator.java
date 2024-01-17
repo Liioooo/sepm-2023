@@ -11,7 +11,9 @@ import com.google.zxing.client.j2se.MatrixToImageConfig;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import org.springframework.stereotype.Service;
 
+@Service
 public class QRCodeGenerator {
     public void generateQRCodeImage(String text, int width, int height, String filePath)
         throws WriterException, IOException {
@@ -28,9 +30,9 @@ public class QRCodeGenerator {
         BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
 
         ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
-        MatrixToImageConfig con = new MatrixToImageConfig( 0xFF000002 , 0xFFFFC041 ) ;
+        MatrixToImageConfig con = new MatrixToImageConfig(0xFF000002, 0xFFFFC041);
 
-        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream,con);
+        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream, con);
         byte[] pngData = pngOutputStream.toByteArray();
         return pngData;
     }

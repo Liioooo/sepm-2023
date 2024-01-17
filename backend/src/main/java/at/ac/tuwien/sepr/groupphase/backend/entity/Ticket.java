@@ -21,6 +21,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.UUID;
+
 @Entity
 @Getter
 @Setter
@@ -54,5 +56,8 @@ public class Ticket {
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private EmbeddedFile pdfTicket;
+
+    @Column()
+    private UUID uuid;
 
 }

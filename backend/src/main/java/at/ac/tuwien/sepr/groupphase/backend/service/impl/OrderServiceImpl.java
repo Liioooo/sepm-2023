@@ -3,6 +3,7 @@ package at.ac.tuwien.sepr.groupphase.backend.service.impl;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderUpdateTicketsDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.RedeemReservationDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.TicketCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.OrderMapper;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.TicketMapper;
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
@@ -16,6 +17,7 @@ import at.ac.tuwien.sepr.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.InternalServerException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.UnauthorizedException;
+import at.ac.tuwien.sepr.groupphase.backend.qrcode.QRCodeGenerator;
 import at.ac.tuwien.sepr.groupphase.backend.repository.EmbeddedFileRepository;
 import at.ac.tuwien.sepr.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepr.groupphase.backend.repository.OrderRepository;
@@ -23,6 +25,7 @@ import at.ac.tuwien.sepr.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepr.groupphase.backend.service.OrderService;
 import at.ac.tuwien.sepr.groupphase.backend.service.PdfService;
 import at.ac.tuwien.sepr.groupphase.backend.service.UserService;
+import com.google.zxing.WriterException;
 import freemarker.template.TemplateException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
@@ -41,6 +44,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -59,6 +63,8 @@ public class OrderServiceImpl implements OrderService {
 
     private final EmbeddedFileRepository embeddedFileRepository;
 
+    private final QRCodeGenerator qrCodeGenerator;
+
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository,
                             TicketRepository ticketRepository,
@@ -68,8 +74,8 @@ public class OrderServiceImpl implements OrderService {
                             EventRepository eventRepository,
                             PdfService pdfService,
                             EmbeddedFileRepository embeddedFileRepository,
-                            EntityManager entityManager
-    ) {
+                            EntityManager entityManager,
+                            QRCodeGenerator qrCodeGenerator) {
         this.orderRepository = orderRepository;
         this.ticketRepository = ticketRepository;
         this.ticketMapper = ticketMapper;
@@ -79,6 +85,7 @@ public class OrderServiceImpl implements OrderService {
         this.pdfService = pdfService;
         this.embeddedFileRepository = embeddedFileRepository;
         this.entityManager = entityManager;
+        this.qrCodeGenerator = qrCodeGenerator;
     }
 
     @Override
@@ -89,6 +96,10 @@ public class OrderServiceImpl implements OrderService {
 
         // Trigger lazy loading of tickets
         order.getTickets().size();
+
+        for (Ticket ticket : order.getTickets()) {
+            createTicketPdf(order, ticket, order.getEvent());
+        }
 
         return order;
     }
@@ -147,16 +158,29 @@ public class OrderServiceImpl implements OrderService {
         var user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
         var order = orderRepository.save(orderMapper.orderCreateDtoToOrder(orderCreateDto, user));
 
-        // TODO: generate pdf only if ticket bought
+        for (TicketCreateDto ticket : orderCreateDto.getTickets()) {
+            UUID uuid = UUID.randomUUID();
+            ticket.setUuid(uuid);
+        }
+
         var tickets = Arrays.stream(orderCreateDto.getTickets())
             .map(ticketMapper::createTicketDtoToTicket)
-            .peek(ticket -> createTicketPdf(order, ticket, event))
+            .peek(ticket -> ticket.setOrder(order))
             .toList();
 
         var dbTickets = ticketRepository.saveAll(tickets);
 
         if (orderCreateDto.getOrderType() == OrderType.BUY) {
             createInvoicePdf(order, dbTickets, event);
+
+            for (Ticket ticket : dbTickets) {
+                try {
+                    // generate and save QR Code image in resources/qr_codes folder
+                    qrCodeGenerator.generateQRCodeImage("http://localhost:4200/tickets/verify/" + ticket.getUuid(), 250, 250, "src/main/resources/pdf/templates/qr_codes/" + ticket.getId() + ".png");
+                } catch (WriterException | IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -266,7 +290,6 @@ public class OrderServiceImpl implements OrderService {
         try {
             var pdfFile = pdfService.createTicketPdf(order, ticket, event);
             ticket.setPdfTicket(pdfFile);
-            ticket.setOrder(order);
             ticketRepository.saveAndFlush(ticket);
             embeddedFileRepository.saveAndFlush(pdfFile);
         } catch (IOException | TemplateException e) {
