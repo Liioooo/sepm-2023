@@ -91,6 +91,7 @@ public class OrderServiceImpl implements OrderService {
     public Order getOrderById(Long id) {
         var user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
         var order = orderRepository.findOrderByIdAndUserId(id, user.getId()).orElseThrow(() -> new NotFoundException("Order not found"));
+        setPublicImagePathForSingleOrder(order);
 
         // Trigger lazy loading of tickets
         order.getTickets().size();
@@ -277,17 +278,17 @@ public class OrderServiceImpl implements OrderService {
             if (order.getEvent().getImage() == null) {
                 continue;
             }
-            setPublicImagePathForSingleEvent(order.getEvent());
+            setPublicImagePathForSingleOrder(order);
         }
     }
 
-    private void setPublicImagePathForSingleEvent(Event event) {
-        if (event.getImage() == null) {
+    private void setPublicImagePathForSingleOrder(Order order) {
+        if (order.getEvent().getImage() == null) {
             return;
         }
         String baseUrl = this.filesProperties.getPublicServeUrl().replace("*", "");
-        String url = baseUrl + event.getImage().getPath();
+        String url = baseUrl + order.getEvent().getImage().getPath();
 
-        event.getImage().setPublicUrl(url);
+        order.getEvent().getImage().setPublicUrl(url);
     }
 }

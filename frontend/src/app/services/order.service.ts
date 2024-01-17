@@ -35,7 +35,11 @@ export class OrderService {
    */
   getOrder(orderId: number): Observable<OrderDetailDto> {
     return this.httpClient.get<OrderDetailDto>(`${this.baseUri}/${orderId}`).pipe(
-      map(convertToDatesInObject)
+      map(convertToDatesInObject),
+      map(order => {
+        order.event.image = convertPublicFileUrlToAbsoluteUrl(order.event.image, this.globals.backendBaseUri);
+        return order;
+      })
     );
   }
 

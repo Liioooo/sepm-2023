@@ -24,6 +24,7 @@ public interface OrderMapper {
     @Mapping(source = "event.image", target = "event.image", qualifiedByName = "mapImageDto")
     OrderListDto orderToOrderListDto(Order order);
 
+    @Mapping(source = "event.image", target = "event.image", qualifiedByName = "mapImageDto")
     OrderDetailDto orderToOrderDetailDto(Order order);
 
     @Named("mapImageDto")
