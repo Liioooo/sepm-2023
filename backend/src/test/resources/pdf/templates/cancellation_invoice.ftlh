@@ -9,7 +9,7 @@
 </head>
 <body>
 <main>
-    <h1>Cancellation Invoice</h1>
+    <h1>Cancellation Confirmation</h1>
     <div>
         Ticketline <br>
         Karlsplatz 13, 1040 Wien <br>
