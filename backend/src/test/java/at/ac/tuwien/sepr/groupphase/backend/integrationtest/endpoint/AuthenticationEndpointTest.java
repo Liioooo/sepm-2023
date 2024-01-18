@@ -152,12 +152,12 @@ class AuthenticationEndpointTest {
 
     @Test
     @DirtiesContext
-    void login_asNormalUser_locksAccountAfter5Attemps_invalidLogin() throws Exception {
+    void login_asNormalUser_locksAccountAfter5Attempts_invalidLogin() throws Exception {
         var requestBody = new HashMap<String, Object>();
         requestBody.put("email", "user2@email.com");
         requestBody.put("password", "invalid");
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 4; i++) {
             this.mockMvc.perform(post(AUTHENTICATION_BASE + "/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestBody))
@@ -176,18 +176,18 @@ class AuthenticationEndpointTest {
         ).andExpectAll(
             status().isForbidden(),
             jsonPath("$.status").value("403"),
-            jsonPath("$.error").value("Username or password is incorrect")
+            jsonPath("$.error").value("Incorrectly entered password too many times. Account is now locked.")
         );
     }
 
     @Test
     @DirtiesContext
-    void login_asNormalUser_locksAccountAfter5Attemps_validLogin_() throws Exception {
+    void login_asNormalUser_locksAccountAfter5Attempts_validLogin_() throws Exception {
         var requestBody = new HashMap<String, Object>();
         requestBody.put("email", "user2@email.com");
         requestBody.put("password", "invalid");
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 4; i++) {
             this.mockMvc.perform(post(AUTHENTICATION_BASE + "/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestBody))
@@ -198,6 +198,15 @@ class AuthenticationEndpointTest {
                 jsonPath("$.error").value("Username or password is incorrect")
             );
         }
+        this.mockMvc.perform(post(AUTHENTICATION_BASE + "/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(requestBody))
+            .accept(MediaType.APPLICATION_JSON)
+        ).andExpectAll(
+            status().isForbidden(),
+            jsonPath("$.status").value("403"),
+            jsonPath("$.error").value("Incorrectly entered password too many times. Account is now locked.")
+        );
 
         requestBody.put("password", "password");
 
