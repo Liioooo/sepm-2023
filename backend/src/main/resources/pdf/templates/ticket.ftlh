@@ -81,10 +81,11 @@
                 ${event.hall.location.address}<br>
                 ${event.hall.location.postalCode} ${event.hall.location.city}
             </p>
-            <p>Category: ${category}<br>
-                Row:<br>
-                Seat:</p>
-
+            <p>Category: ${category}<p>
+            <#if category == "SEATING">
+            <p>Row: ${ticket.rowNumber}<br>
+                Seat: ${ticket.seatNumber}</p>
+            </#if>
         </div>
         <div style="text-align: center; display: inline-block; width: 40%">
             <h3>${artist}</h3>
