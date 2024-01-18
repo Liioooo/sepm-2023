@@ -1,17 +1,15 @@
 package at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper;
 
-import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EmbeddedFileDto;
-import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventListDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderDetailDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderListDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.PublicFileDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
-import at.ac.tuwien.sepr.groupphase.backend.entity.EmbeddedFile;
-import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Order;
+import at.ac.tuwien.sepr.groupphase.backend.entity.PublicFile;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.Named;
 
 @Mapper
 public interface OrderMapper {
@@ -23,16 +21,18 @@ public interface OrderMapper {
     @Mapping(target = "event.id", source = "orderCreateDto.eventId")
     Order orderCreateDtoToOrder(OrderCreateDto orderCreateDto, ApplicationUser user);
 
+    @Mapping(source = "event.image", target = "event.image", qualifiedByName = "mapImageDto")
     OrderListDto orderToOrderListDto(Order order);
 
+    @Mapping(source = "event.image", target = "event.image", qualifiedByName = "mapImageDto")
     OrderDetailDto orderToOrderDetailDto(Order order);
 
-    default EventListDto eventToEventListDto(Event event) {
-        return Mappers.getMapper(EventMapper.class).eventToEventListDto(event);
-    }
-
-    default EmbeddedFileDto embeddedFileToEmbeddedFileDto(EmbeddedFile embeddedFile) {
-        return Mappers.getMapper(EmbeddedFileMapper.class).embeddedFileToEmbeddedFileDto(embeddedFile);
+    @Named("mapImageDto")
+    static PublicFileDto mapPublicFileDto(PublicFile image) {
+        if (image == null) {
+            return null;
+        }
+        return new PublicFileDto(image.getPublicUrl());
     }
 
 }

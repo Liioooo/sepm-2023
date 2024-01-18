@@ -1,6 +1,7 @@
 import { ArtistDetailDto } from './artist-detail-dto';
 import { HallRowsDetailDto } from './hall-rows-detail-dto';
 import { SeatDto } from './seat-dto';
+import { PublicFileDto } from './public-file-dto';
 
 export interface EventDetailDto {
   id: number;
@@ -13,4 +14,5 @@ export interface EventDetailDto {
   hall: HallRowsDetailDto;
   occupiedSeats: SeatDto[];
   occupiedStandings: number;
+  image: PublicFileDto;
 }

@@ -67,6 +67,11 @@
             margin-top: 20px;
         }
 
+        .standing-price-info {
+            margin-top: -0.5em;
+            font-size: 0.6em;
+        }
+
         .footer {
             position: fixed;
             bottom: 0;
@@ -121,7 +126,10 @@
         <#if standingTicketsCount gt 0>
             <tr>
                 <td>${standingTicketsCount}</td>
-                <td>Standing tickets</td>
+                <td>
+                    <div>Standing tickets</div>
+                    <div class="standing-price-info">${event.standingPrice!'-'} € each</div>
+                </td>
                 <td>${(standingTicketsCount * event.standingPrice)!'-'} €</td>
                 <td>20%</td>
             </tr>

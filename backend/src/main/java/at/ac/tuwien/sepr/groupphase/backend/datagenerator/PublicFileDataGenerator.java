@@ -47,13 +47,14 @@ public class PublicFileDataGenerator extends DataGenerator<PublicFile> {
 
         final List<PublicFile> images = new ArrayList<PublicFile>();
 
-        String[] sourceImages = new String[] {"news_img_A.jpg", "news_img_B.jpg"};
+        String[] sourceImages = new String[] {"news_img_A.jpg", "news_img_B.jpg", "event_1.jpg", "event_2.jpg", "event_3.jpg"};
 
 
         for (String imageName : sourceImages) {
             copyImageFromResoucesToPublicFiles(imageName);
             images.add(PublicFile.builder()
                 .path(imageName)
+                .publicUrl("/public-files/" + imageName)
                 .mimeType("image/jpeg")
                 .build());
         }
@@ -79,7 +80,7 @@ public class PublicFileDataGenerator extends DataGenerator<PublicFile> {
     }
 
     public String getImagePath(String imageName) throws IOException {
-        Resource resource = resourceLoader.getResource("classpath:news_images/" + imageName);
+        Resource resource = resourceLoader.getResource("classpath:test_images/" + imageName);
         return resource.exists() ? resource.getURL().getPath() : null;
     }
 

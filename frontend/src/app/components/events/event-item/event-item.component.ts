@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { EventDetailDto } from '../../../dtos/event-detail-dto';
+import { EventListDto } from '../../../dtos/event-list-dto';
 
 @Component({
   selector: 'app-event-item',
@@ -8,7 +8,7 @@ import { EventDetailDto } from '../../../dtos/event-detail-dto';
 })
 export class EventItemComponent {
 
-  @Input() event!: EventDetailDto;
+  @Input() event!: EventListDto;
 
   get price() {
     return Math.min(this.event.seatPrice, this.event.standingPrice);

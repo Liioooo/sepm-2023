@@ -8,6 +8,7 @@ import { convertToDatesInObject } from '../utils/convertToDatesInObject';
 import { OrderDetailDto } from '../dtos/order-detail-dto';
 import { RedeemReservationDto } from '../dtos/redeem-reservation-dto';
 import { OrderUpdateTicketsDto } from '../dtos/order-update-tickets-dto';
+import { convertPublicFileUrlToAbsoluteUrl } from '../utils/convertFromPublicFileUrlToAbsoluteUrl';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +35,11 @@ export class OrderService {
    */
   getOrder(orderId: number): Observable<OrderDetailDto> {
     return this.httpClient.get<OrderDetailDto>(`${this.baseUri}/${orderId}`).pipe(
-      map(convertToDatesInObject)
+      map(convertToDatesInObject),
+      map(order => {
+        order.event.image = convertPublicFileUrlToAbsoluteUrl(order.event.image, this.globals.backendBaseUri);
+        return order;
+      })
     );
   }
 
@@ -43,7 +48,13 @@ export class OrderService {
    */
   getOwnOrders(): Observable<OrderListDto[]> {
     return this.httpClient.get<OrderListDto[]>(this.baseUri).pipe(
-      map(convertToDatesInObject)
+      map(convertToDatesInObject),
+      map(orders => {
+        return orders.map(order => {
+          order.event.image = convertPublicFileUrlToAbsoluteUrl(order.event.image, this.globals.backendBaseUri);
+          return order;
+        });
+      })
     );
   }
 

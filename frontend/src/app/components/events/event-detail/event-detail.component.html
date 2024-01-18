@@ -1,8 +1,11 @@
 <div class="mb-4" *ngIf="(event$ | async) as event; else loading">
   <div class="py-5 bg-light">
-    <div class="container">
-      <h1 class="fs-1 fw-bold mb-0">{{ event.title }}</h1>
-      <div class="fs-3 fw-bold mb-0">{{ artistName(event) }}</div>
+    <div class="container d-flex align-items-center gap-3">
+      <img *ngIf="event.image" [src]="event.image.url" alt="Event Image" class="event-image">
+      <div>
+        <h1 class="fs-1 fw-bold mb-0">{{ event.title }}</h1>
+        <div class="fs-3 fw-bold mb-0">{{ artistName(event) }}</div>
+      </div>
     </div>
   </div>
   <div class="container mt-4">
