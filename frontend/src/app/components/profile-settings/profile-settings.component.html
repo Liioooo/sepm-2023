@@ -74,24 +74,27 @@
             Your address is required!
           </div>
         </div>
-        <div class="mb-3">
-          <label for="inputPostalCode" class="form-label">Postal Code *</label>
-          <input type="text" name="postalCode" formControlName="postalCode" class="form-control"
-                 [class.is-invalid]="editAccountForm.controls.location.controls.postalCode.touched && editAccountForm.controls.location.controls.postalCode.errors"
-                 id="inputPostalCode"
-                 placeholder="1060">
-          <div class="invalid-feedback" *ngIf="editAccountForm.controls.location.controls.postalCode.errors?.required">
-            Postal Code is required!
+        <div class="row">
+          <div class="col-12 col-lg-6 mb-3">
+            <label for="inputPostalCode" class="form-label">Postal Code *</label>
+            <input type="text" name="postalCode" formControlName="postalCode" class="form-control"
+                   [class.is-invalid]="editAccountForm.controls.location.controls.postalCode.touched && editAccountForm.controls.location.controls.postalCode.errors"
+                   id="inputPostalCode"
+                   placeholder="1060">
+            <div class="invalid-feedback"
+                 *ngIf="editAccountForm.controls.location.controls.postalCode.errors?.required">
+              Postal Code is required!
+            </div>
           </div>
-        </div>
-        <div class="col-12 col-lg-6 mb-3">
-          <label for="inputCity" class="form-label">City *</label>
-          <input type="text" name="city" formControlName="city" class="form-control"
-                 [class.is-invalid]="editAccountForm.controls.location.controls.city.touched && editAccountForm.controls.location.controls.city.errors"
-                 id="inputCity"
-                 placeholder="Vienna">
-          <div class="invalid-feedback" *ngIf="editAccountForm.controls.location.controls.city.errors?.required">
-            City is required!
+          <div class="col-12 col-lg-6 mb-3">
+            <label for="inputCity" class="form-label">City *</label>
+            <input type="text" name="city" formControlName="city" class="form-control"
+                   [class.is-invalid]="editAccountForm.controls.location.controls.city.touched && editAccountForm.controls.location.controls.city.errors"
+                   id="inputCity"
+                   placeholder="Vienna">
+            <div class="invalid-feedback" *ngIf="editAccountForm.controls.location.controls.city.errors?.required">
+              City is required!
+            </div>
           </div>
         </div>
         <div class="mb-3">
