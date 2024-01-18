@@ -27,6 +27,4 @@ public class TicketCreateDto {
 
     @Min(1)
     private Long rowNumber;
-
-    private UUID uuid;
 }

@@ -4,7 +4,6 @@ import at.ac.tuwien.sepr.groupphase.backend.config.properties.FilesProperties;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderUpdateTicketsDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.RedeemReservationDto;
-import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.TicketCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.OrderMapper;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.TicketMapper;
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
@@ -161,11 +160,6 @@ public class OrderServiceImpl implements OrderService {
         var user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
         var order = orderRepository.save(orderMapper.orderCreateDtoToOrder(orderCreateDto, user));
 
-        for (TicketCreateDto ticket : orderCreateDto.getTickets()) {
-            UUID uuid = UUID.randomUUID();
-            ticket.setUuid(uuid);
-        }
-
         var tickets = Arrays.stream(orderCreateDto.getTickets())
             .map(ticketMapper::createTicketDtoToTicket)
             .peek(ticket -> ticket.setOrder(order))
@@ -177,6 +171,8 @@ public class OrderServiceImpl implements OrderService {
             createInvoicePdf(order, dbTickets, event);
 
             for (Ticket ticket : dbTickets) {
+                UUID uuid = UUID.randomUUID();
+                ticket.setUuid(uuid);
                 createTicketPdf(order, ticket, event);
             }
         }
@@ -224,6 +220,8 @@ public class OrderServiceImpl implements OrderService {
 
         createInvoicePdf(order, tickets, order.getEvent());
         for (Ticket ticket : order.getTickets()) {
+            UUID uuid = UUID.randomUUID();
+            ticket.setUuid(uuid);
             createTicketPdf(order, ticket, order.getEvent());
         }
     }

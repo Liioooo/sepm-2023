@@ -8,8 +8,8 @@ import org.mapstruct.Mapper;
 @Mapper
 public interface TicketMapper {
 
-    Ticket createTicketDtoToTicket(TicketCreateDto ticketCreateDto);
-
     TicketListDto toTicketListDto(Ticket ticketListDto);
+
+    Ticket createTicketDtoToTicket(TicketCreateDto ticketCreateDto);
 
 }
