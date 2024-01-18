@@ -38,10 +38,10 @@ export class ProfileSettingsComponent {
       password: this.formBuilder.control('', [Validators.minLength(8)]),
       confirmPassword: this.formBuilder.control('', []),
       location: this.formBuilder.group<ControlsOf<UserLocationDto>>({
-        address: this.formBuilder.control('', []),
-        postalCode: this.formBuilder.control('', []),
-        city: this.formBuilder.control('', []),
-        country: this.formBuilder.control('', [])
+        address: this.formBuilder.control('', [Validators.required]),
+        postalCode: this.formBuilder.control('', [Validators.required]),
+        city: this.formBuilder.control('', [Validators.required]),
+        country: this.formBuilder.control('', [Validators.required])
       })
     }, {
       validators: matchValidator('confirmPassword', 'password')
