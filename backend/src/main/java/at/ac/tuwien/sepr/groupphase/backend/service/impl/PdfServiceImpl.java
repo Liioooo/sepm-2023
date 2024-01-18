@@ -6,7 +6,8 @@ import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Order;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Ticket;
 import at.ac.tuwien.sepr.groupphase.backend.enums.TicketCategory;
-import at.ac.tuwien.sepr.groupphase.backend.qrcode.QRCodeGenerator;
+import at.ac.tuwien.sepr.groupphase.backend.exception.InternalServerException;
+import at.ac.tuwien.sepr.groupphase.backend.qrcode.QrCodeGenerator;
 import at.ac.tuwien.sepr.groupphase.backend.service.PdfService;
 import com.google.zxing.WriterException;
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder;
@@ -30,17 +31,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 public class PdfServiceImpl implements PdfService {
 
     private final Configuration freemarkerConfiguration;
     private final FreemarkerConfig.Config freemarkerConfig;
+    private final QrCodeGenerator qrCodeGenerator;
 
-    public PdfServiceImpl(Configuration freemarkerConfiguration, FreemarkerConfig.Config freemarkerConfig) {
+    public PdfServiceImpl(Configuration freemarkerConfiguration, FreemarkerConfig.Config freemarkerConfig, QrCodeGenerator qrCodeGenerator) {
         this.freemarkerConfiguration = freemarkerConfiguration;
         this.freemarkerConfig = freemarkerConfig;
+        this.qrCodeGenerator = qrCodeGenerator;
     }
 
     @Override
@@ -108,7 +110,14 @@ public class PdfServiceImpl implements PdfService {
             variables.put("category", TicketCategory.SEATING);
             variables.put("price", event.getSeatPrice());
         }
-        variables.put("qrcodePath", "qr_codes/" + ticket.getId() + ".png");
+
+        try {
+            // generate QR Code
+            String image = qrCodeGenerator.getQrCodeImage("http://localhost:4200/#/tickets/verify/" + ticket.getUuid());
+            variables.put("image", image);
+        } catch (WriterException | IOException e) {
+            throw new InternalServerException("Could not generate QR Code.", e);
+        }
 
         EmbeddedFile pdf = this.generatePdf("ticket", variables);
         pdf.setAllowedViewer(order.getUser());

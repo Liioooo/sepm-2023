@@ -24,6 +24,7 @@ public interface OrderService {
 
     /**
      * Queries a ticket by UUID.
+     *
      * @return the ticket
      */
     Ticket getTicketByUuid(UUID uuid);

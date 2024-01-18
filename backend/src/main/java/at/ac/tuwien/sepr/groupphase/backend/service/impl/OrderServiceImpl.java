@@ -18,7 +18,6 @@ import at.ac.tuwien.sepr.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.InternalServerException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.UnauthorizedException;
-import at.ac.tuwien.sepr.groupphase.backend.qrcode.QRCodeGenerator;
 import at.ac.tuwien.sepr.groupphase.backend.repository.EmbeddedFileRepository;
 import at.ac.tuwien.sepr.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepr.groupphase.backend.repository.OrderRepository;
@@ -26,7 +25,6 @@ import at.ac.tuwien.sepr.groupphase.backend.repository.TicketRepository;
 import at.ac.tuwien.sepr.groupphase.backend.service.OrderService;
 import at.ac.tuwien.sepr.groupphase.backend.service.PdfService;
 import at.ac.tuwien.sepr.groupphase.backend.service.UserService;
-import com.google.zxing.WriterException;
 import freemarker.template.TemplateException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
@@ -66,8 +64,6 @@ public class OrderServiceImpl implements OrderService {
 
     private final FilesProperties filesProperties;
 
-    private final QRCodeGenerator qrCodeGenerator;
-
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository,
                             TicketRepository ticketRepository,
@@ -78,8 +74,7 @@ public class OrderServiceImpl implements OrderService {
                             PdfService pdfService,
                             EmbeddedFileRepository embeddedFileRepository,
                             FilesProperties filesProperties,
-                            EntityManager entityManager,
-                            QRCodeGenerator qrCodeGenerator) {
+                            EntityManager entityManager) {
         this.orderRepository = orderRepository;
         this.ticketRepository = ticketRepository;
         this.ticketMapper = ticketMapper;
@@ -90,7 +85,6 @@ public class OrderServiceImpl implements OrderService {
         this.embeddedFileRepository = embeddedFileRepository;
         this.entityManager = entityManager;
         this.filesProperties = filesProperties;
-        this.qrCodeGenerator = qrCodeGenerator;
     }
 
     @Override
@@ -102,10 +96,6 @@ public class OrderServiceImpl implements OrderService {
 
         // Trigger lazy loading of tickets
         order.getTickets().size();
-
-        for (Ticket ticket : order.getTickets()) {
-            createTicketPdf(order, ticket, order.getEvent());
-        }
 
         return order;
     }
@@ -187,12 +177,7 @@ public class OrderServiceImpl implements OrderService {
             createInvoicePdf(order, dbTickets, event);
 
             for (Ticket ticket : dbTickets) {
-                try {
-                    // generate and save QR Code image in resources/qr_codes folder
-                    qrCodeGenerator.generateQRCodeImage("http://localhost:4200/#/tickets/verify/" + ticket.getUuid(), 250, 250, "src/main/resources/pdf/templates/qr_codes/" + ticket.getId() + ".png");
-                } catch (WriterException | IOException e) {
-                    e.printStackTrace();
-                }
+                createTicketPdf(order, ticket, event);
             }
         }
     }
@@ -238,6 +223,9 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
 
         createInvoicePdf(order, tickets, order.getEvent());
+        for (Ticket ticket : order.getTickets()) {
+            createTicketPdf(order, ticket, order.getEvent());
+        }
     }
 
     @Override

@@ -74,7 +74,7 @@
         <h2 style="margin-left: 10px; color: white">Ticket</h2>
     </div>
 
-    <div style="width: 100%">
+    <div style="width: 100%; vertical-align: middle">
         <div style="display: inline-block; width: 30%">
             <p>
                 ${event.hall.location.title}<br>
@@ -87,14 +87,14 @@
                 Seat: ${ticket.seatNumber}</p>
             </#if>
         </div>
-        <div style="text-align: center; display: inline-block; width: 40%">
+        <div style="text-align: center; display: inline-block; width: 45%">
             <h3>${artist}</h3>
             <p>${event.title}</p>
             <p>${eventDate}</p>
         </div>
         <div style="text-align: center; display: inline-block; width: 20%">
             <div style="border-color: black; height: 150px; width: 150px">
-                <img src=${qrcodePath} height="150" alt="ticket qrcode">
+                <img src='data:image/png;base64,${image}' height="150" alt="ticket qrcode">
             </div>
             <h3>€ ${price}</h3>
         </div>
