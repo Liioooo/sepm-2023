@@ -24,6 +24,8 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -220,6 +222,14 @@ class AuthenticationEndpointTest {
         requestBody.put("firstName", "Toller");
         requestBody.put("lastName", "Name");
 
+        var location = new HashMap<String, String>();
+        location.put("address", "Hansenstraße");
+        location.put("postalCode", "1010");
+        location.put("city", "Vienna");
+        location.put("country", "Austria");
+
+        requestBody.put("location", location);
+
         MvcResult mvcResult = this.mockMvc.perform(post(AUTHENTICATION_BASE + "/register")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(requestBody))
@@ -250,5 +260,43 @@ class AuthenticationEndpointTest {
             () -> assertThat(loginResponse.getContentAsString()).startsWith("Bearer ")
         );
     }
+
+    @Test
+    @DirtiesContext
+    void registeringNewAccountWithoutAddressReturnsError() throws Exception {
+        var requestBody = new HashMap<String, Object>();
+        requestBody.put("email", "withoutaddress@email.com");
+        requestBody.put("password", "password");
+        requestBody.put("confirmPassword", "password");
+        requestBody.put("firstName", "without");
+        requestBody.put("lastName", "address");
+
+        this.mockMvc.perform(post(AUTHENTICATION_BASE + "/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestBody))
+                .accept(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.timestamp").isNotEmpty())
+            .andExpect(jsonPath("$.error").value("Invalid request content."))
+            .andExpect(jsonPath("$.subErrors.location").value("must not be null"));
+
+
+        var loginRequestBody = new HashMap<String, Object>();
+        loginRequestBody.put("email", "withoutaddress@email.com");
+        loginRequestBody.put("password", "password");
+
+        this.mockMvc.perform(post(AUTHENTICATION_BASE + "/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(requestBody))
+            .accept(MediaType.APPLICATION_JSON)
+        ).andExpectAll(
+            status().isNotFound(),
+            jsonPath("$.status").value("404"),
+            jsonPath("$.error").value("No user with email withoutaddress@email.com found")
+        );
+    }
+
 
 }
