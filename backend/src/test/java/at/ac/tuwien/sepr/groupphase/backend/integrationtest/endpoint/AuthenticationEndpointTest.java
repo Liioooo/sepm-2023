@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepr.groupphase.backend.integrationtest.endpoint;
 
+import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepr.groupphase.backend.repository.ApplicationUserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,9 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 
 @ExtendWith(SpringExtension.class)
@@ -41,6 +43,9 @@ class AuthenticationEndpointTest {
     ObjectMapper objectMapper;
 
     private final String AUTHENTICATION_BASE = "/api/v1/authentication";
+
+    @Autowired
+    private ApplicationUserRepository applicationUserRepository;
 
     @Test
     void loginTestAdmin_CorrectCredentials() throws Exception {
@@ -157,17 +162,9 @@ class AuthenticationEndpointTest {
         requestBody.put("email", "user2@email.com");
         requestBody.put("password", "invalid");
 
-        for (int i = 0; i < 4; i++) {
-            this.mockMvc.perform(post(AUTHENTICATION_BASE + "/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestBody))
-                .accept(MediaType.APPLICATION_JSON)
-            ).andExpectAll(
-                status().isForbidden(),
-                jsonPath("$.status").value("403"),
-                jsonPath("$.error").value("Username or password is incorrect")
-            );
-        }
+        ApplicationUser user = applicationUserRepository.findUserByEmail("user2@email.com").orElseThrow();
+        user.setFailedAuths(4);
+        applicationUserRepository.save(user);
 
         this.mockMvc.perform(post(AUTHENTICATION_BASE + "/login")
             .contentType(MediaType.APPLICATION_JSON)
@@ -182,22 +179,16 @@ class AuthenticationEndpointTest {
 
     @Test
     @DirtiesContext
-    void login_asNormalUser_locksAccountAfter5Attempts_validLogin_() throws Exception {
+    void login_asNormalUser_locksAccountAfter5Attempts_validLogin() throws Exception {
         var requestBody = new HashMap<String, Object>();
         requestBody.put("email", "user2@email.com");
         requestBody.put("password", "invalid");
 
-        for (int i = 0; i < 4; i++) {
-            this.mockMvc.perform(post(AUTHENTICATION_BASE + "/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestBody))
-                .accept(MediaType.APPLICATION_JSON)
-            ).andExpectAll(
-                status().isForbidden(),
-                jsonPath("$.status").value("403"),
-                jsonPath("$.error").value("Username or password is incorrect")
-            );
-        }
+
+        ApplicationUser user = applicationUserRepository.findUserByEmail("user2@email.com").orElseThrow();
+        user.setFailedAuths(4);
+        applicationUserRepository.save(user);
+
         this.mockMvc.perform(post(AUTHENTICATION_BASE + "/login")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(requestBody))

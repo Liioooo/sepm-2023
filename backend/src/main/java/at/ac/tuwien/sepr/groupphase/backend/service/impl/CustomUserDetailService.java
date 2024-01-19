@@ -93,9 +93,9 @@ public class CustomUserDetailService implements UserService {
                 applicationUser.setLocked(true);
             }
             applicationUserRepository.save(applicationUser);
-            if (applicationUser.getFailedAuths() < 5) {
+            if (applicationUser.getFailedAuths() < MAX_ALLOWED_FAILED_AUTHS) {
                 throw new BadCredentialsException("Username or password is incorrect");
-            } else if (applicationUser.getFailedAuths() >= 5) {
+            } else {
                 throw new BadCredentialsException("Incorrectly entered password too many times. Account is now locked.");
             }
         }
