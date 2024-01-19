@@ -42,6 +42,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -71,9 +72,8 @@ public class OrderServiceImpl implements OrderService {
                             EventRepository eventRepository,
                             PdfService pdfService,
                             EmbeddedFileRepository embeddedFileRepository,
-                            EntityManager entityManager,
-                            FilesProperties filesProperties
-    ) {
+                            FilesProperties filesProperties,
+                            EntityManager entityManager) {
         this.orderRepository = orderRepository;
         this.ticketRepository = ticketRepository;
         this.ticketMapper = ticketMapper;
@@ -97,6 +97,11 @@ public class OrderServiceImpl implements OrderService {
         order.getTickets().size();
 
         return order;
+    }
+
+    @Override
+    public Ticket getTicketByUuid(UUID uuid) {
+        return ticketRepository.findTicketByUuid(uuid);
     }
 
     @Override
@@ -157,13 +162,20 @@ public class OrderServiceImpl implements OrderService {
 
         var tickets = Arrays.stream(orderCreateDto.getTickets())
             .map(ticketMapper::createTicketDtoToTicket)
-            .peek(ticket -> ticket.setOrder(order))
+            .peek(ticket -> {
+                ticket.setOrder(order);
+                ticket.setUuid(UUID.randomUUID());
+            })
             .toList();
 
         var dbTickets = ticketRepository.saveAll(tickets);
 
         if (orderCreateDto.getOrderType() == OrderType.BUY) {
             createInvoicePdf(order, dbTickets, event);
+
+            for (Ticket ticket : dbTickets) {
+                createTicketPdf(order, ticket, event);
+            }
         }
     }
 
@@ -208,6 +220,11 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
 
         createInvoicePdf(order, tickets, order.getEvent());
+        for (Ticket ticket : order.getTickets()) {
+            UUID uuid = UUID.randomUUID();
+            ticket.setUuid(uuid);
+            createTicketPdf(order, ticket, order.getEvent());
+        }
     }
 
     @Override
@@ -270,6 +287,17 @@ public class OrderServiceImpl implements OrderService {
             embeddedFileRepository.saveAndFlush(pdfFile);
         } catch (IOException | TemplateException e) {
             throw new InternalServerException("Could not generate cancellation invoice PDF.", e);
+        }
+    }
+
+    private void createTicketPdf(Order order, Ticket ticket, Event event) {
+        try {
+            var pdfFile = pdfService.createTicketPdf(order, ticket, event);
+            ticket.setPdfTicket(pdfFile);
+            ticketRepository.saveAndFlush(ticket);
+            embeddedFileRepository.saveAndFlush(pdfFile);
+        } catch (IOException | TemplateException e) {
+            throw new InternalServerException("Could not generate ticket PDF.", e);
         }
     }
 
