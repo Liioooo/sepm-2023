@@ -2,7 +2,7 @@
   <h2 class="btn-primary">VALID TICKET</h2>
   <p>
     {{ ticket.ticketCategory }} <br>
-    <ng-container *ngIf="ticket.ticketCategory === 'STANDING'">
+    <ng-container *ngIf="ticket.ticketCategory === 'SEATING'">
       Row: {{ ticket.rowNumber }} <br>
       Seat: {{ ticket.seatNumber }}
     </ng-container>
