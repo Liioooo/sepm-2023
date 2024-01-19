@@ -162,7 +162,10 @@ public class OrderServiceImpl implements OrderService {
 
         var tickets = Arrays.stream(orderCreateDto.getTickets())
             .map(ticketMapper::createTicketDtoToTicket)
-            .peek(ticket -> ticket.setOrder(order))
+            .peek(ticket -> {
+                ticket.setOrder(order);
+                ticket.setUuid(UUID.randomUUID());
+            })
             .toList();
 
         var dbTickets = ticketRepository.saveAll(tickets);
@@ -171,8 +174,6 @@ public class OrderServiceImpl implements OrderService {
             createInvoicePdf(order, dbTickets, event);
 
             for (Ticket ticket : dbTickets) {
-                UUID uuid = UUID.randomUUID();
-                ticket.setUuid(uuid);
                 createTicketPdf(order, ticket, event);
             }
         }
