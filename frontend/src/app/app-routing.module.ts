@@ -44,6 +44,7 @@ import {
   ManagementUserCreateComponent
 } from './components/management/management-users/management-user-create/management-user-create.component';
 import { TicketValidationComponent } from './components/ticket-validation/ticket-validation.component';
+import { ContactAdminComponent } from './components/contact-admin/contact-admin.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -52,6 +53,8 @@ const routes: Routes = [
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'events', component: EventsComponent },
+  { path: 'contact-admin', component: ContactAdminComponent },
+
   {
     path: 'events/:id',
     canActivate: [authGuard],
