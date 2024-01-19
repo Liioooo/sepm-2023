@@ -94,14 +94,12 @@ public class PdfServiceImpl implements PdfService {
         variables.put("order", order);
         variables.put("event", event);
         variables.put("eventDate", event.getStartDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
-        variables.put("name", order.getUser());
         variables.put("ticket", ticket);
         if (event.getArtist().getFictionalName() != null) {
             variables.put("artist", event.getArtist().getFictionalName());
         } else if (event.getArtist().getFirstname() != null) {
             variables.put("artist", event.getArtist().getFirstname() + " " + event.getArtist().getLastname());
         }
-        variables.put("ticketNr", ticket.getId());
         variables.put("orderDate", OffsetDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
         if (ticket.getTicketCategory() == TicketCategory.STANDING) {
             variables.put("category", TicketCategory.STANDING);
