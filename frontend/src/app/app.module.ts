@@ -111,7 +111,7 @@ import { ContactAdminComponent } from './components/contact-admin/contact-admin.
     ManagementLocationHallCreateComponent,
     RequestPasswordChangeModalComponent,
     ManagementUserCreateComponent,
-    ContactAdminComponent
+    ContactAdminComponent,
     ManagementUserCreateComponent,
     TicketValidationComponent
   ],
