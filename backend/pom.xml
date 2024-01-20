@@ -158,6 +158,11 @@
             <artifactId>javase</artifactId>
             <version>3.4.0</version>
         </dependency>
+        <dependency>
+            <groupId>net.datafaker</groupId>
+            <artifactId>datafaker</artifactId>
+            <version>2.1.0</version>
+        </dependency>
     </dependencies>
 
     <build>
