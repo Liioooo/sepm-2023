@@ -959,7 +959,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .seatPrice((float) faker.number().numberBetween(10L, 1000L))
                 .standingPrice((float) faker.number().numberBetween(10L, 1000L))
                 .type(eventTypes[faker.number().numberBetween(0, eventTypes.length)])
-                .artist(artistDataGenerator.getTestData().get(faker.number().numberBetween(0, 10)))
+                .artist(artistDataGenerator.getTestData().get(faker.number().numberBetween(10, 40)))
                 .hall(hallDataGenerator.getTestData().get(faker.number().numberBetween(0, 68)))
                 .image(publicFileDataGenerator.getTestData().get(faker.number().numberBetween(0, 4)))
                 .build()
