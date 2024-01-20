@@ -20,7 +20,7 @@
           </div>
           <div *ngFor="let row of rows.controls; index as i;" class="d-flex flex-row py-1">
             <div class="row-number d-flex align-items-center text-description">{{ i + 1 }}</div>
-            <button (click)="deleteRow(row)" class="btn btn-sm btn-danger" type="button">
+            <button (click)="deleteRow(row)" class="btn btn-sm btn-danger" type="button" title="Delete row">
               <i aria-hidden="true" class="bi-x-lg"></i>
               <span class="visually-hidden">Delete Row</span>
             </button>
@@ -34,13 +34,14 @@
                 title="Remove this Seat"
               ></button>
             </div>
-            <button (click)="addSeat(row)" class="btn btn-sm btn-primary" type="button">
+            <button (click)="addSeat(row)" class="btn btn-sm btn-primary" type="button"
+                    [disabled]="row.value >= MAX_SEATS_PER_ROW" title="Add Seat">
               <i aria-hidden="true" class="bi-plus-lg"></i>
-              Add Seat
+              <span class="visually-hidden">Add Seat</span>
             </button>
-            <button (click)="removeSeat(row)" class="btn btn-sm btn-gray ms-1" type="button">
-              <i aria-hidden="true" class="bi-dash"></i>
-              Remove Seat
+            <button (click)="removeSeat(row)" class="btn btn-sm btn-primary ms-1" type="button">
+              <i aria-hidden="true" class="bi-dash" title="Remove Seat"></i>
+              <span class="visually-hidden">Remove Seat</span>
             </button>
           </div>
           <div class="d-flex flex-row py-1">
@@ -110,7 +111,7 @@
             </div>
             <hr>
             <p class="text-description">
-              Click the "Add Seat" or "Remove Seat" button in the editor to add or remove a seat in that row. You can
+              Click the "+" or "-" button of each row in the editor to add or remove a seat in that row. You can
               also click on any seat that already exists to remove it. Click "Add Row" to add a new row after the last
               one. If you remove all seats of a row, the row will be deleted.
             </p>
