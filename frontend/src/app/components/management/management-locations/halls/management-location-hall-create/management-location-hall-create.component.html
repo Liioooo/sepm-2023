@@ -7,7 +7,7 @@
     <h1 class="mt-1">Create a new Hall</h1>
     <form (ngSubmit)="createHall()" [formGroup]="createHallForm">
       <div class="row">
-        <div class="col-12 col-lg-6">
+        <div class="col-12 col-lg-7">
           <div
             class="d-flex align-items-center justify-content-center bg-light rounded-3 p-3 text-description mb-3 fw-bold"
           >
@@ -20,6 +20,10 @@
           </div>
           <div *ngFor="let row of rows.controls; index as i;" class="d-flex flex-row py-1">
             <div class="row-number d-flex align-items-center text-description">{{ i + 1 }}</div>
+            <button (click)="deleteRow(row)" class="btn btn-sm btn-danger" type="button">
+              <i aria-hidden="true" class="bi-x-lg"></i>
+              <span class="visually-hidden">Delete Row</span>
+            </button>
             <div class="flex-grow-1 d-flex justify-content-center align-items-center">
               <button
                 (click)="removeSeat(row)"
@@ -27,15 +31,16 @@
                 attr.aria-label="Row {{ i + 1 }} Seat {{ seat + 1 }}"
                 class="seat-button me-1"
                 type="button"
+                title="Remove this Seat"
               ></button>
             </div>
             <button (click)="addSeat(row)" class="btn btn-sm btn-primary" type="button">
               <i aria-hidden="true" class="bi-plus-lg"></i>
               Add Seat
             </button>
-            <button (click)="deleteRow(row)" class="btn btn-sm btn-danger ms-1" type="button">
-              <i aria-hidden="true" class="bi-x-lg"></i>
-              <span class="visually-hidden">Delete Row</span>
+            <button (click)="removeSeat(row)" class="btn btn-sm btn-gray ms-1" type="button">
+              <i aria-hidden="true" class="bi-dash"></i>
+              Remove Seat
             </button>
           </div>
           <div class="d-flex flex-row py-1">
@@ -46,7 +51,7 @@
             </button>
           </div>
         </div>
-        <div class="col-12 col-lg-6 mt-4 mt-lg-0">
+        <div class="col-12 col-lg-5 mt-4 mt-lg-0">
           <div class="bg-light rounded-3 p-5">
             <div class="mb-3 row">
               <label class="col-sm-2 col-form-label text-black" for="name">Name:</label>
@@ -105,11 +110,9 @@
             </div>
             <hr>
             <p class="text-description">
-              Click the "Add Seat" button in the editor to add a seat to that row. Click on any seat that already exists
-              to
-              remove it. Click "Add Row" to add a new row after the last row. If you remove all seats of a row, the row
-              will
-              be deleted.
+              Click the "Add Seat" or "Remove Seat" button in the editor to add or remove a seat in that row. You can
+              also click on any seat that already exists to remove it. Click "Add Row" to add a new row after the last
+              one. If you remove all seats of a row, the row will be deleted.
             </p>
             <div class="text-center">
               <button class="btn btn-primary mt-4" type="submit">Create Hall</button>
