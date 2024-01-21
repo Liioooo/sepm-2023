@@ -38,7 +38,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         + "  UPPER(e.artist.lastname) LIKE UPPER(CONCAT('%', :#{#search.search}, '%')) OR "
         + "  UPPER(e.title) LIKE UPPER(CONCAT('%', :#{#search.search}, '%')))) AND "
         + " e.startDate >= CURRENT_TIMESTAMP"
-        + " ORDER BY e.title ASC"
+        + " ORDER BY e.startDate ASC "
     )
     Page<Event> findBySearchCriteria(@Param("search") EventSearchDto search, Pageable pageable);
 
@@ -58,7 +58,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         + "(:#{#search.duration} IS NULL OR ("
         + "  e.endDate - e.startDate >= :#{#search.getDurationAsDuration()?.minusHours(1)} AND"
         + "  e.endDate - e.startDate <= :#{#search.getDurationAsDuration()?.plusHours(1)}))"
-        + " ORDER BY e.title ASC"
+        + " ORDER BY e.startDate ASC "
     )
     Page<Event> findBySearchCriteriaWithoutGlobalSearch(@Param("search") EventSearchDto search, Pageable pageable);
 

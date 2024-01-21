@@ -35,4 +35,7 @@ export class NewsSearchFieldsComponent {
     this.searchChange.emit(removeEmptyProps(data));
   }
 
+  clearSearchFields() {
+    this.form.reset();
+  }
 }
