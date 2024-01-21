@@ -38,6 +38,7 @@ export class NewsComponent {
       }),
       tap(page => {
         this.pageableState = {
+          maxSize: 10,
           pageSize: 20,
           currentPage: page.currentPage + 1,
           totalPages: page.totalPages,

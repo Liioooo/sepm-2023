@@ -29,6 +29,7 @@ export class ManagementEventsComponent {
       }),
       tap(page => {
         this.pageableState = {
+          maxSize: 10,
           pageSize: 20,
           currentPage: page.currentPage + 1,
           totalPages: page.totalPages,
@@ -48,5 +49,4 @@ export class ManagementEventsComponent {
   onPageChange(newPage: number) {
     this.onPageChange$.next(newPage - 1);
   }
-
 }

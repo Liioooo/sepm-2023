@@ -70,8 +70,8 @@
         [pageSize]="pageableState.pageSize"
         [collectionSize]="pageableState.totalElements"
         (pageChange)="onPageChange($event)"
-        size="sm"
-      ></ngb-pagination>
+        [maxSize]="pageableState.maxSize"
+v      ></ngb-pagination>
     </div>
   </div>
 </div>

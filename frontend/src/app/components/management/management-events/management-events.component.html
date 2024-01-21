@@ -48,13 +48,13 @@
         </tr>
       </tbody>
     </table>
-
     <div class="d-flex justify-content-center mt-4">
       <ngb-pagination
         [(page)]="pageableState.currentPage"
         [pageSize]="pageableState.pageSize"
         [collectionSize]="pageableState.totalElements"
         (pageChange)="onPageChange($event)"
+        [maxSize]="pageableState.maxSize"
       ></ngb-pagination>
     </div>
   </div>
