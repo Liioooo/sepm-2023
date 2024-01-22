@@ -101,7 +101,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Ticket getTicketByUuid(UUID uuid) {
-        return ticketRepository.findTicketByUuid(uuid);
+        return ticketRepository.findByUuid(uuid).orElseThrow(() -> new NotFoundException("Ticket not found"));
     }
 
     @Override

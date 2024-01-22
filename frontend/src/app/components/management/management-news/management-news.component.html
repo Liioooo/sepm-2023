@@ -4,18 +4,19 @@
       <h2 class="fs-1 fw-bold">News</h2>
     </div>
 
-    <div class="d-flex flex-row w-auto align-items-center">
+    <div>
       <!-- SEARCH -->
       <app-news-search-fields
         class="d-block mb-5"
         (searchChange)="searchAttributes$.next($event)"
       ></app-news-search-fields>
       <span style="flex: 1"></span>
-      <a class="btn btn-primary mb-4" routerLink="create" aria-label="New Article">
-        <i class="bi bi-plus-lg"></i>
-        New Article
-      </a>
     </div>
+
+    <a class="btn btn-primary mb-4" routerLink="create" aria-label="New Article">
+      <i class="bi bi-plus-lg"></i>
+      New Article
+    </a>
 
 
     <table class="table table-sm">
@@ -30,12 +31,12 @@
       <tbody>
       <tr *ngFor="let news of news$ | async">
         <td>{{ news.title }}</td>
-        <td>{{ authorName(news) }} </td>
+        <td>{{ authorName(news) }}</td>
         <td>{{ news.publishDate.toLocaleDateString() }}</td>
         <td>
           <!-- ACTIONS -->
           <div class="btn-group">
-            <a class="btn btn-sm responsive-info-button"
+            <a class="btn btn-outline-dark btn-sm responsive-info-button"
                [routerLink]="['../../news/detail/', news.id]"
                aria-label="Show horse details">
               <i class="bi bi-info-lg"></i>

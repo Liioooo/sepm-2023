@@ -33,4 +33,8 @@ export class LocationSearchFieldsComponent {
 
     this.searchChange.emit(removeEmptyProps(value));
   }
+
+  clearSearchFields() {
+    this.form.reset();
+  }
 }

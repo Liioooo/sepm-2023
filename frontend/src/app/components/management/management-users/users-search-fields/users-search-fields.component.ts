@@ -36,4 +36,7 @@ export class UsersSearchFieldsComponent {
     this.searchChange.emit(removeEmptyProps(data));
   }
 
+  clearSearchFields() {
+    this.form.reset();
+  }
 }

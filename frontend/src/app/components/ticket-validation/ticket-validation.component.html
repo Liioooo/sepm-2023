@@ -1,15 +1,17 @@
-<div *ngIf="ticket" class="container mx-5 my-5">
-  <h2 class="btn-primary">VALID TICKET</h2>
-  <p>
-    {{ ticket.ticketCategory }} <br>
-    <ng-container *ngIf="ticket.ticketCategory === 'SEATING'">
-      Row: {{ ticket.rowNumber }} <br>
-      Seat: {{ ticket.seatNumber }}
-    </ng-container>
-  </p>
-</div>
+<div class="container">
+  <div *ngIf="ticket" class="mx-5 my-5">
+    <h1 class="h2">VALID TICKET</h1>
+    <p>
+      {{ ticket.ticketCategory }} <br>
+      <ng-container *ngIf="ticket.ticketCategory === 'SEATING'">
+        Row: {{ ticket.rowNumber }} <br>
+        Seat: {{ ticket.seatNumber }}
+      </ng-container>
+    </p>
+  </div>
 
-<div *ngIf="!verified" class="container mx-5 my-5">
-  <h2>INVALID TICKET</h2>
-  <p>This ticket is invalid.</p>
+  <div *ngIf="!verified" class="mx-5 my-5">
+    <h1 class="h2">INVALID TICKET</h1>
+    <p>This ticket is invalid.</p>
+  </div>
 </div>

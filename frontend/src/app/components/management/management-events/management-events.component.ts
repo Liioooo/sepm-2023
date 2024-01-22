@@ -48,5 +48,4 @@ export class ManagementEventsComponent {
   onPageChange(newPage: number) {
     this.onPageChange$.next(newPage - 1);
   }
-
 }
