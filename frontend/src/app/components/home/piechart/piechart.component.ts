@@ -47,7 +47,7 @@ export class PiechartComponent implements OnChanges, OnDestroy {
       data: {
         labels: [],
         datasets: [{
-          label: 'Top 10 ' + this.eventType + ' in ' + this.searchMonth,
+          label: 'Top 10 events in' + this.searchMonth,
           data: [],
           backgroundColor: [
             'rgb(1,21,104)',
@@ -137,7 +137,11 @@ export class PiechartComponent implements OnChanges, OnDestroy {
 
     this.chart.data.labels = displayedData.map(temp => temp.event.title);
     this.chart.data.datasets[0].data = displayedData.map(temp => temp.boughtCount);
-    this.chart.options.plugins.title.text = 'Top 10 ' + this.eventType + ' in ' + this.searchMonth;
+    if (this.eventType == '') {
+      this.chart.options.plugins.title.text = 'Top 10 events in ' + this.searchMonth;
+    } else {
+      this.chart.options.plugins.title.text = 'Top 10 ' + this.eventType + ' in ' + this.searchMonth;
+    }
     this.chart.options.plugins.subtitle.display = false;
 
     const noEvents = this.chartData.length === 0;
