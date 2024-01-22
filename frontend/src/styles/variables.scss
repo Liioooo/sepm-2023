@@ -4,11 +4,12 @@
 
 $primary: #011568;
 $secondary: #e94d52;
+$danger: #c7303f;
 
 $theme-colors: map-merge($theme-colors, (
   "primary": $primary,
   "secondary": $secondary,
-  "danger": #e94d52,
+  "danger": $danger,
   "exit": #e74c3c,
   "gray": $gray-500,
   "description": $gray-700,
@@ -23,5 +24,16 @@ $link-color: $primary;
 $link-hover-color: lighten($link-color, 20%);
 $link-decoration: none;
 
+$btn-disabled-opacity: .72;
+
 $form-label-color: $gray-600;
 $input-placeholder-color: $gray-600;
+$form-feedback-invalid-color: $danger;
+
+$form-validation-states: map-merge($form-validation-states, (
+  "invalid": (
+    "color": $form-feedback-invalid-color,
+    "icon": $form-feedback-icon-invalid
+  )
+));
+
