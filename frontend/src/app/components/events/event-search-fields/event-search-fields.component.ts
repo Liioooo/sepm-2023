@@ -89,4 +89,12 @@ export class EventSearchFieldsComponent {
 
     this.searchChange.emit(removeEmptyProps(data));
   }
+
+  clearSearchFields() {
+    this.form.reset();
+    this.form.get('type').setValue('');
+    this.fromDate = null;
+    this.toDate = null;
+    this.handleFormChange(this.form.value);
+  }
 }
