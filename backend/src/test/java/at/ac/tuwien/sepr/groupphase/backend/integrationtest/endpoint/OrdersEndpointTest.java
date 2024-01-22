@@ -213,7 +213,7 @@ class OrdersEndpointTest {
             );
 
             Mockito.doReturn(Optional.of(user1)).when(userService).getCurrentlyAuthenticatedUser();
-            var order = orderService.getOrderById(1011L);
+            var order = orderService.getOrderById(11L);
             assertAll(
                 () -> assertThat(order.getTickets()).size().isEqualTo(1),
                 () -> assertThat(order.getTickets().get(0))
