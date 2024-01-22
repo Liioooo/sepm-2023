@@ -59,7 +59,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Page<Event> getEventsBySearchWithoutGlobalSearch(EventSearchDto search, Pageable pageable) {
-        return this.eventRepository.findBySearchCriteriaWithoutGlobalSearch(search, pageable);
+        return this.eventRepository.findBySearchCriteria(search, pageable);
     }
 
     @Override

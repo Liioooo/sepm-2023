@@ -252,7 +252,6 @@ class ManagementEndpointTest {
                 () -> assertThat(returnedUser.getLocation().getCountry()).isEqualTo(savedUser.getLocation().getCountry()),
                 () -> assertThat(returnedUser.getLocation().getPostalCode()).isEqualTo(savedUser.getLocation().getPostalCode())
             );
-
         });
     }
 

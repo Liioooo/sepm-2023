@@ -83,8 +83,6 @@ public class NewsEndpointTest {
         );
 
         assertDoesNotThrow(() -> {
-            // Read Test-News-1 to mark it as read
-
             this.mockMvc.perform(MockMvcRequestBuilders.multipart(API_BASE)
                 .file(imageFile) // Attach the image file
                 .param("title", toCreate.getTitle()) // Set parameters from NewsCreateDto

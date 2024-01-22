@@ -42,26 +42,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     )
     Page<Event> findBySearchCriteria(@Param("search") EventSearchDto search, Pageable pageable);
 
-    @Query("SELECT e FROM Event e WHERE "
-        + "(:#{#search.artist} IS NULL OR ("
-        + "  UPPER(e.artist.fictionalName) LIKE UPPER(CONCAT('%', :#{#search.artist}, '%')) OR "
-        + "  UPPER(e.artist.firstname) LIKE UPPER(CONCAT('%', :#{#search.artist}, '%')) OR "
-        + "  UPPER(e.artist.lastname) LIKE UPPER(CONCAT('%', :#{#search.artist}, '%')))) AND "
-        + "(:#{#search.title} IS NULL OR UPPER(e.title) LIKE UPPER(CONCAT('%', :#{#search.title}, '%'))) AND "
-        + "(:#{#search.locationId} IS NULL OR :#{#search.locationId} = e.hall.location.id) AND "
-        + "(:#{#search.timeEnd} IS NULL OR e.startDate <= :#{#search.timeEnd}) AND "
-        + "(:#{#search.timeStart} IS NULL OR e.endDate >= :#{#search.timeStart}) AND "
-        + "(:#{#search.priceMax} IS NULL OR ("
-        + "  e.standingPrice <= :#{#search.priceMax} OR "
-        + "  e.seatPrice <= :#{#search.priceMax})) AND "
-        + "(:#{#search.type?.name()} IS NULL OR e.type = :#{#search.type}) AND"
-        + "(:#{#search.duration} IS NULL OR ("
-        + "  e.endDate - e.startDate >= :#{#search.getDurationAsDuration()?.minusHours(1)} AND"
-        + "  e.endDate - e.startDate <= :#{#search.getDurationAsDuration()?.plusHours(1)}))"
-        + " ORDER BY e.startDate ASC "
-    )
-    Page<Event> findBySearchCriteriaWithoutGlobalSearch(@Param("search") EventSearchDto search, Pageable pageable);
-
     @Query("SELECT e as event, (SELECT COUNT(t) FROM Ticket t WHERE t.order.event = e) AS boughtCount FROM Event e"
         + " WHERE e.startDate <= (:endDate) AND e.endDate >= (:startDate) AND ((:type) IS NULL OR e.type = (:type))"
         + " ORDER BY (SELECT COUNT(t) FROM Ticket t WHERE t.order.event = e) DESC"
@@ -69,4 +49,5 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     )
     List<EventWithBoughtCount> findTopTenEvent(@Param("startDate") OffsetDateTime startDate, @Param("endDate") OffsetDateTime endDate, @Param("type") EventType type);
 
+    Event findByTitle(String title);
 }
