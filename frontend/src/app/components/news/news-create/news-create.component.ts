@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { NewsCreateDto } from '../../../dtos/news-create-dto';
-import { FormBuilder } from '@angular/forms';
 import { NewsService } from '../../../services/news.service';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../services/toast.service';
@@ -18,7 +17,6 @@ export class NewsCreateComponent {
 
   constructor(
     private newsService: NewsService,
-    private formBuilder: FormBuilder,
     private router: Router,
     private toastService: ToastService,
     private errorFormatterService: ErrorFormatterService
@@ -36,9 +34,12 @@ export class NewsCreateComponent {
     this.newsService.createNews(this.newsDto).subscribe({
       next: () => {
         this.toastService.showSuccess('Success', 'News created successfully');
-        //this.router.navigate(['/news']);
+        this.router.navigate(['/management/news']);
       },
-      error: err => this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto))
+      error: err => {
+        this.toastService
+          .showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto));
+      }
     });
   }
 }

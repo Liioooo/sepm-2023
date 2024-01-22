@@ -1,11 +1,15 @@
 package at.ac.tuwien.sepr.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepr.groupphase.backend.config.properties.FilesProperties;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderCreateDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.OrderUpdateTicketsDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.RedeemReservationDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.OrderMapper;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.TicketMapper;
+import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Order;
+import at.ac.tuwien.sepr.groupphase.backend.entity.Row;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Ticket;
 import at.ac.tuwien.sepr.groupphase.backend.enums.OrderType;
 import at.ac.tuwien.sepr.groupphase.backend.enums.TicketCategory;
@@ -21,11 +25,13 @@ import at.ac.tuwien.sepr.groupphase.backend.service.OrderService;
 import at.ac.tuwien.sepr.groupphase.backend.service.PdfService;
 import at.ac.tuwien.sepr.groupphase.backend.service.UserService;
 import freemarker.template.TemplateException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
+import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
@@ -35,6 +41,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -47,10 +55,13 @@ public class OrderServiceImpl implements OrderService {
     private final TicketMapper ticketMapper;
     private final OrderMapper orderMapper;
     private final EventRepository eventRepository;
+    private final EntityManager entityManager;
 
     private final PdfService pdfService;
 
     private final EmbeddedFileRepository embeddedFileRepository;
+
+    private final FilesProperties filesProperties;
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository,
@@ -60,8 +71,9 @@ public class OrderServiceImpl implements OrderService {
                             UserService userService,
                             EventRepository eventRepository,
                             PdfService pdfService,
-                            EmbeddedFileRepository embeddedFileRepository
-    ) {
+                            EmbeddedFileRepository embeddedFileRepository,
+                            FilesProperties filesProperties,
+                            EntityManager entityManager) {
         this.orderRepository = orderRepository;
         this.ticketRepository = ticketRepository;
         this.ticketMapper = ticketMapper;
@@ -70,6 +82,8 @@ public class OrderServiceImpl implements OrderService {
         this.eventRepository = eventRepository;
         this.pdfService = pdfService;
         this.embeddedFileRepository = embeddedFileRepository;
+        this.entityManager = entityManager;
+        this.filesProperties = filesProperties;
     }
 
     @Override
@@ -77,6 +91,7 @@ public class OrderServiceImpl implements OrderService {
     public Order getOrderById(Long id) {
         var user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
         var order = orderRepository.findOrderByIdAndUserId(id, user.getId()).orElseThrow(() -> new NotFoundException("Order not found"));
+        setPublicImagePathForSingleOrder(order);
 
         // Trigger lazy loading of tickets
         order.getTickets().size();
@@ -85,21 +100,36 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getOrdersOfCurrentUser() {
-        var user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
-        return orderRepository.findOrdersByUserId(user.getId());
+    public Ticket getTicketByUuid(UUID uuid) {
+        return ticketRepository.findByUuid(uuid).orElseThrow(() -> new NotFoundException("Ticket not found"));
     }
 
     @Override
-    @Transactional(isolation = Isolation.SERIALIZABLE)
-    public synchronized void createOrder(OrderCreateDto orderCreateDto) {
+    public List<Order> getOrdersOfCurrentUser() {
         var user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
+        List<Order> orders = orderRepository.findOrdersByUserId(user.getId());
+        setPublicImagePathOnEventForAllOrders(orders);
+        return orders;
+    }
+
+    @Override
+    @Transactional()
+    public void createOrder(OrderCreateDto orderCreateDto) {
+        // Lock tables
+        entityManager.find(Ticket.class, 1, LockModeType.PESSIMISTIC_WRITE);
+        entityManager.find(Order.class, 1, LockModeType.PESSIMISTIC_WRITE);
+
         var event = eventRepository.findById(orderCreateDto.getEventId()).orElseThrow(() -> new NotFoundException("Event not found"));
         var hall = event.getHall();
 
+        if (event.getStartDate().isBefore(OffsetDateTime.now())) {
+            throw new ConflictException("Cannot buy tickets for an event that has already started");
+        }
+
         // Check if tickets are still available
         for (var ticket : Arrays.stream(orderCreateDto.getTickets()).filter(t -> t.getTicketCategory() == TicketCategory.SEATING).toList()) {
-            if (ticket.getRowNumber() > hall.getRows().size() || ticket.getSeatNumber() > hall.getRows().get((int) (ticket.getRowNumber() - 1)).getNumberOfSeats()) {
+            Optional<Row> rowOfTicket = hall.getRows().stream().filter(r -> Objects.equals(r.getNumber(), ticket.getRowNumber())).findFirst();
+            if (rowOfTicket.isEmpty() || ticket.getSeatNumber() > rowOfTicket.get().getNumberOfSeats()) {
                 throw new ConflictException("Seat does not exist");
             }
 
@@ -127,32 +157,40 @@ public class OrderServiceImpl implements OrderService {
         }
 
         // Save order and tickets
-        var order = orderRepository.saveAndFlush(orderMapper.orderCreateDtoToOrder(orderCreateDto, user));
+        var user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
+        var order = orderRepository.save(orderMapper.orderCreateDtoToOrder(orderCreateDto, user));
 
         var tickets = Arrays.stream(orderCreateDto.getTickets())
             .map(ticketMapper::createTicketDtoToTicket)
-            .peek(ticket -> ticket.setOrder(order))
+            .peek(ticket -> {
+                ticket.setOrder(order);
+                ticket.setUuid(UUID.randomUUID());
+            })
             .toList();
 
-        var dbTickets = ticketRepository.saveAllAndFlush(tickets);
+        var dbTickets = ticketRepository.saveAll(tickets);
 
         if (orderCreateDto.getOrderType() == OrderType.BUY) {
             createInvoicePdf(order, dbTickets, event);
+
+            for (Ticket ticket : dbTickets) {
+                createTicketPdf(order, ticket, event);
+            }
         }
     }
 
     @Override
-    @Transactional(isolation = Isolation.SERIALIZABLE)
-    public synchronized void redeemReservation(Long orderId, RedeemReservationDto redeemReservationDto) {
+    @Transactional()
+    public void redeemReservation(Long orderId, RedeemReservationDto redeemReservationDto) {
+        // Lock tables
+        entityManager.find(Ticket.class, 1, LockModeType.PESSIMISTIC_WRITE);
+        entityManager.find(Order.class, 1, LockModeType.PESSIMISTIC_WRITE);
+
         var user = userService.getCurrentlyAuthenticatedUser().orElseThrow(() -> new UnauthorizedException("No user is currently logged in"));
         var order = orderRepository.findOrderByIdAndUserId(orderId, user.getId()).orElseThrow(() -> new NotFoundException("Order not found"));
 
         if (order.getOrderType() != OrderType.RESERVE) {
             throw new ConflictException("Order is not a reservation");
-        }
-
-        if (order.getCancellationDate() != null) {
-            throw new ConflictException("Reservation has already been cancelled");
         }
 
         if (order.getEvent().getStartDate().isBefore(OffsetDateTime.now().plusMinutes(30))) {
@@ -179,10 +217,14 @@ public class OrderServiceImpl implements OrderService {
         order.getTickets().addAll(tickets);
         order.setOrderType(OrderType.BUY);
         order.setOrderDate(OffsetDateTime.now());
-        orderRepository.saveAndFlush(order);
+        orderRepository.save(order);
 
-        var event = eventRepository.findById(order.getEvent().getId()).orElseThrow(() -> new NotFoundException("Event not found"));
-        createInvoicePdf(order, tickets, event);
+        createInvoicePdf(order, tickets, order.getEvent());
+        for (Ticket ticket : order.getTickets()) {
+            UUID uuid = UUID.randomUUID();
+            ticket.setUuid(uuid);
+            createTicketPdf(order, ticket, order.getEvent());
+        }
     }
 
     @Override
@@ -198,6 +240,34 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.delete(order);
     }
 
+    @Override
+    @Transactional
+    public Order updateOrderTickets(Long orderId, OrderUpdateTicketsDto orderUpdateTicketsDto, @NotNull ApplicationUser currentUser) {
+        var order = orderRepository.findOrderByIdAndUserId(orderId, currentUser.getId()).orElseThrow(() -> new NotFoundException("Order not found"));
+
+        if (order.getTickets().isEmpty()) {
+            throw new ConflictException("You have already cancelled your ticket(s) for this event");
+        }
+        if (!order.getTickets().isEmpty() && (orderUpdateTicketsDto.getTickets().size() >= order.getTickets().size())) {
+            throw new ConflictException("Please select a ticket to be cancelled");
+        }
+        if (order.getEvent().getEndDate().isBefore(OffsetDateTime.now())) {
+            throw new ConflictException("Event is already in the past");
+        }
+
+        List<Ticket> tickets = new ArrayList<>(order.getTickets().stream().filter(t -> orderUpdateTicketsDto.getTickets().stream().anyMatch(orderUpdateTicket -> Objects.equals(orderUpdateTicket.getId(), t.getId()))).toList());
+        List<Ticket> cancelledTickets = new ArrayList<>(order.getTickets());
+        cancelledTickets.removeAll(tickets);
+
+        order.getTickets().clear();
+        order.getTickets().addAll(tickets);
+        orderRepository.save(order);
+        if (order.getOrderType() == OrderType.BUY) {
+            this.createCancellationInvoicePdf(order, cancelledTickets, order.getEvent());
+        }
+        return order;
+    }
+
     private void createInvoicePdf(Order order, List<Ticket> tickets, Event event) {
         try {
             var pdfFile = pdfService.createInvoicePdf(order, tickets, event);
@@ -207,5 +277,46 @@ public class OrderServiceImpl implements OrderService {
         } catch (IOException | TemplateException e) {
             throw new InternalServerException("Could not generate invoice PDF.", e);
         }
+    }
+
+    private void createCancellationInvoicePdf(Order order, List<Ticket> tickets, Event event) {
+        try {
+            var pdfFile = pdfService.createCancellationInvoicePdf(order, tickets, event);
+            order.getCancellationReceipts().add(pdfFile);
+            orderRepository.saveAndFlush(order);
+            embeddedFileRepository.saveAndFlush(pdfFile);
+        } catch (IOException | TemplateException e) {
+            throw new InternalServerException("Could not generate cancellation invoice PDF.", e);
+        }
+    }
+
+    private void createTicketPdf(Order order, Ticket ticket, Event event) {
+        try {
+            var pdfFile = pdfService.createTicketPdf(order, ticket, event);
+            ticket.setPdfTicket(pdfFile);
+            ticketRepository.saveAndFlush(ticket);
+            embeddedFileRepository.saveAndFlush(pdfFile);
+        } catch (IOException | TemplateException e) {
+            throw new InternalServerException("Could not generate ticket PDF.", e);
+        }
+    }
+
+    private void setPublicImagePathOnEventForAllOrders(List<Order> orderList) {
+        for (Order order : orderList) {
+            if (order.getEvent().getImage() == null) {
+                continue;
+            }
+            setPublicImagePathForSingleOrder(order);
+        }
+    }
+
+    private void setPublicImagePathForSingleOrder(Order order) {
+        if (order.getEvent().getImage() == null) {
+            return;
+        }
+        String baseUrl = this.filesProperties.getPublicServeUrl().replace("*", "");
+        String url = baseUrl + order.getEvent().getImage().getPath();
+
+        order.getEvent().getImage().setPublicUrl(url);
     }
 }

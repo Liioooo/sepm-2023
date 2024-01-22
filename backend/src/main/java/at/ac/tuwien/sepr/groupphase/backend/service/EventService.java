@@ -21,6 +21,13 @@ public interface EventService {
      */
     Page<Event> getEventsBySearch(EventSearchDto search, Pageable pageable);
 
+    /**
+     * Finds event by search criteria. Does not do a global search like "getEventsBySearch"
+     *
+     * @param search the search criteria
+     * @return the collection of events
+     */
+    Page<Event> getEventsBySearchWithoutGlobalSearch(EventSearchDto search, Pageable pageable);
 
     /**
      * Creates a new event.
@@ -38,7 +45,6 @@ public interface EventService {
     Event getEvent(long id);
 
     List<EventWithBoughtCount> getTopTenEvents(EventTop10SearchDto searchDto);
-
 
     SeatDto[] getOccupiedSeats(long id);
 

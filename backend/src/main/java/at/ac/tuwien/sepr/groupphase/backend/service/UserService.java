@@ -2,10 +2,18 @@ package at.ac.tuwien.sepr.groupphase.backend.service;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EmailResetDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.ResetPasswordDto;
-import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateDetailDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserLoginDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserRegisterDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserSearchDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateDetailDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateManagementDto;
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepr.groupphase.backend.exception.UnauthorizedException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -33,24 +41,18 @@ public interface UserService extends UserDetailsService {
      * @param userLoginDto login credentials
      * @return the JWT, if successful
      * @throws org.springframework.security.authentication.BadCredentialsException if credentials are bad
-     * @throws at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException    if the user does not exist
+     * @throws NotFoundException                                                   if the user does not exist
      */
     String login(UserLoginDto userLoginDto);
 
     /**
      * Register a user.
      *
-     * @param userLoginDto login credentials
+     * @param userRegisterDto register information
      * @return the JWT, if successful
      */
-    String register(UserRegisterDto userLoginDto);
+    String register(UserRegisterDto userRegisterDto);
 
-    /**
-     * Unlock a user account.
-     *
-     * @param userId id of the user to unlock
-     */
-    void unlockUser(long userId);
 
     /**
      * Check if a user is authenticated.
@@ -75,6 +77,14 @@ public interface UserService extends UserDetailsService {
     ApplicationUser updateAuthenticatedUser(UserUpdateDetailDto userUpdateDetailDto);
 
     /**
+     * Updates a given user.
+     *
+     * @param userUpdateManagementDto the new user data
+     * @return the updated user details
+     */
+    ApplicationUser updateUser(UserUpdateManagementDto userUpdateManagementDto, ApplicationUser authenticatedUser);
+
+    /**
      * Delete the currently authenticated user.
      */
     void deleteAuthenticatedUser();
@@ -92,4 +102,30 @@ public interface UserService extends UserDetailsService {
      * @param resetPasswordDto a DTO with the reset token and the new password
      */
     void resetPassword(ResetPasswordDto resetPasswordDto);
+
+    /**
+     * Get the ApplicationUser of the given Authentication.
+     *
+     * @throws NotFoundException     if no User with the authentication name exists
+     * @throws UnauthorizedException if the Authentication is not valid
+     */
+    ApplicationUser getUserFromAuthentication(Authentication authentication);
+
+
+    /**
+     * Finds users by search criteria.
+     *
+     * @param search the search criteria
+     * @return the collection of users
+     */
+    Page<ApplicationUser> getUsersBySearch(UserSearchDto search, Pageable pageable);
+
+    /**
+     * Create a user.
+     *
+     * @param userCreateDto create information
+     * @return the created user
+     */
+    ApplicationUser createUserAsAdmin(UserCreateDto userCreateDto);
+
 }

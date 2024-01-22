@@ -7,10 +7,17 @@ import at.ac.tuwien.sepr.groupphase.backend.service.PublicFileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 
 @Profile("generateData")
@@ -32,25 +39,28 @@ public class PublicFileDataGenerator extends DataGenerator<PublicFile> {
 
     @Override
     protected List<PublicFile> generate() {
-        /*
+
         if (publicFileRepository.count() > 0) {
             LOGGER.info("public file data already generated");
             return null;
         }
 
-        final var images = new ArrayList<PublicFile>();
+        final List<PublicFile> images = new ArrayList<PublicFile>();
 
-        String[] imageNames = {"news_img_01.jpg", "news_img_02.jpg"};
+        String[] sourceImages = new String[] {"news_img_A.jpg", "news_img_B.jpg", "event_1.jpg", "event_2.jpg", "event_3.jpg"};
 
-        for (String imageName : imageNames) {
+
+        for (String imageName : sourceImages) {
             copyImageFromResoucesToPublicFiles(imageName);
             images.add(PublicFile.builder()
                 .path(imageName)
+                .publicUrl("/public-files/" + imageName)
                 .mimeType("image/jpeg")
                 .build());
         }
 
         LOGGER.info("generating public files");
+
         return publicFileRepository.saveAll(images);
     }
 
@@ -70,10 +80,8 @@ public class PublicFileDataGenerator extends DataGenerator<PublicFile> {
     }
 
     public String getImagePath(String imageName) throws IOException {
-        Resource resource = resourceLoader.getResource("classpath:news_images/" + imageName);
+        Resource resource = resourceLoader.getResource("classpath:test_images/" + imageName);
         return resource.exists() ? resource.getURL().getPath() : null;
-        */
-        return null;
     }
 
 

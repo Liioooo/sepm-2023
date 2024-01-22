@@ -2,15 +2,21 @@ package at.ac.tuwien.sepr.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EmailResetDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.ResetPasswordDto;
-import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateDetailDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserCreateDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserLocationDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserLoginDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserRegisterDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserSearchDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateDetailDto;
+import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.UserUpdateManagementDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.mapper.UserLocationMapper;
 import at.ac.tuwien.sepr.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepr.groupphase.backend.entity.UserLocation;
 import at.ac.tuwien.sepr.groupphase.backend.enums.UserRole;
 import at.ac.tuwien.sepr.groupphase.backend.exception.ConflictException;
+import at.ac.tuwien.sepr.groupphase.backend.exception.ForbiddenException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepr.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepr.groupphase.backend.repository.ApplicationUserRepository;
 import at.ac.tuwien.sepr.groupphase.backend.security.JwtTokenizer;
 import at.ac.tuwien.sepr.groupphase.backend.security.JwtVerifier;
@@ -21,7 +27,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,6 +40,7 @@ import org.springframework.stereotype.Service;
 
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -43,6 +53,8 @@ public class CustomUserDetailService implements UserService {
     private final JwtVerifier jwtVerifier;
     private final UserLocationMapper userLocationMapper;
     private final EmailService emailService;
+
+    private static final int MAX_ALLOWED_FAILED_AUTHS = 5;
 
     @Autowired
     public CustomUserDetailService(ApplicationUserRepository applicationUserRepository,
@@ -67,44 +79,49 @@ public class CustomUserDetailService implements UserService {
 
     @Override
     public String login(UserLoginDto userLoginDto) {
+        ApplicationUser applicationUser;
         try {
-            ApplicationUser applicationUser = loadUserByUsername(userLoginDto.getEmail());
-            if (applicationUser.isAccountNonExpired() && applicationUser.isAccountNonLocked() && applicationUser.isCredentialsNonExpired()) {
-                boolean authenticationSuccess = false;
-                if (passwordEncoder.matches(userLoginDto.getPassword(), applicationUser.getPassword())) {
-                    applicationUser.setFailedAuths(0);
-                    authenticationSuccess = true;
-                } else {
-                    applicationUser.setFailedAuths(applicationUser.getFailedAuths() + 1);
-                }
-                applicationUserRepository.save(applicationUser);
-                if (authenticationSuccess) {
-                    return generateTokenForUser(applicationUser);
-                }
-                throw new BadCredentialsException("Username or password is incorrect");
-            }
-            throw new BadCredentialsException("Account is locked");
+            applicationUser = loadUserByUsername(userLoginDto.getEmail());
         } catch (UsernameNotFoundException e) {
             throw new NotFoundException(e.getMessage(), e);
         }
+
+        if (!passwordEncoder.matches(userLoginDto.getPassword(), applicationUser.getPassword())) {
+            applicationUser.setFailedAuths(applicationUser.getFailedAuths() + 1);
+
+            if (applicationUser.getFailedAuths() >= MAX_ALLOWED_FAILED_AUTHS) {
+                applicationUser.setLocked(true);
+            }
+            applicationUserRepository.save(applicationUser);
+            if (applicationUser.getFailedAuths() < MAX_ALLOWED_FAILED_AUTHS) {
+                throw new BadCredentialsException("Username or password is incorrect");
+            } else {
+                throw new BadCredentialsException("Incorrectly entered password too many times. Account is now locked.");
+            }
+        }
+
+        if (!applicationUser.isAccountNonLocked() || !applicationUser.isCredentialsNonExpired() || !applicationUser.isAccountNonExpired()) {
+            throw new BadCredentialsException("Account is locked");
+        }
+
+        applicationUser.setFailedAuths(0);
+        applicationUserRepository.save(applicationUser);
+
+        return generateTokenForUser(applicationUser);
     }
 
     @Override
     public String register(UserRegisterDto userRegisterDto) {
-        var user = ApplicationUser.builder()
-            .firstName(userRegisterDto.getFirstName())
-            .lastName(userRegisterDto.getLastName())
-            .email(userRegisterDto.getEmail())
-            .password(passwordEncoder.encode(userRegisterDto.getPassword()))
-            .location(userLocationMapper.userLocationDtoToUserLocation(userRegisterDto.getLocation()))
-            .role(UserRole.ROLE_USER)
-            .build();
+        ApplicationUser user = createUser(
+            userRegisterDto.getFirstName(),
+            userRegisterDto.getLastName(),
+            userRegisterDto.getEmail(),
+            userRegisterDto.getPassword(),
+            userRegisterDto.getLocation(),
+            UserRole.ROLE_USER,
+            false
+        );
 
-        try {
-            applicationUserRepository.save(user);
-        } catch (DataIntegrityViolationException ex) {
-            throw new ConflictException("Email is already in use", ex);
-        }
         return generateTokenForUser(user);
     }
 
@@ -114,14 +131,6 @@ public class CustomUserDetailService implements UserService {
             .map(GrantedAuthority::getAuthority)
             .toList();
         return jwtTokenizer.getAuthToken(userDetails.getUsername(), roles);
-    }
-
-    @Override
-    public void unlockUser(long userId) {
-        ApplicationUser user = applicationUserRepository.findById(userId).orElseThrow(() -> new NotFoundException("No user with id %s found".formatted(userId)));
-        user.setLocked(false);
-        user.setFailedAuths(0);
-        applicationUserRepository.save(user);
     }
 
     @Override
@@ -164,6 +173,25 @@ public class CustomUserDetailService implements UserService {
     }
 
     @Override
+    public ApplicationUser updateUser(UserUpdateManagementDto userUpdateManagementDto, ApplicationUser authenticatedUser) {
+        if (Objects.equals(userUpdateManagementDto.getId(), authenticatedUser.getId())) {
+            throw new ForbiddenException("Admin user cannot lock/unlock own account");
+        }
+
+        ApplicationUser toUpdate = applicationUserRepository
+            .findById(userUpdateManagementDto.getId()).orElseThrow(() -> new NotFoundException("No user with id %d found".formatted(userUpdateManagementDto.getId())));
+
+        if (userUpdateManagementDto.getIsLocked() != null) {
+            toUpdate.setLocked(userUpdateManagementDto.getIsLocked());
+            if (!userUpdateManagementDto.getIsLocked()) { // in case of unlock
+                toUpdate.setFailedAuths(0);
+            }
+        }
+
+        return applicationUserRepository.save(toUpdate);
+    }
+
+    @Override
     public void deleteAuthenticatedUser() {
         var applicationUser = getCurrentlyAuthenticatedUser().orElseThrow(() -> new NotFoundException("No user currently logged in"));
         applicationUserRepository.delete(applicationUser);
@@ -200,4 +228,53 @@ public class CustomUserDetailService implements UserService {
 
         applicationUserRepository.save(user);
     }
+
+    @Override
+    public ApplicationUser getUserFromAuthentication(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new UnauthorizedException("Not authenticated");
+        }
+        try {
+            return loadUserByUsername(authentication.getName());
+        } catch (UsernameNotFoundException e) {
+            throw new NotFoundException("User not found");
+        }
+    }
+
+    @Override
+    public Page<ApplicationUser> getUsersBySearch(UserSearchDto search, Pageable pageable) {
+        return this.applicationUserRepository.findUserBySearchCriteria(search, pageable);
+    }
+
+    @Override
+    public ApplicationUser createUserAsAdmin(UserCreateDto userCreateDto) {
+        return createUser(
+            userCreateDto.getFirstName(),
+            userCreateDto.getLastName(),
+            userCreateDto.getEmail(),
+            userCreateDto.getPassword(),
+            userCreateDto.getLocation(),
+            userCreateDto.getRole(),
+            userCreateDto.getIsLocked()
+        );
+    }
+
+    private ApplicationUser createUser(String firstName, String lastName, String email, String password, UserLocationDto location, UserRole role, Boolean isLocked) {
+        var user = ApplicationUser.builder()
+            .firstName(firstName)
+            .lastName(lastName)
+            .email(email)
+            .password(passwordEncoder.encode(password))
+            .location(userLocationMapper.userLocationDtoToUserLocation(location))
+            .role(role)
+            .isLocked(isLocked)
+            .build();
+
+        try {
+            return applicationUserRepository.save(user);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException("Email is already in use", ex);
+        }
+    }
+
 }

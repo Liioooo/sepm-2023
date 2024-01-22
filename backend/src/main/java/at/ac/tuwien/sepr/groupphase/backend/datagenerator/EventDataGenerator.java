@@ -3,14 +3,20 @@ package at.ac.tuwien.sepr.groupphase.backend.datagenerator;
 import at.ac.tuwien.sepr.groupphase.backend.entity.Event;
 import at.ac.tuwien.sepr.groupphase.backend.enums.EventType;
 import at.ac.tuwien.sepr.groupphase.backend.repository.EventRepository;
+import net.datafaker.Faker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
+import java.sql.Date;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 
 @Profile("generateData")
@@ -22,15 +28,23 @@ public class EventDataGenerator extends DataGenerator<Event> {
     private final EventRepository eventRepository;
     private final ArtistDataGenerator artistDataGenerator;
     private final HallDataGenerator hallDataGenerator;
+    private final PublicFileDataGenerator publicFileDataGenerator;
+    private final Faker faker;
+    private final Environment environment;
 
     public EventDataGenerator(
         EventRepository eventRepository,
         ArtistDataGenerator artistDataGenerator,
-        HallDataGenerator hallDataGenerator
+        HallDataGenerator hallDataGenerator,
+        PublicFileDataGenerator publicFileDataGenerator, Environment environment
     ) {
         this.eventRepository = eventRepository;
         this.artistDataGenerator = artistDataGenerator;
         this.hallDataGenerator = hallDataGenerator;
+        this.publicFileDataGenerator = publicFileDataGenerator;
+        this.environment = environment;
+        this.faker = new Faker();
+
     }
 
     @Override
@@ -39,8 +53,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
             LOGGER.info("event data already generated");
             return null;
         }
-
-        final var events = List.of(
+        List<Event> events = new ArrayList<>(List.of(
             Event.builder()
                 .title("The Eras Tour")
                 .startDate(OffsetDateTime.of(2023, 12, 9, 20, 0, 0, 0, ZoneOffset.UTC))
@@ -50,6 +63,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CONCERT)
                 .artist(artistDataGenerator.getTestData().get(0))
                 .hall(hallDataGenerator.getTestData().get(0))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("Troubadour")
@@ -60,6 +74,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CONCERT)
                 .artist(artistDataGenerator.getTestData().get(1))
                 .hall(hallDataGenerator.getTestData().get(1))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("Deutschland")
@@ -70,6 +85,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CONCERT)
                 .artist(artistDataGenerator.getTestData().get(2))
                 .hall(hallDataGenerator.getTestData().get(2))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("Blinding lights")
@@ -80,6 +96,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CONCERT)
                 .artist(artistDataGenerator.getTestData().get(3))
                 .hall(hallDataGenerator.getTestData().get(3))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("파이팅!!!!!!")
@@ -90,6 +107,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.UNKNOWN)
                 .artist(artistDataGenerator.getTestData().get(4))
                 .hall(hallDataGenerator.getTestData().get(4))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("leverage scalable infrastructures")
@@ -100,6 +118,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SPORT)
                 .artist(artistDataGenerator.getTestData().get(5))
                 .hall(hallDataGenerator.getTestData().get(2))
+                .image(publicFileDataGenerator.getTestData().get(3))
                 .build(),
             Event.builder()
                 .title("grow enterprise convergence")
@@ -110,6 +129,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SPORT)
                 .artist(artistDataGenerator.getTestData().get(58))
                 .hall(hallDataGenerator.getTestData().get(24))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("engineer vertical partnerships")
@@ -120,6 +140,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CONCERT)
                 .artist(artistDataGenerator.getTestData().get(58))
                 .hall(hallDataGenerator.getTestData().get(29))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("revolutionize next-generation schemas")
@@ -130,6 +151,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CONCERT)
                 .artist(artistDataGenerator.getTestData().get(58))
                 .hall(hallDataGenerator.getTestData().get(27))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("embrace rich solutions")
@@ -140,6 +162,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.FESTIVAL)
                 .artist(artistDataGenerator.getTestData().get(30))
                 .hall(hallDataGenerator.getTestData().get(7))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("deploy strategic technologies")
@@ -150,6 +173,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CULTURE)
                 .artist(artistDataGenerator.getTestData().get(47))
                 .hall(hallDataGenerator.getTestData().get(28))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("orchestrate virtual bandwidth")
@@ -160,6 +184,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SHOW)
                 .artist(artistDataGenerator.getTestData().get(31))
                 .hall(hallDataGenerator.getTestData().get(22))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("recontextualize sticky bandwidth")
@@ -170,6 +195,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CULTURE)
                 .artist(artistDataGenerator.getTestData().get(2))
                 .hall(hallDataGenerator.getTestData().get(4))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("disintermediate next-generation experiences")
@@ -180,6 +206,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.FESTIVAL)
                 .artist(artistDataGenerator.getTestData().get(22))
                 .hall(hallDataGenerator.getTestData().get(7))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("drive distributed communities")
@@ -190,6 +217,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.UNKNOWN)
                 .artist(artistDataGenerator.getTestData().get(5))
                 .hall(hallDataGenerator.getTestData().get(9))
+                .image(publicFileDataGenerator.getTestData().get(3))
                 .build(),
             Event.builder()
                 .title("optimize strategic content")
@@ -200,6 +228,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CULTURE)
                 .artist(artistDataGenerator.getTestData().get(6))
                 .hall(hallDataGenerator.getTestData().get(28))
+                .image(publicFileDataGenerator.getTestData().get(3))
                 .build(),
             Event.builder()
                 .title("brand vertical e-tailers")
@@ -210,6 +239,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CULTURE)
                 .artist(artistDataGenerator.getTestData().get(27))
                 .hall(hallDataGenerator.getTestData().get(6))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("strategize granular metrics")
@@ -220,6 +250,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SPORT)
                 .artist(artistDataGenerator.getTestData().get(19))
                 .hall(hallDataGenerator.getTestData().get(6))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("optimize plug-and-play architectures")
@@ -230,6 +261,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SPORT)
                 .artist(artistDataGenerator.getTestData().get(42))
                 .hall(hallDataGenerator.getTestData().get(15))
+                .image(publicFileDataGenerator.getTestData().get(3))
                 .build(),
             Event.builder()
                 .title("cultivate seamless bandwidth")
@@ -240,6 +272,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SHOW)
                 .artist(artistDataGenerator.getTestData().get(38))
                 .hall(hallDataGenerator.getTestData().get(25))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("embrace 24/7 partnerships")
@@ -250,6 +283,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.FESTIVAL)
                 .artist(artistDataGenerator.getTestData().get(14))
                 .hall(hallDataGenerator.getTestData().get(34))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("architect wireless platforms")
@@ -260,6 +294,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CULTURE)
                 .artist(artistDataGenerator.getTestData().get(12))
                 .hall(hallDataGenerator.getTestData().get(40))
+                .image(publicFileDataGenerator.getTestData().get(3))
                 .build(),
             Event.builder()
                 .title("target global web-readiness")
@@ -270,6 +305,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CULTURE)
                 .artist(artistDataGenerator.getTestData().get(29))
                 .hall(hallDataGenerator.getTestData().get(43))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("whiteboard front-end web services")
@@ -280,6 +316,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.UNKNOWN)
                 .artist(artistDataGenerator.getTestData().get(59))
                 .hall(hallDataGenerator.getTestData().get(2))
+                .image(publicFileDataGenerator.getTestData().get(3))
                 .build(),
             Event.builder()
                 .title("mesh customized supply-chains")
@@ -290,6 +327,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.UNKNOWN)
                 .artist(artistDataGenerator.getTestData().get(29))
                 .hall(hallDataGenerator.getTestData().get(45))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("disintermediate synergistic ROI")
@@ -299,6 +337,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .standingPrice(102.23f)
                 .type(EventType.CONCERT)
                 .artist(artistDataGenerator.getTestData().get(33)).hall(hallDataGenerator.getTestData().get(1))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("grow robust relationships")
@@ -309,6 +348,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SPORT)
                 .artist(artistDataGenerator.getTestData().get(1))
                 .hall(hallDataGenerator.getTestData().get(20))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("morph front-end supply-chains")
@@ -319,6 +359,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CULTURE)
                 .artist(artistDataGenerator.getTestData().get(26))
                 .hall(hallDataGenerator.getTestData().get(17))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("harness scalable platforms")
@@ -329,6 +370,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CULTURE)
                 .artist(artistDataGenerator.getTestData().get(60))
                 .hall(hallDataGenerator.getTestData().get(5))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("target granular initiatives")
@@ -339,6 +381,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SPORT)
                 .artist(artistDataGenerator.getTestData().get(41))
                 .hall(hallDataGenerator.getTestData().get(8))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("synthesize cutting-edge e-services")
@@ -349,6 +392,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SHOW)
                 .artist(artistDataGenerator.getTestData().get(6))
                 .hall(hallDataGenerator.getTestData().get(13))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("synergize frictionless content")
@@ -359,6 +403,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CULTURE)
                 .artist(artistDataGenerator.getTestData().get(35))
                 .hall(hallDataGenerator.getTestData().get(17))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("productize revolutionary convergence")
@@ -369,6 +414,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.UNKNOWN)
                 .artist(artistDataGenerator.getTestData().get(9))
                 .hall(hallDataGenerator.getTestData().get(11))
+                .image(publicFileDataGenerator.getTestData().get(3))
                 .build(),
             Event.builder()
                 .title("envisioneer sexy platforms")
@@ -379,6 +425,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.FESTIVAL)
                 .artist(artistDataGenerator.getTestData().get(40))
                 .hall(hallDataGenerator.getTestData().get(15))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("whiteboard B2B initiatives")
@@ -389,6 +436,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.UNKNOWN)
                 .artist(artistDataGenerator.getTestData().get(32))
                 .hall(hallDataGenerator.getTestData().get(0))
+                .image(publicFileDataGenerator.getTestData().get(3))
                 .build(),
             Event.builder()
                 .title("deploy integrated bandwidth")
@@ -399,6 +447,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SHOW)
                 .artist(artistDataGenerator.getTestData().get(1))
                 .hall(hallDataGenerator.getTestData().get(31))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("recontextualize proactive systems")
@@ -409,6 +458,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.UNKNOWN)
                 .artist(artistDataGenerator.getTestData().get(1))
                 .hall(hallDataGenerator.getTestData().get(23))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("facilitate dynamic convergence")
@@ -419,6 +469,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SPORT)
                 .artist(artistDataGenerator.getTestData().get(37))
                 .hall(hallDataGenerator.getTestData().get(39))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("synthesize granular networks")
@@ -429,6 +480,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CULTURE)
                 .artist(artistDataGenerator.getTestData().get(22))
                 .hall(hallDataGenerator.getTestData().get(32))
+                .image(publicFileDataGenerator.getTestData().get(3))
                 .build(),
             Event.builder()
                 .title("deploy best-of-breed partnerships")
@@ -439,6 +491,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CONCERT)
                 .artist(artistDataGenerator.getTestData().get(15))
                 .hall(hallDataGenerator.getTestData().get(50))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("benchmark user-centric metrics")
@@ -449,6 +502,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SHOW)
                 .artist(artistDataGenerator.getTestData().get(2))
                 .hall(hallDataGenerator.getTestData().get(34))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("redefine rich vortals")
@@ -459,6 +513,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SPORT)
                 .artist(artistDataGenerator.getTestData().get(36))
                 .hall(hallDataGenerator.getTestData().get(19))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("grow viral models")
@@ -469,6 +524,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CULTURE)
                 .artist(artistDataGenerator.getTestData().get(21))
                 .hall(hallDataGenerator.getTestData().get(37))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("implement user-centric interfaces")
@@ -479,6 +535,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.FESTIVAL)
                 .artist(artistDataGenerator.getTestData().get(10))
                 .hall(hallDataGenerator.getTestData().get(18))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("whiteboard revolutionary architectures")
@@ -489,6 +546,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SHOW)
                 .artist(artistDataGenerator.getTestData().get(58))
                 .hall(hallDataGenerator.getTestData().get(37))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("engineer plug-and-play methodologies")
@@ -499,6 +557,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.FESTIVAL)
                 .artist(artistDataGenerator.getTestData().get(48))
                 .hall(hallDataGenerator.getTestData().get(10))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("synthesize rich deliverables")
@@ -509,6 +568,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CULTURE)
                 .artist(artistDataGenerator.getTestData().get(35))
                 .hall(hallDataGenerator.getTestData().get(28))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("benchmark collaborative e-business")
@@ -519,6 +579,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.FESTIVAL)
                 .artist(artistDataGenerator.getTestData().get(39))
                 .hall(hallDataGenerator.getTestData().get(37))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("e-enable vertical portals")
@@ -529,6 +590,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CONCERT)
                 .artist(artistDataGenerator.getTestData().get(1))
                 .hall(hallDataGenerator.getTestData().get(34))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("deliver end-to-end e-services")
@@ -539,6 +601,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CONCERT)
                 .artist(artistDataGenerator.getTestData().get(22))
                 .hall(hallDataGenerator.getTestData().get(35))
+                .image(publicFileDataGenerator.getTestData().get(3))
                 .build(),
             Event.builder()
                 .title("disintermediate e-business deliverables")
@@ -549,6 +612,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SPORT)
                 .artist(artistDataGenerator.getTestData().get(43))
                 .hall(hallDataGenerator.getTestData().get(41))
+                .image(publicFileDataGenerator.getTestData().get(3))
                 .build(),
             Event.builder()
                 .title("harness robust infrastructures")
@@ -558,6 +622,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .standingPrice(135.86f)
                 .type(EventType.UNKNOWN)
                 .artist(artistDataGenerator.getTestData().get(27)).hall(hallDataGenerator.getTestData().get(4))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("empower user-centric applications")
@@ -568,6 +633,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CONCERT)
                 .artist(artistDataGenerator.getTestData().get(17))
                 .hall(hallDataGenerator.getTestData().get(36))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("embrace virtual web services")
@@ -578,6 +644,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CONCERT)
                 .artist(artistDataGenerator.getTestData().get(54))
                 .hall(hallDataGenerator.getTestData().get(46))
+                .image(publicFileDataGenerator.getTestData().get(3))
                 .build(),
             Event.builder()
                 .title("facilitate value-added channels")
@@ -588,6 +655,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.UNKNOWN)
                 .artist(artistDataGenerator.getTestData().get(7))
                 .hall(hallDataGenerator.getTestData().get(4))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("Felix Lobrecht Comedy Show")
@@ -598,6 +666,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SHOW)
                 .artist(artistDataGenerator.getTestData().get(65))
                 .hall(hallDataGenerator.getTestData().get(17))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("Gemischtes Hack")
@@ -608,6 +677,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SHOW)
                 .artist(artistDataGenerator.getTestData().get(66))
                 .hall(hallDataGenerator.getTestData().get(45))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("Dick und Doof Live Podcast")
@@ -618,6 +688,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SHOW)
                 .artist(artistDataGenerator.getTestData().get(68))
                 .hall(hallDataGenerator.getTestData().get(41))
+                .image(publicFileDataGenerator.getTestData().get(3))
                 .build(),
             Event.builder()
                 .title("Hobbylos Live Podcast")
@@ -628,6 +699,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SHOW)
                 .artist(artistDataGenerator.getTestData().get(69))
                 .hall(hallDataGenerator.getTestData().get(42))
+                .image(publicFileDataGenerator.getTestData().get(3))
                 .build(),
             Event.builder()
                 .title("Kaffee mit Zitrone Podcast")
@@ -638,6 +710,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SHOW)
                 .artist(artistDataGenerator.getTestData().get(67))
                 .hall(hallDataGenerator.getTestData().get(33))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("Yum-Yum Hustlers Live Show")
@@ -648,6 +721,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SHOW)
                 .artist(artistDataGenerator.getTestData().get(70))
                 .hall(hallDataGenerator.getTestData().get(44))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("Joe Rogan")
@@ -658,6 +732,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SHOW)
                 .artist(artistDataGenerator.getTestData().get(71))
                 .hall(hallDataGenerator.getTestData().get(34))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("So far, so good")
@@ -668,6 +743,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SHOW)
                 .artist(artistDataGenerator.getTestData().get(74))
                 .hall(hallDataGenerator.getTestData().get(4))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("Die Nervigen")
@@ -678,6 +754,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SHOW)
                 .artist(artistDataGenerator.getTestData().get(75))
                 .hall(hallDataGenerator.getTestData().get(4))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("The unplanned Podcast")
@@ -688,6 +765,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SHOW)
                 .artist(artistDataGenerator.getTestData().get(72))
                 .hall(hallDataGenerator.getTestData().get(2))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("Die Johnsons")
@@ -698,6 +776,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SHOW)
                 .artist(artistDataGenerator.getTestData().get(73))
                 .hall(hallDataGenerator.getTestData().get(3))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("Die Johnsons im Neujar")
@@ -708,6 +787,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SHOW)
                 .artist(artistDataGenerator.getTestData().get(74))
                 .hall(hallDataGenerator.getTestData().get(3))
+                .image(publicFileDataGenerator.getTestData().get(3))
                 .build(),
             Event.builder()
                 .title("FrozenMonkeys")
@@ -718,6 +798,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.FESTIVAL)
                 .artist(artistDataGenerator.getTestData().get(77))
                 .hall(hallDataGenerator.getTestData().get(3))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("Beauty and the Beast Musical")
@@ -728,6 +809,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CULTURE)
                 .artist(artistDataGenerator.getTestData().get(76))
                 .hall(hallDataGenerator.getTestData().get(1))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("Bayern München versus Borussia Dortmund")
@@ -738,6 +820,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SPORT)
                 .artist(artistDataGenerator.getTestData().get(77))
                 .hall(hallDataGenerator.getTestData().get(1))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("Bayern gegen Dortmund")
@@ -748,6 +831,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SPORT)
                 .artist(artistDataGenerator.getTestData().get(77))
                 .hall(hallDataGenerator.getTestData().get(1))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("Frozen Monkeys on Tour again")
@@ -758,6 +842,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.FESTIVAL)
                 .artist(artistDataGenerator.getTestData().get(77))
                 .hall(hallDataGenerator.getTestData().get(1))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("STS-Fürstenfeld")
@@ -768,6 +853,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CONCERT)
                 .artist(artistDataGenerator.getTestData().get(78))
                 .hall(hallDataGenerator.getTestData().get(1))
+                .image(publicFileDataGenerator.getTestData().get(3))
                 .build(),
             Event.builder()
                 .title("Theater im Dunkeln")
@@ -778,6 +864,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CULTURE)
                 .artist(artistDataGenerator.getTestData().get(77))
                 .hall(hallDataGenerator.getTestData().get(3))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("SK-Sturm gegen Salzburg")
@@ -788,6 +875,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SPORT)
                 .artist(artistDataGenerator.getTestData().get(78))
                 .hall(hallDataGenerator.getTestData().get(1))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("facilitate dynamic convergence")
@@ -798,6 +886,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SPORT)
                 .artist(artistDataGenerator.getTestData().get(37))
                 .hall(hallDataGenerator.getTestData().get(39))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("synthesize granular networks")
@@ -808,6 +897,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CULTURE)
                 .artist(artistDataGenerator.getTestData().get(22))
                 .hall(hallDataGenerator.getTestData().get(32))
+                .image(publicFileDataGenerator.getTestData().get(3))
                 .build(),
             Event.builder()
                 .title("deploy best-of-breed partnerships")
@@ -818,6 +908,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.CONCERT)
                 .artist(artistDataGenerator.getTestData().get(15))
                 .hall(hallDataGenerator.getTestData().get(50))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build(),
             Event.builder()
                 .title("Die Johnsons im Neujar")
@@ -828,6 +919,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SHOW)
                 .artist(artistDataGenerator.getTestData().get(74))
                 .hall(hallDataGenerator.getTestData().get(3))
+                .image(publicFileDataGenerator.getTestData().get(2))
                 .build(),
             Event.builder()
                 .title("orchestrate virtual bandwidth")
@@ -838,6 +930,7 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SHOW)
                 .artist(artistDataGenerator.getTestData().get(31))
                 .hall(hallDataGenerator.getTestData().get(22))
+                .image(publicFileDataGenerator.getTestData().get(3))
                 .build(),
             Event.builder()
                 .title("ICEHOCKEY")
@@ -848,10 +941,48 @@ public class EventDataGenerator extends DataGenerator<Event> {
                 .type(EventType.SPORT)
                 .artist(artistDataGenerator.getTestData().get(77))
                 .hall(hallDataGenerator.getTestData().get(4))
+                .image(publicFileDataGenerator.getTestData().get(4))
                 .build()
-        );
+        ));
 
+        if (environment.acceptsProfiles(Profiles.of("test"))) {
+            return eventRepository.saveAll(events);
+        }
+
+        List<Event> autoGeneratedEvents = new ArrayList<>();
+        EventType[] eventTypes = EventType.values();
+        final var minLocalDate = LocalDateTime.of(2024, 1, 1, 0, 0);
+        final var maxLocalDate = LocalDateTime.of(2024, 12, 31, 0, 0);
+
+        for (int i = 0; i < 1000; i++) {
+
+            final var startDate = generateDateBetween(minLocalDate, maxLocalDate);
+            final var endDate = generateDateBetween(startDate.toLocalDateTime(), maxLocalDate);
+
+
+            autoGeneratedEvents.add(Event.builder()
+                .title(faker.rockBand().name())
+                .startDate(OffsetDateTime.from(startDate))
+                .endDate(OffsetDateTime.from(endDate))
+                .seatPrice((float) faker.number().numberBetween(10L, 1000L))
+                .standingPrice((float) faker.number().numberBetween(10L, 1000L))
+                .type(eventTypes[faker.number().numberBetween(0, eventTypes.length)])
+                .artist(artistDataGenerator.getTestData().get(faker.number().numberBetween(10, 40)))
+                .hall(hallDataGenerator.getTestData().get(faker.number().numberBetween(0, 68)))
+                .image(publicFileDataGenerator.getTestData().get(faker.number().numberBetween(0, 4)))
+                .build()
+            );
+        }
+        events.addAll(autoGeneratedEvents);
         LOGGER.info("generating events");
         return eventRepository.saveAll(events);
+    }
+
+    private OffsetDateTime generateDateBetween(LocalDateTime min, LocalDateTime max) {
+        final var minDate = Date.from(min.toInstant(ZoneOffset.UTC));
+        final var maxDate = Date.from(max.toInstant(ZoneOffset.UTC));
+        final var fakerValue = faker.date().between(minDate, maxDate);
+
+        return OffsetDateTime.ofInstant(fakerValue.toInstant(), ZoneOffset.UTC);
     }
 }

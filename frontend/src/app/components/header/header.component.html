@@ -28,6 +28,7 @@
                 <a routerLink="/management/events" ngbDropdownItem>Events</a>
                 <a routerLink="/management/news" ngbDropdownItem>News</a>
                 <a routerLink="/management/users" ngbDropdownItem>Users</a>
+                <a routerLink="/management/locations" ngbDropdownItem>Locations</a>
               </div>
             </div>
           </div>
@@ -48,7 +49,7 @@
         </a>
         <a class="btn text-light mt-2 mt-lg-0" *ngIf="userService.isLoggedIn()" routerLink="/profile"
            routerLinkActive="active">
-          <i class="bi bi-person-circle"></i>
+          <i class="bi bi-person-circle" aria-hidden="true"></i>
           <span *ngIf="userDetails$ | async as user" class="ms-1">{{ user.firstName }} {{ user.lastName }}</span>
         </a>
       </div>

@@ -1,0 +1,90 @@
+<div class="container">
+  <div class="mb-4">
+    <div class="col py-4 d-flex">
+      <a class="btn my-1" routerLink="/management/events">
+        <i class="bi bi-chevron-left"></i>
+      </a>
+      <h2 class="fs-1 fw-bold">{{ event?.title }}</h2>
+    </div>
+
+    <div class="mx-5">
+      <div class="row">
+        <label class="col-form-label text-md-end text-muted col-md-2 ">Artist</label>
+        <div class="col-md-10 col-lg-8">
+          <ng-container>
+            <div class="col-form-label">{{ event?.artist.fictionalName }}</div>
+          </ng-container>
+        </div>
+      </div>
+      <div class="row">
+        <label class="col-form-label text-md-end text-muted col-md-2 ">Start Date</label>
+        <div class="col-md-10 col-lg-8">
+          <ng-container>
+            <div class="col-form-label">{{ event?.startDate.toLocaleDateString([], { hour: 'numeric', minute: 'numeric'}) }}</div>
+          </ng-container>
+        </div>
+      </div>
+      <div class="row">
+        <label class="col-form-label text-md-end text-muted col-md-2 ">End Date</label>
+        <div class="col-md-10 col-lg-8">
+          <ng-container>
+            <div class="col-form-label">{{ event?.endDate.toLocaleDateString([], { hour: 'numeric', minute: 'numeric'}) }}</div>
+          </ng-container>
+        </div>
+      </div>
+
+      <h3 class="mt-5 fs-4 fw-bold">Location</h3>
+      <div class="row">
+        <label class="col-form-label text-md-end text-muted col-md-2 ">Name</label>
+        <div class="col-md-10 col-lg-8">
+          <ng-container>
+            <div class="col-form-label">{{ event?.hall.location.title }}</div>
+          </ng-container>
+        </div>
+      </div>
+      <div class="row">
+        <label class="col-form-label text-md-end text-muted col-md-2 ">Hall</label>
+        <div class="col-md-10 col-lg-8">
+          <ng-container>
+            <div class="col-form-label">{{ event?.hall.name }}</div>
+          </ng-container>
+        </div>
+      </div>
+      <div class="row">
+        <label class="col-form-label text-md-end text-muted col-md-2 ">Address</label>
+        <div class="col-md-10 col-lg-8">
+          <ng-container>
+            <div class="col-form-label">{{ event?.hall.location.address }}, {{ event?.hall.location.postalCode}} {{ event?.hall.location.city}}</div>
+          </ng-container>
+        </div>
+      </div>
+      <div class="row">
+        <label class="col-form-label text-md-end text-muted col-md-2 ">Country</label>
+        <div class="col-md-10 col-lg-8">
+          <ng-container>
+            <div class="col-form-label">{{ event?.hall.location.country }}</div>
+          </ng-container>
+        </div>
+      </div>
+
+      <h3 class="mt-5 fs-4 fw-bold">Categories</h3>
+      <div class="row">
+        <label class="col-form-label text-md-end text-muted col-md-2 ">Seat Price</label>
+        <div class="col-md-10 col-lg-8">
+          <ng-container>
+            <div class="col-form-label">{{ event?.seatPrice | currency:'EUR' }}</div>
+          </ng-container>
+        </div>
+      </div>
+      <div class="row">
+        <label class="col-form-label text-md-end text-muted col-md-2 ">Standing Price</label>
+        <div class="col-md-10 col-lg-8">
+          <ng-container>
+            <div class="col-form-label">{{ event?.standingPrice | currency:'EUR' }}</div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

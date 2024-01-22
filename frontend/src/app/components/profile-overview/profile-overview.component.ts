@@ -2,9 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { OrderService } from '../../services/order.service';
 import { OrderListDto } from '../../dtos/order-list-dto';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { UserService } from '../../services/user.service';
-import { ErrorResponseDto } from '../../dtos/error-response-dto';
 import { ToastService } from '../../services/toast.service';
 import { ErrorFormatterService } from '../../services/error-formatter.service';
 
@@ -14,7 +13,9 @@ import { ErrorFormatterService } from '../../services/error-formatter.service';
   styleUrls: ['./profile-overview.component.scss']
 })
 export class ProfileOverviewComponent implements OnInit {
-  public $orders: Observable<OrderListDto[]>;
+  public $upcomingOrders: Observable<OrderListDto[]>;
+  public $pastOrders: Observable<OrderListDto[]>;
+  public activeTab = 1;
 
   constructor(
     private orderService: OrderService,
@@ -26,7 +27,18 @@ export class ProfileOverviewComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.$orders = this.orderService.getOwnOrders();
+    const $orders = this.orderService.getOwnOrders();
+
+    this.$upcomingOrders = $orders.pipe(map(orders => {
+      return orders.filter(o => {
+        return o.event.startDate.getTime() > Date.now();
+      });
+    }));
+    this.$pastOrders = $orders.pipe(map(orders => {
+      return orders.filter(o => {
+        return o.event.startDate.getTime() <= Date.now();
+      });
+    }));
   }
 
   get userDetails$() {
@@ -38,15 +50,5 @@ export class ProfileOverviewComponent implements OnInit {
       this.userService.logoutUser();
       this.router.navigate(['/']);
     }
-  }
-
-  deleteReservation(order: OrderListDto) {
-    this.orderService.deleteReservation(order.id).subscribe({
-      next: () => {
-        this.toastService.showSuccess('Success', 'Reservation deleted successfully.');
-        this.$orders = this.orderService.getOwnOrders();
-      },
-      error: err => this.toastService.showError('Error', this.errorFormatterService.format(err['error'] as ErrorResponseDto))
-    });
   }
 }

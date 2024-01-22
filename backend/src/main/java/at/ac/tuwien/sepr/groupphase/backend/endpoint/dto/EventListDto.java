@@ -38,4 +38,5 @@ public class EventListDto {
 
     private EventType type;
 
+    private PublicFileDto image;
 }

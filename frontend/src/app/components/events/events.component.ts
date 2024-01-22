@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { EventService } from '../../services/event.service';
-import { EventDetailDto } from '../../dtos/event-detail-dto';
 import { EventSearchDto } from '../../dtos/event-search-dto';
 import {
   BehaviorSubject,
@@ -17,6 +16,7 @@ import { LocationDetailDto } from '../../dtos/location-detail-dto';
 import { LocationsService } from '../../services/location.service';
 import { DEFAULT_PAGEABLE_STATE, PageableState } from '../../types/pageable-request';
 import { tap } from 'rxjs/operators';
+import { EventListDto } from '../../dtos/event-list-dto';
 
 @Component({
   selector: 'app-events',
@@ -27,7 +27,7 @@ export class EventsComponent {
 
   public pageableState: PageableState = DEFAULT_PAGEABLE_STATE;
 
-  public events$: Observable<EventDetailDto[]>;
+  public events$: Observable<EventListDto[]>;
 
   public location$: Observable<LocationDetailDto>;
 

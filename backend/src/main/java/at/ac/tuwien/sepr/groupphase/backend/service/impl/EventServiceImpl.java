@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepr.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepr.groupphase.backend.config.properties.FilesProperties;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventCreateDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventSearchDto;
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.EventTop10SearchDto;
@@ -10,7 +11,9 @@ import at.ac.tuwien.sepr.groupphase.backend.entity.interfaces.EventWithBoughtCou
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepr.groupphase.backend.repository.EventRepository;
 import at.ac.tuwien.sepr.groupphase.backend.repository.TicketRepository;
+import at.ac.tuwien.sepr.groupphase.backend.service.ArtistService;
 import at.ac.tuwien.sepr.groupphase.backend.service.EventService;
+import at.ac.tuwien.sepr.groupphase.backend.service.LocationService;
 import at.ac.tuwien.sepr.groupphase.backend.service.PublicFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,35 +31,65 @@ import java.util.List;
 public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
+    private final LocationService locationService;
+    private final ArtistService artistService;
 
     private final PublicFileService publicFileService;
 
     private final TicketRepository ticketRepository;
 
+    private final FilesProperties filesProperties;
+
     @Autowired
-    public EventServiceImpl(EventRepository eventRepository, PublicFileService publicFileService, TicketRepository ticketRepository) {
+    public EventServiceImpl(EventRepository eventRepository, LocationService locationService, ArtistService artistService, PublicFileService publicFileService, TicketRepository ticketRepository, FilesProperties filesProperties) {
         this.eventRepository = eventRepository;
+        this.locationService = locationService;
+        this.artistService = artistService;
         this.publicFileService = publicFileService;
         this.ticketRepository = ticketRepository;
+        this.filesProperties = filesProperties;
     }
 
     @Override
     public Page<Event> getEventsBySearch(EventSearchDto search, Pageable pageable) {
+        Page<Event> eventsPage = this.eventRepository.findBySearchCriteria(search, pageable);
+        setPublicImagePathForAllEvents(eventsPage.getContent());
+        return eventsPage;
+    }
+
+    @Override
+    public Page<Event> getEventsBySearchWithoutGlobalSearch(EventSearchDto search, Pageable pageable) {
         return this.eventRepository.findBySearchCriteria(search, pageable);
     }
 
     @Override
     @Transactional
     public void createEvent(EventCreateDto eventCreateDto) {
-        PublicFile imageFile = null;
+        PublicFile imageFile = new PublicFile();
         if (eventCreateDto.getImage() != null) {
-            imageFile = this.publicFileService.storeFile(eventCreateDto.getImage());
+            imageFile = publicFileService.storeFile(eventCreateDto.getImage());
         }
+
+        Event e = Event.builder()
+            .title(eventCreateDto.getTitle())
+            .startDate(eventCreateDto.getStartDate())
+            .endDate(eventCreateDto.getEndDate())
+            .seatPrice(eventCreateDto.getSeatPrice())
+            .standingPrice(eventCreateDto.getStandingPrice())
+            .image(imageFile)
+            .hall(locationService.getHallById(eventCreateDto.getHallId()))
+            .artist(artistService.getArtistById(eventCreateDto.getArtistId()))
+            .type(eventCreateDto.getType())
+            .build();
+
+        eventRepository.save(e);
     }
 
     @Override
     public Event getEvent(long id) {
-        return eventRepository.findById(id).orElseThrow(() -> new NotFoundException("The event was not found"));
+        Event event = eventRepository.findById(id).orElseThrow(() -> new NotFoundException("The event was not found"));
+        setPublicImagePathForSingleEvent(event);
+        return event;
     }
 
     @Override
@@ -75,5 +108,24 @@ public class EventServiceImpl implements EventService {
         OffsetDateTime startDate = yearMonth.atDay(1).atTime(0, 0, 0).atOffset(ZoneOffset.UTC);
         OffsetDateTime endDate = yearMonth.atEndOfMonth().atTime(23, 59, 59).atOffset(ZoneOffset.UTC);
         return eventRepository.findTopTenEvent(startDate, endDate, searchDto.getEventType());
+    }
+
+    private void setPublicImagePathForAllEvents(List<Event> eventList) {
+        for (Event event : eventList) {
+            if (event.getImage() == null) {
+                continue;
+            }
+            setPublicImagePathForSingleEvent(event);
+        }
+    }
+
+    private void setPublicImagePathForSingleEvent(Event event) {
+        if (event.getImage() == null) {
+            return;
+        }
+        String baseUrl = this.filesProperties.getPublicServeUrl().replace("*", "");
+        String url = baseUrl + event.getImage().getPath();
+
+        event.getImage().setPublicUrl(url);
     }
 }

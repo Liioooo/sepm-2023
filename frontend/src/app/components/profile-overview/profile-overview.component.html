@@ -1,10 +1,11 @@
 <div class="container">
   <div class="row mt-5">
     <div class="col-12 col-lg-4">
-      <div class="bg-light rounded-3 p-5">
+      <div class="bg-light rounded-3 p-5 sticky-lg-top" style="top: 3rem; z-index: 1;">
         <h2 class="text-secondary fs-1 fw-bold">Welcome back!</h2>
         <div *ngIf="userDetails$ | async as user"
-             class="fs-4 fw-bold mt-3">{{ user.firstName }} {{ user.lastName }}</div>
+             class="fs-4 fw-bold mt-3">{{ user.firstName }} {{ user.lastName }}
+        </div>
         <div class="mt-4 text-description">
           Get ready to explore a world of exciting events and experiences. Let's find you the perfect tickets for your
           next memorable adventure!
@@ -14,22 +15,38 @@
         </div>
         <div>
           <button class="btn btn-outline-dark w-100 mt-5" routerLink="/profile/settings">
-            <i class="bi bi-gear"></i>
+            <i class="bi bi-gear" aria-hidden="true"></i>
             Profile Settings
           </button>
-          <button class="btn btn-outline-secondary w-100 mt-2" (click)="logoutUser()">
-            <i class="bi bi-box-arrow-right"></i>
+          <button class="btn btn-secondary w-100 mt-2" (click)="logoutUser()">
+            <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
             Logout
           </button>
         </div>
       </div>
     </div>
-    <div class="col p-5">
-      <h2 class="fs-1 fw-bold mb-5">My tickets</h2>
-      <div class="d-flex flex-column gap-3">
-        <app-order-item *ngFor="let order of $orders | async" [order]="order"
-                        (deleteReservationEvent)="deleteReservation($event)"></app-order-item>
-      </div>
+    <div class="col p pt-5 pt-lg-0 px-lg-5 mb-4">
+      <h2 class="fs-1 fw-bold mb-3">My Orders</h2>
+      <ul ngbNav #nav="ngbNav" [(activeId)]="activeTab" class="nav-tabs">
+        <li [ngbNavItem]="1">
+          <button ngbNavLink>Upcoming</button>
+          <ng-template ngbNavContent>
+            <div class="d-flex flex-column gap-3">
+              <app-order-item *ngFor="let order of $upcomingOrders | async" [order]="order"></app-order-item>
+            </div>
+          </ng-template>
+        </li>
+        <li [ngbNavItem]="2">
+          <button ngbNavLink>Past</button>
+          <ng-template ngbNavContent>
+            <div class="d-flex flex-column gap-3">
+              <app-order-item *ngFor="let order of $pastOrders | async" [order]="order"></app-order-item>
+            </div>
+          </ng-template>
+        </li>
+      </ul>
+      <div [ngbNavOutlet]="nav" class="mt-2"></div>
+
     </div>
   </div>
 </div>

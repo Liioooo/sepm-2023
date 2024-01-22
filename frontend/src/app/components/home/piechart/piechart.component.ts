@@ -40,12 +40,14 @@ export class PiechartComponent implements OnChanges, OnDestroy {
   }
 
   createChart() {
+    const displayedData = this.chartData.filter(temp => temp.boughtCount > 0);
+
     this.chart = new Chart(this.chartRef.nativeElement, {
       type: 'pie',
       data: {
         labels: [],
         datasets: [{
-          label: 'Top 10 ' + this.eventType + ' in ' + this.searchMonth,
+          label: 'Top 10 events in' + this.searchMonth,
           data: [],
           backgroundColor: [
             'rgb(1,21,104)',
@@ -95,6 +97,17 @@ export class PiechartComponent implements OnChanges, OnDestroy {
               font: {
                 size: 14,
                 family: '\'Helvetica Neue\', \'Helvetica\', \'Arial\', sans-serif'
+              },
+              generateLabels: (chart) => {
+                const labels = [];
+                for (let i = 0; i < displayedData.length; i++) {
+                  labels.push({
+                    text: displayedData[i].event.title,
+                    fillStyle: chart.data.datasets[0].backgroundColor[i],
+                    strokeStyle: chart.data.datasets[0].backgroundColor[i]
+                  });
+                }
+                return labels;
               }
             }
           },
@@ -120,26 +133,39 @@ export class PiechartComponent implements OnChanges, OnDestroy {
   }
 
   updateChart() {
-    this.chart.data.labels = this.chartData.map(temp => temp.event.title);
-    this.chart.data.datasets[0].data = this.chartData.map(temp => temp.boughtCount);
-    this.chart.options.plugins.title.text = 'Top 10 ' + this.eventType + ' in ' + this.searchMonth;
+    const displayedData = this.chartData.filter(temp => temp.boughtCount > 0);
+
+    this.chart.data.labels = displayedData.map(temp => temp.event.title);
+    this.chart.data.datasets[0].data = displayedData.map(temp => temp.boughtCount);
+    if (this.eventType == '') {
+      this.chart.options.plugins.title.text = 'Top 10 events in ' + this.searchMonth;
+    } else {
+      this.chart.options.plugins.title.text = 'Top 10 ' + this.eventType + ' in ' + this.searchMonth;
+    }
     this.chart.options.plugins.subtitle.display = false;
 
     const noEvents = this.chartData.length === 0;
     let noTicketsBought = true;
-
     for (const element of this.chartData) {
       if (element.boughtCount !== 0) noTicketsBought = false;
     }
 
-    if (noEvents) {
+    if (noEvents || noTicketsBought) {
       this.chart.options.plugins.subtitle.display = true;
       this.chart.options.plugins.subtitle.text = 'Sorry! There are no events that match your search criteria.';
-    } else if (noTicketsBought) {
-      this.chart.options.plugins.subtitle.display = true;
-      this.chart.options.plugins.subtitle.text = 'No tickets for any ' + this.eventType + ' have been purchased in ' + this.searchMonth;
-      this.chart.data.labels = [];
     }
+    this.chart.legend.options.labels.generateLabels = (chart) => {
+      const labels = [];
+      for (let i = 0; i < displayedData.length; i++) {
+        labels.push({
+          text: displayedData[i].event.title,
+          fillStyle: chart.data.datasets[0].backgroundColor[i],
+          strokeStyle: chart.data.datasets[0].backgroundColor[i]
+        });
+      }
+      return labels;
+    };
+
     this.chart.update();
   }
 }

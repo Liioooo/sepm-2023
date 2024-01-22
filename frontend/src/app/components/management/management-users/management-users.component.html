@@ -1,1 +1,77 @@
-<p>management-users works!</p>
+<div class="container">
+  <div class="mb-4">
+    <div class="col py-4">
+      <h2 class="fs-1 fw-bold">Users</h2>
+    </div>
+
+    <!-- SEARCH -->
+    <app-users-search-fields
+      class="d-block mb-5"
+      (searchChange)="searchAttributes$.next($event)"
+    ></app-users-search-fields>
+
+    <a class="btn btn-primary mb-3" [routerLink]="['create']">
+      <i class="bi-plus-lg" aria-hidden="true"></i>
+      New User
+    </a>
+
+    <!-- EVENT LIST -->
+    <table class="table table-sm">
+      <thead>
+      <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let user of users$ | async">
+        <td>{{ user.firstName }}</td>
+        <td>{{ user.lastName }}</td>
+        <td>{{ user.email }}</td>
+        <td>
+          {{ getRole(user) }}
+        </td>
+        <td>
+          <span [ngClass]="getStatusClass(user)">{{ getStatus(user) }}</span>
+        </td>
+        <td>
+          <!-- ACTIONS -->
+          <div class="btn-group">
+            <a *ngIf="!user.isLocked" class="btn btn-outline-dark btn-sm"
+               (click)="lockUser(user)"
+               aria-label="Disable User">
+              <i class="bi bi-lock-fill"></i>
+            </a>
+
+            <a *ngIf="user.isLocked" class="btn btn-outline-dark btn-sm"
+               (click)="unlockUser(user)"
+               aria-label="Disable User">
+              <i class="bi bi-unlock-fill"></i>
+            </a>
+
+            <a class="btn btn-outline-dark btn-sm"
+               (click)="clickSendEmail(user.firstName + ' ' + user.lastName, user.email)"
+               aria-label="Reset User Password">
+              <i class="bi bi-key"></i>
+            </a>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div class="d-flex justify-content-center mt-4">
+      <ngb-pagination
+        [(page)]="pageableState.currentPage"
+        [pageSize]="pageableState.pageSize"
+        [collectionSize]="pageableState.totalElements"
+        (pageChange)="onPageChange($event)"
+        [maxSize]=10
+      ></ngb-pagination>
+    </div>
+  </div>
+</div>

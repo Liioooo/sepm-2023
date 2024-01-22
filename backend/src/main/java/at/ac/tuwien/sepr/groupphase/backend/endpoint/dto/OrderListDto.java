@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,12 +27,10 @@ public class OrderListDto {
 
     private OffsetDateTime orderDate;
 
-    private OffsetDateTime cancellationDate;
-
     private EmbeddedFileDto pdfTickets;
 
     private EmbeddedFileDto receipt;
 
-    private EmbeddedFileDto cancellationReceipt;
+    private List<EmbeddedFileDto> cancellationReceipts;
 
 }

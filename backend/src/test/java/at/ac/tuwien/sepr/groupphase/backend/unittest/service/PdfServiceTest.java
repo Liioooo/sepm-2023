@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -23,10 +24,12 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-@ActiveProfiles({"test", "generateData"})
+@ActiveProfiles({"test", "generateTestData"})
+@DirtiesContext(classMode = AFTER_CLASS)
 public class PdfServiceTest {
 
     @Autowired
@@ -79,6 +82,20 @@ public class PdfServiceTest {
     void createInvoicePdf_withValidOrder_createsCorrectEmbeddedFile() {
         assertDoesNotThrow(() -> {
             EmbeddedFile embeddedFile = pdfService.createInvoicePdf(order, List.of(), event);
+            assertAll(() -> {
+                assertNotNull(embeddedFile);
+                assertThat(embeddedFile.getMimeType()).isEqualTo(MediaType.APPLICATION_PDF_VALUE);
+                assertThat(embeddedFile.getAllowedViewer()).usingRecursiveComparison().isEqualTo(user);
+                // File signature of PDFs is 0x255044462D, see https://en.wikipedia.org/wiki/List_of_file_signatures
+                assertThat(embeddedFile.getData()).startsWith(0x25, 0x50, 0x44, 0x46, 0x2D);
+            });
+        });
+    }
+
+    @Test
+    void createCancellationInvoicePdf_withValidOrder_createsCorrectEmbeddedFile() {
+        assertDoesNotThrow(() -> {
+            EmbeddedFile embeddedFile = pdfService.createCancellationInvoicePdf(order, List.of(), event);
             assertAll(() -> {
                 assertNotNull(embeddedFile);
                 assertThat(embeddedFile.getMimeType()).isEqualTo(MediaType.APPLICATION_PDF_VALUE);

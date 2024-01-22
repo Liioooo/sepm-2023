@@ -2,6 +2,7 @@ package at.ac.tuwien.sepr.groupphase.backend.endpoint.exceptionhandler;
 
 import at.ac.tuwien.sepr.groupphase.backend.endpoint.dto.ApiErrorDto;
 import at.ac.tuwien.sepr.groupphase.backend.exception.ConflictException;
+import at.ac.tuwien.sepr.groupphase.backend.exception.ForbiddenException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.InternalServerException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepr.groupphase.backend.exception.PublicFileStorageException;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.lang.invoke.MethodHandles;
@@ -66,7 +68,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = {UnauthorizedException.class})
-    protected ResponseEntity<Object> handleUnauthorized(UnauthorizedException ex) {
+    protected ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException ex) {
         var error = new ApiErrorDto(HttpStatus.UNAUTHORIZED, ex.getMessage());
 
         logError(error, ex);
@@ -79,6 +81,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         logError(error, ex);
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
+    @ExceptionHandler(value = {MaxUploadSizeExceededException.class})
+    protected ResponseEntity<Object> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
+        var error = new ApiErrorDto(HttpStatus.PAYLOAD_TOO_LARGE, ex.getMessage());
+
+        logError(error, ex);
+        return new ResponseEntity<>(error, HttpStatus.PAYLOAD_TOO_LARGE);
     }
 
     @Override
@@ -94,6 +105,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         logError(error, ex);
         return new ResponseEntity<>(error, headers, status);
 
+    }
+
+    @ExceptionHandler(value = {ForbiddenException.class})
+    protected ResponseEntity<Object> handleForbiddenException(ForbiddenException ex) {
+        var error = new ApiErrorDto(HttpStatus.FORBIDDEN, ex.getMessage());
+
+        logError(error, ex);
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
 
     private void logError(ApiErrorDto apiErrorDto, Exception exception) {

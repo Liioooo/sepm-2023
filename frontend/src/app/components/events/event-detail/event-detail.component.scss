@@ -1,5 +1,10 @@
 @import "variables";
 
+.event-image {
+  width: 8rem;
+  height: auto;
+}
+
 .row-number {
   min-width: 2rem;
 }
@@ -19,6 +24,7 @@
 .amount-button {
   &:disabled {
     background: map-get($theme-colors, "gray");
+    color: $body-color;
   }
 
   color: $white;

@@ -26,7 +26,7 @@ public interface PdfService {
      * @param order The cancellation order of which to create the invoice
      * @return The EmbeddedFile as PDF
      */
-    EmbeddedFile createCancellationInvoicePdf(Order order);
+    EmbeddedFile createCancellationInvoicePdf(@NotNull Order order, @NotNull List<Ticket> tickets, @NotNull Event event) throws IOException, TemplateException;
 
     /**
      * Create a PDF for a Ticket.
@@ -34,5 +34,5 @@ public interface PdfService {
      * @param ticket The ticket for which to create the PDF
      * @return The EmbeddedFile as PDF
      */
-    EmbeddedFile createTicketPdf(Ticket ticket);
+    EmbeddedFile createTicketPdf(@NotNull Order order, @NotNull Ticket ticket, @NotNull Event event) throws IOException, TemplateException;
 }

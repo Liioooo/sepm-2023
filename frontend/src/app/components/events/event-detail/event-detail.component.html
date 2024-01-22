@@ -1,8 +1,11 @@
 <div class="mb-4" *ngIf="(event$ | async) as event; else loading">
   <div class="py-5 bg-light">
-    <div class="container">
-      <h1 class="fs-1 fw-bold mb-0">{{ event.title }}</h1>
-      <div class="fs-3 fw-bold mb-0">{{ artistName(event) }}</div>
+    <div class="container d-flex align-items-center gap-3">
+      <img *ngIf="event.image" [src]="event.image.url" alt="Event Image" class="event-image">
+      <div>
+        <h1 class="fs-1 fw-bold mb-0">{{ event.title }}</h1>
+        <div class="fs-3 fw-bold mb-0">{{ artistName(event) }}</div>
+      </div>
     </div>
   </div>
   <div class="container mt-4">
@@ -34,7 +37,7 @@
         </div>
       </div>
       <div class="col-12 col-lg-6 bg-light rounded-3 p-5 mt-4 mt-lg-0">
-        <h2 class="fw-bold">Select Tickets</h2>
+        <h2 class="fw-bold">{{ actionTitle }}</h2>
         <div class="fw-bold">{{ event.startDate.toLocaleDateString() }}</div>
         <hr>
         <div class="d-flex flex-row">
@@ -83,8 +86,20 @@
             <a href="javascript:void(0)" (click)="reserveTickets()">Reserve Tickets for now</a>
           </div>
         </ng-container>
+        <ng-container *ngIf="isUpdate && !isReservation">
+          <p class="text-description">
+            You can remove tickets you don't want anymore. After updating the order, you will get back the money listed
+            at "Total" and you will get a cancellation receipt for this order.
+          </p>
+        </ng-container>
+        <ng-container *ngIf="isUpdate && isReservation">
+          <p class="text-description">
+            You can remove tickets you don't want anymore. After updating the order, the reservation will only contain
+            the selected tickets.
+          </p>
+        </ng-container>
         <div class="text-center">
-          <button class="btn btn-primary mt-4" (click)="buyTickets()">Buy Tickets</button>
+          <button class="btn btn-primary mt-4" (click)="buyTickets()">{{ actionButtonText }}</button>
         </div>
       </div>
     </div>

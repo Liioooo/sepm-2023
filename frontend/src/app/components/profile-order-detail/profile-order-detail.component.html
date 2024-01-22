@@ -1,0 +1,87 @@
+<div class="mb-4" *ngIf="order; else loading">
+  <div class="py-5 bg-light">
+    <div class="container">
+      <a class="btn btn-outline-dark" routerLink="/profile">
+        <i class="bi bi-chevron-left"></i>
+        Back to overview
+      </a>
+      <div class="d-flex align-items-center gap-3 mt-2">
+        <img *ngIf="order.event.image" [src]="order.event.image.url" alt="Event Image" class="event-image">
+        <div>
+          <h1 class="fs-1 fw-bold mb-0">{{ order.event.title }}</h1>
+          <div class="fs-3 fw-bold mb-0">{{ artistName(order.event) }}</div>
+        </div>
+      </div>
+      <p class="m-0 mt-2">
+        {{ order.event.hall.name }},
+        {{ order.event.hall.location.title }},
+        {{ order.event.hall.location.address }},
+        {{ order.event.hall.location.city }},
+        {{ order.event.hall.location.country }}
+      </p>
+      <p class="m-0">{{ order.event.startDate.toLocaleDateString([], { hour: 'numeric', minute: 'numeric' }) }}
+        - {{ order.event.endDate.toLocaleDateString([], { hour: 'numeric', minute: 'numeric' }) }}</p>
+      <div class="status-bar d-flex justify-content-start gap-2 mt-2">
+        <span *ngIf="isReservation && !isExpired" class="badge bg-warn-200 text-warn-800 pt-2">Reserved (Reservation Number: {{ order.id }}
+          )</span>
+        <span *ngIf="isReservation && isExpired" class="badge bg-danger pt-2">Expired</span>
+        <span *ngIf="!isReservation" class="badge bg-success-200 text-success-800 pt-2">Paid</span>
+      </div>
+    </div>
+  </div>
+  <div class="container mt-4">
+    <div class="mb-4 d-flex gap-3">
+      <button *ngIf="order.receipt" (click)="downloadFile(order.receipt)" type="button"
+              class="btn btn-outline-description">
+        <i class="bi bi-download"></i> Invoice
+      </button>
+      <a *ngIf="isReservation && !isExpired" [routerLink]="['/events', order.event.id, 'buy-reservation', order.id]"
+         class="btn btn-outline-primary">Buy Now</a>
+      <a *ngIf="!isPast" [routerLink]="['/', 'orders', order.id, 'edit-tickets']"
+         class="btn btn-danger">Cancel Tickets</a>
+    </div>
+    <h2 class="fs-2 fw-bold">Tickets</h2>
+    <table class="table table-striped align-middle" *ngIf="order.tickets.length > 0">
+      <thead>
+      <tr>
+        <th scope="col">Category</th>
+        <th scope="col">Row</th>
+        <th scope="col">Seat</th>
+        <th scope="col">Price</th>
+        <th scope="col" class="text-end">Ticket</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let ticket of order.tickets">
+        <td>{{ categoryToString(ticket.ticketCategory) }}</td>
+        <td>{{ ticket.rowNumber ?? '-' }}</td>
+        <td>{{ ticket.seatNumber ?? '-' }}</td>
+        <td>{{ getPrice(ticket.ticketCategory) | currency:'EUR' }}</td>
+        <td class="text-end">
+          <a *ngIf="ticket.pdfTicket" class="btn btn-outline-dark" (click)="downloadFile(ticket.pdfTicket)">
+            <i class="bi bi-download"></i>
+            Download Ticket
+          </a>
+          <ng-container *ngIf="!ticket.pdfTicket">-</ng-container>
+        </td>
+      </tbody>
+    </table>
+    <p *ngIf="order.tickets.length === 0">This order does not contain any tickets.</p>
+    <ng-container *ngIf="order.cancellationReceipts.length > 0">
+      <h2 class="fs-2 fw-bold">Cancellation Receipts</h2>
+      <div class="d-flex gap-3 flex-column">
+        <a *ngFor="let receipt of order.cancellationReceipts; index as i" class="btn btn-outline-dark"
+           (click)="downloadFile(receipt)">
+          <i class="bi bi-download"></i>
+          Download Receipt {{ i + 1 }}
+        </a>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="container text-center fs-2">
+    Loading order data &hellip;
+  </div>
+</ng-template>

@@ -37,13 +37,33 @@ import {
 import { EventDetailComponent } from './components/events/event-detail/event-detail.component';
 import { RequestPasswordResetComponent } from './components/request-password-reset/request-password-reset.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import {
+  NewsSearchFieldsComponent
+} from './components/management/management-news/news-search-fields/news-search-fields.component';
+import {
+  UsersSearchFieldsComponent
+} from './components/management/management-users/users-search-fields/users-search-fields.component';
+import {
+  EventOverviewComponent
+} from './components/management/management-events/event-overview/event-overview.component';
 import { PiechartComponent } from './components/home/piechart/piechart.component';
 import { EventCheckoutComponent } from './components/events/event-checkout/event-checkout.component';
 import { OrderItemComponent } from './components/profile-overview/order-item/order-item.component';
-import {
-  ConfirmDeleteReservationModalComponent
-} from './components/modal/confirm-delete-reservation-modal/confirm-delete-reservation-modal.component';
+import { EventCreateComponent } from './components/management/management-events/event-create/event-create.component';
 import { NewsCreateComponent } from './components/news/news-create/news-create.component';
+import { ProfileOrderDetailComponent } from './components/profile-order-detail/profile-order-detail.component';
+import { RequestPasswordChangeModalComponent } from './components/modal/request-password-change-modal/request-password-change-modal.component';
+import {
+  ManagementLocationsComponent
+} from './components/management/management-locations/management-locations.component';
+import {
+  ManagementLocationCreateComponent
+} from './components/management/management-locations/management-location-create/management-location-create.component';
+import { ManagementLocationDetailsComponent } from './components/management/management-locations/management-location-details/management-location-details.component';
+import { ManagementLocationHallCreateComponent } from './components/management/management-locations/halls/management-location-hall-create/management-location-hall-create.component';
+import { ManagementUserCreateComponent } from './components/management/management-users/management-user-create/management-user-create.component';
+import { TicketValidationComponent } from './components/ticket-validation/ticket-validation.component';
+import { ContactAdminComponent } from './components/contact-admin/contact-admin.component';
 
 @NgModule({
   declarations: [
@@ -74,13 +94,26 @@ import { NewsCreateComponent } from './components/news/news-create/news-create.c
     LocationItemComponent,
     LocationSearchFieldsComponent,
     EventDetailComponent,
-    ConfirmDeleteProfileModalComponent,
     PiechartComponent,
     EventDetailComponent,
     EventCheckoutComponent,
     OrderItemComponent,
-    ConfirmDeleteReservationModalComponent,
-    NewsCreateComponent
+    NewsCreateComponent,
+    ProfileOrderDetailComponent,
+    NewsCreateComponent,
+    NewsSearchFieldsComponent,
+    UsersSearchFieldsComponent,
+    EventOverviewComponent,
+    EventCreateComponent,
+    ManagementLocationsComponent,
+    ManagementLocationCreateComponent,
+    ManagementLocationDetailsComponent,
+    ManagementLocationHallCreateComponent,
+    RequestPasswordChangeModalComponent,
+    ManagementUserCreateComponent,
+    ContactAdminComponent,
+    ManagementUserCreateComponent,
+    TicketValidationComponent
   ],
   imports: [
     BrowserModule,

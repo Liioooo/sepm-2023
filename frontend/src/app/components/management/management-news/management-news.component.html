@@ -1,1 +1,61 @@
-<p>management-news works!</p>
+<div class="container">
+  <div class="mb-4">
+    <div class="col py-4">
+      <h2 class="fs-1 fw-bold">News</h2>
+    </div>
+
+    <div>
+      <!-- SEARCH -->
+      <app-news-search-fields
+        class="d-block mb-5"
+        (searchChange)="searchAttributes$.next($event)"
+      ></app-news-search-fields>
+      <span style="flex: 1"></span>
+    </div>
+
+    <a class="btn btn-primary mb-4" routerLink="create" aria-label="New Article">
+      <i class="bi bi-plus-lg"></i>
+      New Article
+    </a>
+
+
+    <table class="table table-sm">
+      <thead>
+      <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Date of Publication</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let news of news$ | async">
+        <td>{{ news.title }}</td>
+        <td>{{ authorName(news) }}</td>
+        <td>{{ news.publishDate.toLocaleDateString() }}</td>
+        <td>
+          <!-- ACTIONS -->
+          <div class="btn-group">
+            <a class="btn btn-outline-dark btn-sm responsive-info-button"
+               [routerLink]="['../../news/detail/', news.id]"
+               aria-label="Show horse details">
+              <i class="bi bi-info-lg"></i>
+            </a>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div class="d-flex justify-content-center mt-4">
+      <ngb-pagination
+        [(page)]="pageableState.currentPage"
+        [pageSize]="pageableState.pageSize"
+        [collectionSize]="pageableState.totalElements"
+        (pageChange)="onPageChange($event)"
+        [maxSize]=10
+      ></ngb-pagination>
+    </div>
+
+  </div>
+</div>

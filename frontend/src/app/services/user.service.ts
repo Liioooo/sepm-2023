@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
 import { jwtDecode } from 'jwt-decode';
@@ -9,6 +9,13 @@ import { UserDetailDto } from '../dtos/user-detail-dto';
 import { UpdateUserDetailDto } from '../dtos/update-user-detail-dto';
 import { EmailResetDto } from '../dtos/email-reset-dto';
 import { ResetPasswordDto } from '../dtos/reset-password-dto';
+import { UserSearchDto } from '../dtos/user-search-dto';
+import { PageableRequest } from '../types/pageable-request';
+import { PageDto } from '../dtos/page-dto';
+import { convertToDatesInObject } from '../utils/convertToDatesInObject';
+import { removeNullOrUndefinedProps } from '../utils/removeNullOrUndefinedProps';
+import { UserCreateDto } from '../dtos/user-create-dto';
+import { UserUpdateManagementDto } from '../dtos/user-update-management-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +25,8 @@ export class UserService {
   private authBaseUri: string = this.globals.backendUri + '/authentication';
 
   private myUserBaseUri: string = this.globals.backendUri + '/my-user';
+
+  private managementUsersBaseUri: string = this.globals.backendUri + '/management/users';
 
   private userDataSubject$: BehaviorSubject<UserDetailDto> = new BehaviorSubject<UserDetailDto>(null);
 
@@ -46,6 +55,11 @@ export class UserService {
         tap(() => this.fetchUserDetails())
       );
   }
+
+  createUser(user: UserCreateDto): Observable<UserDetailDto> {
+    return this.httpClient.post<UserDetailDto>(this.managementUsersBaseUri, user, { responseType: 'json' });
+  }
+
 
   sendPasswordResetEmail(emailResetDto: EmailResetDto): Observable<void> {
     return this.httpClient.post<void>(`${this.authBaseUri}/send-password-reset-email`, emailResetDto, { responseType: 'json' });
@@ -131,6 +145,25 @@ export class UserService {
       .pipe(
         tap(() => this.logoutUser())
       );
+  }
+
+  updateUser(userUpdate: UserUpdateManagementDto): Observable<UserDetailDto> {
+    return this.httpClient.patch<UserDetailDto>(this.managementUsersBaseUri, userUpdate, { responseType: 'json' });
+  }
+
+  getUsers(search: UserSearchDto | null, pageable?: PageableRequest): Observable<PageDto<UserDetailDto>> {
+    const searchParams = search ? convertToDatesInObject(removeNullOrUndefinedProps(search as {
+      [key: string]: string
+    })) : {};
+
+    return this.httpClient.get<PageDto<UserDetailDto>>(this.managementUsersBaseUri, {
+      params: {
+        ...searchParams,
+        ...pageable
+      }
+    }).pipe(
+      map(convertToDatesInObject)
+    );
   }
 
 }

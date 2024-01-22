@@ -4,6 +4,7 @@ import at.ac.tuwien.sepr.groupphase.backend.enums.EventType;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -13,6 +14,7 @@ import java.time.OffsetDateTime;
 @Setter
 @EqualsAndHashCode
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
 public class EventDetailDto {
 
@@ -37,4 +39,6 @@ public class EventDetailDto {
     private SeatDto[] occupiedSeats;
 
     private Integer occupiedStandings;
+
+    private PublicFileDto image;
 }

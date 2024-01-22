@@ -29,12 +29,8 @@ public class OrderDetailDto {
 
     private OffsetDateTime orderDate;
 
-    private OffsetDateTime cancellationDate;
-
-    private EmbeddedFileDto pdfTickets;
-
     private EmbeddedFileDto receipt;
 
-    private EmbeddedFileDto cancellationReceipt;
+    private List<EmbeddedFileDto> cancellationReceipts;
 
 }

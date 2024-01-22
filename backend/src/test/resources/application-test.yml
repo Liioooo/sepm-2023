@@ -12,3 +12,5 @@ pdf:
   templates:
     path: pdf/templates/
     invoice: invoice.ftlh
+    cancellation_invoice: cancellation_invoice.ftlh
+    ticket: ticket.ftlh

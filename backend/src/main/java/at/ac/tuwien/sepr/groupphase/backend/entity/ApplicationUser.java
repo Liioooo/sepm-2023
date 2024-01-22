@@ -103,7 +103,7 @@ public class ApplicationUser implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return !isLocked && failedAuths < 5;
+        return !isLocked;
     }
 
     @Override
