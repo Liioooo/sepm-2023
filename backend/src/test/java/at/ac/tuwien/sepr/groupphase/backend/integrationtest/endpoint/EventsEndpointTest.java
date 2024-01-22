@@ -99,7 +99,7 @@ class EventsEndpointTest {
             String content = this.mockMvc.perform(get(API_BASE)
                 .accept(MediaType.APPLICATION_JSON)
                 .with(user("user1@email.com").roles("USER"))
-                .param("search", "blind")
+                .param("search", "blinding")
                 .param("page", "0")
                 .param("size", "10")
             ).andExpectAll(
