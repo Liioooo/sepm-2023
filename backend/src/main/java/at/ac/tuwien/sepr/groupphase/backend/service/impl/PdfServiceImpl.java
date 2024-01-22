@@ -109,9 +109,12 @@ public class PdfServiceImpl implements PdfService {
             variables.put("price", event.getSeatPrice());
         }
 
+        String ticketVerifyUrl = "http://localhost:4200/#/tickets/verify/" + ticket.getUuid();
+        variables.put("ticketVerifyUrl", ticketVerifyUrl);
+
         try {
             // generate QR Code
-            String image = qrCodeGenerator.getQrCodeImage("http://localhost:4200/#/tickets/verify/" + ticket.getUuid());
+            String image = qrCodeGenerator.getQrCodeImage(ticketVerifyUrl);
             variables.put("image", image);
         } catch (WriterException | IOException e) {
             throw new InternalServerException("Could not generate QR Code.", e);

@@ -2,9 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TicketService } from '../../services/ticket.service';
 import { TicketListDto } from '../../dtos/ticket-list-dto';
 import { ActivatedRoute } from '@angular/router';
-import { ErrorResponseDto } from '../../dtos/error-response-dto';
-import { ToastService } from '../../services/toast.service';
-import { ErrorFormatterService } from '../../services/error-formatter.service';
+import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-ticket-validation',
@@ -17,26 +15,26 @@ export class TicketValidationComponent implements OnInit {
 
   constructor(
     private service: TicketService,
-    private route: ActivatedRoute,
-    private notification: ToastService,
-    private errorFormatterService: ErrorFormatterService
+    private route: ActivatedRoute
   ) {
 
   }
 
   ngOnInit() {
     this.verified = false;
-    this.service.getTicketByUuid(String(this.route.snapshot.paramMap.get('uuid'))).subscribe({
-      next: ticket => {
-        this.ticket = ticket;
-        this.verified = true;
-        this.notification.showSuccess('VALID TICKET', '');
-      },
-      error: err => {
-        this.verified = false;
-        this.notification.showError('INVALID TICKET', this.errorFormatterService.format(err['error'] as ErrorResponseDto));
+
+    this.route.paramMap.pipe(
+      switchMap(params => this.service.getTicketByUuid(String(params.get('uuid'))))).subscribe(
+      {
+        next: ticket => {
+          this.ticket = ticket;
+          this.verified = true;
+        },
+        error: () => {
+          this.ticket = null;
+          this.verified = false;
+        }
       }
-    }
     );
   }
 

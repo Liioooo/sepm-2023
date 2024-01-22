@@ -64,7 +64,7 @@
     <img src="images/logo.png" height="50" alt="Ticketline Logo">
 </div>
 <main>
-    <h2>ticketline</h2>
+    <h2>Ticketline</h2>
     <p>
         ${order.user.firstName} ${order.user.lastName}<br>
         Date of Order: ${orderDate}
@@ -81,10 +81,14 @@
                 ${event.hall.location.address}<br>
                 ${event.hall.location.postalCode} ${event.hall.location.city}
             </p>
-            <p>Category: ${category}<p>
+            <p>
+                Category: ${category}
+            </p>
             <#if category == "SEATING">
-            <p>Row: ${ticket.rowNumber}<br>
-                Seat: ${ticket.seatNumber}</p>
+                <p>
+                    Row: ${ticket.rowNumber}<br>
+                    Seat: ${ticket.seatNumber}
+                </p>
             </#if>
         </div>
         <div style="text-align: center; display: inline-block; width: 45%">
@@ -96,6 +100,7 @@
             <div style="border-color: black; height: 150px; width: 150px">
                 <img src='data:image/png;base64,${image}' height="150" alt="ticket qrcode">
             </div>
+            <a style="position: relative; top: 15px" href="${ticketVerifyUrl}">Verify</a>
             <h3>€ ${price}</h3>
         </div>
     </div>
@@ -107,7 +112,9 @@
         <p>To ensure entry without difficulty, please consider the following usage instructions</p>
         <ul>
             <li>Print the ticket or have it ready on your mobile device.</li>
-            <li>The ticket is valid for a single entry and will be validated with the first check in (unless otherwise defined).</li>
+            <li>The ticket is valid for a single entry and will be validated with the first check in (unless otherwise
+                defined).
+            </li>
             <li>Only tickets in good print quality can be read by the scanner at the entrance.</li>
             <li>Please protect the ticket from moisture and contamination.</li>
         </ul>

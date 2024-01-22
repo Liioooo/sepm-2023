@@ -58,10 +58,11 @@
         <td>{{ ticket.seatNumber ?? '-' }}</td>
         <td>{{ getPrice(ticket.ticketCategory) | currency:'EUR' }}</td>
         <td class="text-end">
-          <a class="btn btn-outline-dark" (click)="downloadFile(ticket.pdfTicket)">
+          <a *ngIf="ticket.pdfTicket" class="btn btn-outline-dark" (click)="downloadFile(ticket.pdfTicket)">
             <i class="bi bi-download"></i>
             Download Ticket
           </a>
+          <ng-container *ngIf="!ticket.pdfTicket">-</ng-container>
         </td>
       </tbody>
     </table>

@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -32,8 +33,5 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
             + "    AND DATEDIFF(MINUTE, CURRENT_TIMESTAMP, t.order.event.startDate) > 30))")
     List<Seat> findOccupiedSeatsById(@Param("eventId") long id);
 
-    @Query(
-        "SELECT t FROM Ticket t WHERE t.uuid = :ticketUuid"
-    )
-    Ticket findTicketByUuid(@Param("ticketUuid") UUID uuid);
+    Optional<Ticket> findByUuid(UUID uuid);
 }
