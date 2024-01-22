@@ -71,7 +71,7 @@ export class ManagementUsersComponent {
       isLocked: true
     };
 
-    this.updateUser(userUpdateInfo, user);
+    this.updateUser(userUpdateInfo, user, 'locked');
   }
 
   unlockUser(user: UserListDto): void {
@@ -80,13 +80,13 @@ export class ManagementUsersComponent {
       isLocked: false
     };
 
-    this.updateUser(userUpdateInfo, user);
+    this.updateUser(userUpdateInfo, user, 'unlocked');
   }
 
-  private updateUser(userUpdateInfo: UserUpdateManagementDto, user: UserListDto) {
+  private updateUser(userUpdateInfo: UserUpdateManagementDto, user: UserListDto, actionStr: string) {
     this.service.updateUser(userUpdateInfo).subscribe({
       next: updatedUser => {
-        this.toastService.showSuccess('Success', `User ${user.firstName}, ${user.lastName} unlocked`);
+        this.toastService.showSuccess('Success', `User ${user.firstName}, ${user.lastName} ${actionStr}`);
         user.isLocked = updatedUser.isLocked; // instantly reflect change
       },
       error: err => {
