@@ -44,9 +44,27 @@ public interface EventService {
      */
     Event getEvent(long id);
 
+    /**
+     * Retrieves a list of the top ten events along with the count of tickets bought for each event.
+     *
+     * @param searchDto The search criteria to filter and sort the events.
+     * @return A list of EventWithBoughtCount objects representing the top ten events.
+     */
     List<EventWithBoughtCount> getTopTenEvents(EventTop10SearchDto searchDto);
 
+    /**
+     * Retrieves information about occupied seats for a specific event.
+     *
+     * @param id The unique identifier of the event.
+     * @return An array of SeatDto objects representing the occupied seats for the specified event.
+     */
     SeatDto[] getOccupiedSeats(long id);
 
+    /**
+     * Retrieves the count of occupied standing positions for a specific event.
+     *
+     * @param id The unique identifier of the event.
+     * @return The count of occupied standing positions for the specified event.
+     */
     Integer getOccupiedStandings(long id);
 }
