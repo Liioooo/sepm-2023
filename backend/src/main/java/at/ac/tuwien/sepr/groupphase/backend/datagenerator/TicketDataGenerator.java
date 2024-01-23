@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Profile("generateData")
 @Component
@@ -44,6 +45,7 @@ public class TicketDataGenerator extends DataGenerator<Ticket> {
                 .rowNumber(1L)
                 .seatNumber(1L)
                 .ticketCategory(TicketCategory.SEATING)
+                .uuid(UUID.randomUUID())
                 .build(),
             Ticket.builder()
                 .order(orderDataGenerator.getTestData().get(0))
